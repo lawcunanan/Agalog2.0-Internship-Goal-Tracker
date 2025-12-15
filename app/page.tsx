@@ -1,9 +1,13 @@
 "use client";
+
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { TypewriterText } from "@/components/ui/typewriter-text";
+import { signInWithGoogle } from "@/services/auth/login";
+import { useAlert } from "@/providers/alert-provider";
 
 export default function Home() {
+	const { showAlert } = useAlert();
 	return (
 		<main className="min-h-screen flex flex-col">
 			<Header />
@@ -34,6 +38,7 @@ export default function Home() {
 
 					<div className="flex items-center justify-center gap-4 pt-4">
 						<button
+							onClick={() => signInWithGoogle(showAlert)}
 							type="button"
 							className="h-12 px-8 min-w-50 rounded-md bg-primary text-primary-foreground hover:bg-primary/90 transition-colors flex items-center gap-2 justify-center border border-transparent font-medium cursor-pointer"
 						>
