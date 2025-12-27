@@ -22,6 +22,13 @@ export interface ContributorValues {
 	company?: string;
 }
 
+export interface WeeklyAttendanceState {
+	logs: WeeklyAttendanceType[];
+	goalHours: number;
+	currentHours: number;
+	editLog: Log | null;
+}
+
 export interface WeeklyAttendanceType {
 	weekLabel: string;
 	startDate: string;
@@ -30,18 +37,19 @@ export interface WeeklyAttendanceType {
 	thisPeriodHours: string;
 	totalHours: string;
 	rawTotalHours: number;
-	logs: DailyLog[];
+	logs: Log[];
 }
 
-export interface DailyLog {
-	id: string;
+export interface Log {
+	log_id: string;
 	date: string;
 	timeIn: string;
 	timeOut: string;
 	breakOut?: string;
 	breakBack?: string;
 	breakDuration: string;
-	hoursWorked: string;
-	rawHours: number;
+	//
+	hoursWorked?: string;
+	rawHours?: number;
 	description: string;
 }

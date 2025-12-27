@@ -12,11 +12,11 @@ import {
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Edit, CalendarX } from "lucide-react";
-import { WeeklyAttendanceType, DailyLog } from "@/lib/types";
+import { WeeklyAttendanceType, Log } from "@/lib/types";
 
 interface WeeklyAttendanceProps {
 	data: WeeklyAttendanceType[];
-	onEdit: (log: DailyLog) => void;
+	onEdit: (log: Log) => void;
 }
 
 export function WeeklyAttendance({ data, onEdit }: WeeklyAttendanceProps) {
@@ -66,7 +66,11 @@ export function WeeklyAttendance({ data, onEdit }: WeeklyAttendanceProps) {
 
 					<Accordion type="single" collapsible className="w-full space-y-1">
 						{week.logs.map((log) => (
-							<AccordionItem key={log.id} value={log.id} className="border-b-0">
+							<AccordionItem
+								key={log.log_id}
+								value={log.log_id}
+								className="border-b-0"
+							>
 								<AccordionTrigger className="cursor-pointer hover:no-underline py-4 pr-3 pl-0 hover:pl-4 data-[state=open]:pl-4 hover:bg-muted/50 rounded-r-md transition-all duration-300 ease-out data-[state=open]:bg-muted/50 data-[state=open]:border-l-4 data-[state=open]:border-blue-700">
 									<div className="grid grid-cols-5 gap-4 w-full text-left text-xs sm:text-sm">
 										<Tooltip>
