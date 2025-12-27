@@ -12,9 +12,24 @@ import {
 	AlertDialogTrigger,
 	AlertDialogCancel,
 } from "@/components/ui/alert-dialog";
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Label } from "@radix-ui/react-dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Edit2, Copy, Trash2, X, CheckCircle, LogOut } from "lucide-react";
+import {
+	Edit2,
+	Copy,
+	Trash2,
+	X,
+	CheckCircle,
+	LogOut,
+	Filter,
+} from "lucide-react";
 import { EmptyState } from "@/components/empty-state";
 import { UserDetails } from "@/providers/auth-provider";
 
@@ -30,6 +45,7 @@ type Goal = {
 	goal_id: string;
 	title: string;
 	goal: number;
+	metaText: string;
 	pubToken?: string | null;
 	priToken?: string | null;
 	created_at: string;
@@ -54,9 +70,14 @@ export function GoalsDialog({
 	const [mode, setMode] = useState<"join" | "create">("join");
 	const [goals, setGoals] = useState<Goal[]>([]);
 	const [isLoading, setIsLoading] = useState(false);
+	const [filterStatus, setFilterStatus] = useState<"Active" | "Inactive">(
+		"Active",
+	);
 
 	// Join
 	const [joinToken, setJoinToken] = useState("");
+	const [section, setSection] = useState("");
+	const [company, setCompany] = useState("");
 
 	// Create / Edit
 	const [createTitle, setCreateTitle] = useState("");
@@ -69,6 +90,7 @@ export function GoalsDialog({
 		getUserGoals(
 			userId,
 			userDetails?.role || "Student",
+			filterStatus || "Active",
 			(data) => {
 				setGoals(data);
 				if (data.length && selectedGoal != data[0].goal_id) {
@@ -82,27 +104,33 @@ export function GoalsDialog({
 
 	useEffect(() => {
 		refreshGoals();
-	}, [userId]);
+	}, [userId, filterStatus]);
 
 	const handleJoinGoal = async () => {
 		if (!userId || !userDetails?.role) {
 			showAlert(500, "User details missing");
 			return;
 		}
-		if (!joinToken.trim()) {
-			showAlert(400, "Please enter a token");
+
+		if (
+			!joinToken.trim() ||
+			(userDetails?.role === "Student" && (!section.trim() || !company.trim()))
+		) {
+			showAlert(400, "Please enter all required fields");
 			return;
 		}
 
 		await insertContributor(
 			userId,
 			userDetails.role,
-			joinToken,
+			{ token: joinToken, section, company },
 			showAlert,
 			setIsLoading,
 		);
 
 		setJoinToken("");
+		setSection("");
+		setCompany("");
 		refreshGoals();
 	};
 
@@ -177,7 +205,7 @@ export function GoalsDialog({
 				<AlertDialogHeader>
 					<div className="flex items-center justify-between">
 						<AlertDialogTitle>Manage Goals</AlertDialogTitle>
-						<AlertDialogCancel className="border-none p-0">
+						<AlertDialogCancel className="bg-transparent! !hover:bg-transparent p-0! h-auto! w-auto! border-0! shadow-none! ring-0! outline-none!">
 							<X className="h-4 w-4" />
 						</AlertDialogCancel>
 					</div>
@@ -212,6 +240,21 @@ export function GoalsDialog({
 							value={joinToken}
 							onChange={(e) => setJoinToken(e.target.value)}
 						/>
+						{userDetails?.role === "Student" && (
+							<>
+								<Input
+									placeholder="Enter section"
+									value={section}
+									onChange={(e) => setSection(e.target.value)}
+								/>
+								<Input
+									placeholder="Enter company"
+									value={company}
+									onChange={(e) => setCompany(e.target.value)}
+								/>
+							</>
+						)}
+
 						<Button onClick={handleJoinGoal}>
 							{isLoading ? "Joining..." : "Join"}
 						</Button>
@@ -240,7 +283,31 @@ export function GoalsDialog({
 				)}
 
 				{/* GOALS */}
-				<div className="border rounded-lg divide-y max-h-80 overflow-y-auto">
+
+				<div className="flex items-center justify-between">
+					<Label className="text-sm font-medium">Registered Goals</Label>
+					<DropdownMenu>
+						<DropdownMenuTrigger asChild>
+							<Button
+								size="icon"
+								variant="ghost"
+								className="h-8 w-8 bg-transparent"
+							>
+								<Filter className="h-4 w-4" />
+							</Button>
+						</DropdownMenuTrigger>
+						<DropdownMenuContent align="end">
+							<DropdownMenuItem onClick={() => setFilterStatus("Active")}>
+								{filterStatus === "Active" && "✓ "}Active
+							</DropdownMenuItem>
+							<DropdownMenuItem onClick={() => setFilterStatus("Inactive")}>
+								{filterStatus === "Inactive" && "✓ "}Inactive
+							</DropdownMenuItem>
+						</DropdownMenuContent>
+					</DropdownMenu>
+				</div>
+
+				<div className="divide-y max-h-80 overflow-y-auto">
 					{goals.length === 0 ? (
 						<EmptyState
 							title="No goals yet"
@@ -255,17 +322,22 @@ export function GoalsDialog({
 								return (
 									<div
 										key={goal.goal_id}
-										className="p-4 flex gap-6 items-center"
+										className="pb-6 pr-2  flex gap-6 items-start"
 									>
-										<RadioGroupItem value={String(goal.goal_id)} />
-										<div className="flex-1">
-											<p className="font-medium">
+										<RadioGroupItem
+											value={String(goal.goal_id)}
+											className="mt-1"
+										/>
+										<div
+											className="flex-1 cursor-pointer"
+											onClick={() => setSelectedGoal(String(goal.goal_id))}
+										>
+											<p className="font-medium ">
 												{goal.title.charAt(0).toUpperCase() +
 													goal.title.slice(1)}
 											</p>
 											<p className="text-xs text-muted-foreground">
-												{goal.goal} hours •{" "}
-												{new Date(goal.created_at).toLocaleDateString()}
+												{goal.metaText}
 											</p>
 
 											{["Admin", "Super Admin"].includes(
@@ -282,8 +354,8 @@ export function GoalsDialog({
 															showAlert(200, "Private token copied");
 														}}
 													>
-														<Copy className="h-3 w-3 mr-1" /> Private{" "}
-													</Button>{" "}
+														<Copy className="h-3 w-3 mr-1" /> Private
+													</Button>
 													<Button
 														size="sm"
 														variant="outline"
@@ -295,7 +367,7 @@ export function GoalsDialog({
 														}}
 													>
 														<Copy className="h-3 w-3 mr-1" /> Public
-													</Button>{" "}
+													</Button>
 												</div>
 											)}
 										</div>
@@ -315,7 +387,11 @@ export function GoalsDialog({
 														<Button
 															size="icon"
 															variant="ghost"
-															className="text-destructive"
+															className={
+																goal.status === "Inactive"
+																	? "text-green-500"
+																	: "text-destructive"
+															}
 															onClick={() =>
 																handleDeleteGoal(
 																	goal.goal_id,

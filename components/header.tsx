@@ -15,7 +15,6 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useAuth } from "@/providers/auth-provider";
 import { LogoutDialog } from "@/components/dialogs/logout-dialog";
 import { GoalsDialog } from "@/components/dialogs/goals-dialog";
-import { ProfileDialog } from "@/components/dialogs/profile-dialog";
 import { useAlert } from "@/providers/alert-provider";
 
 interface HeaderProps {
@@ -114,19 +113,6 @@ export function Header({ selectedGoal, setSelectedGoal }: HeaderProps) {
 											Manage Goals
 										</Button>
 									</GoalsDialog>
-									<ProfileDialog
-										userId={user?.id || ""}
-										userDetails={userDetails || ({} as any)}
-										showAlert={showAlert}
-									>
-										<Button
-											variant="ghost"
-											size={buttonSize}
-											className={buttonClass}
-										>
-											Profile
-										</Button>
-									</ProfileDialog>
 									<LogoutDialog>
 										<Button
 											variant="ghost"

@@ -3,6 +3,7 @@ import { supabase } from "@/lib/supabase";
 export const getUserGoals = async (
 	userId: string,
 	role: string,
+	statusFilter: "Active" | "Inactive",
 	setGoals: (goals: any[]) => void,
 	showAlert: (status: number, message: string) => void,
 	setIsLoading: (loading: boolean) => void,
@@ -21,6 +22,8 @@ export const getUserGoals = async (
 				contributor_id,
 				role,
 				status,
+				section,
+				company,
 				goals!inner (
 					goal_id,
 					title,
@@ -33,13 +36,32 @@ export const getUserGoals = async (
 				`,
 			)
 			.eq("user_id", userId)
-			.eq("status", "Active")
-			.eq("goals.status", "Active")
+			.eq("status", statusFilter)
+			.eq("goals.status", statusFilter)
 			.order("created_at", { ascending: false });
 
 		if (error) throw error;
 
-		const goals = (data || []).map((row: any) => row.goals).filter(Boolean);
+		const goals = (data || [])
+			.map((row: any) => {
+				const goal = row.goals;
+				if (!goal) return null;
+
+				const metaParts = [
+					`${goal.goal} hours`,
+					row.section,
+					row.company,
+					goal.created_at
+						? new Date(goal.created_at).toLocaleDateString()
+						: null,
+				].filter(Boolean);
+
+				return {
+					...goal,
+					metaText: metaParts.join(" • "),
+				};
+			})
+			.filter(Boolean);
 
 		setGoals(goals);
 	} catch (error: any) {

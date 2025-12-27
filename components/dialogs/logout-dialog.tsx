@@ -39,7 +39,9 @@ export function LogoutDialog({ children }: { children: React.ReactNode }) {
 					</AlertDialogDescription>
 				</AlertDialogHeader>
 				<AlertDialogFooter>
-					<AlertDialogCancel disabled={isLoading}>Cancel</AlertDialogCancel>
+					<AlertDialogCancel className="bo" disabled={isLoading}>
+						Cancel
+					</AlertDialogCancel>
 					<AlertDialogAction
 						onClick={handleLogout}
 						disabled={isLoading}

@@ -3,7 +3,7 @@ import { supabase } from "@/lib/supabase";
 export const insertContributor = async (
 	userId: string,
 	role: "Student" | "Admin" | "Super Admin",
-	token: string,
+	values: { token: string; section?: string; company?: string },
 	showAlert: (status: number, message: string) => void,
 	setIsLoading: (loading: boolean) => void,
 ) => {
@@ -11,14 +11,14 @@ export const insertContributor = async (
 
 	try {
 		if (!userId) throw new Error("User ID is required");
-		if (!token) throw new Error("Token is required");
+		if (!values.token) throw new Error("Token is required");
 
 		const tokenColumn = role === "Student" ? "pubToken" : "priToken";
 
 		const { data: goalData, error: goalError } = await supabase
 			.from("goals")
 			.select("goal_id, created_by")
-			.eq(tokenColumn, token)
+			.eq(tokenColumn, values.token)
 			.eq("status", "Active")
 			.neq("created_by", userId)
 			.single();
@@ -41,14 +41,14 @@ export const insertContributor = async (
 		}
 
 		if (existingContributor) {
-			if (existingContributor.status === "Active") {
-				return showAlert(400, "You are already a contributor for this goal");
-			}
-
 			// Reactivate existing contributor
 			const { error: updateError } = await supabase
 				.from("contributors")
-				.update({ status: "Active" })
+				.update({
+					status: "Active",
+					section: values.section,
+					company: values.company,
+				})
 				.eq("contributor_id", existingContributor.contributor_id);
 
 			if (updateError) throw updateError;
@@ -64,6 +64,8 @@ export const insertContributor = async (
 						user_id: userId,
 						status: "Active",
 						role,
+						section: values.section,
+						company: values.company,
 					},
 				]);
 
