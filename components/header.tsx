@@ -17,15 +17,15 @@ import { LogoutDialog } from "@/components/dialogs/logout-dialog";
 import { GoalsDialog } from "@/components/dialogs/goals-dialog";
 import { useAlert } from "@/providers/alert-provider";
 import { exportExcel } from "@/lib/utils/export-utils";
-import { WeeklyLogState } from "@/lib/types";
+import { GoalActiveState, WeeklyLogState } from "@/lib/types";
 
 interface HeaderProps {
-	goalId?: string;
-	setGoalId?: (goalId: string) => void;
+	goalState?: GoalActiveState;
+	setGoalState?: (goalState: GoalActiveState) => void;
 	logState?: WeeklyLogState;
 }
 
-export function Header({ goalId, setGoalId, logState }: HeaderProps) {
+export function Header({ goalState, setGoalState, logState }: HeaderProps) {
 	const pathname = usePathname();
 	const { user, userDetails } = useAuth();
 	const { showAlert } = useAlert();
@@ -115,8 +115,8 @@ export function Header({ goalId, setGoalId, logState }: HeaderProps) {
 									<GoalsDialog
 										userId={user?.id || ""}
 										userDetails={userDetails || ({} as any)}
-										goalId={goalId || ""}
-										setGoalId={setGoalId || (() => {})}
+										goalState={goalState || ({} as any)}
+										setGoalState={setGoalState || (() => {})}
 										showAlert={showAlert}
 									>
 										<Button

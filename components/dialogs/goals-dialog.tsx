@@ -37,21 +37,27 @@ import { updateGoalStatus } from "@/services/goals/delete-goal";
 import { insertContributor } from "@/services/contributor/insert-contributor";
 import { getUserGoals } from "@/services/goals/select-goal";
 import { leaveGoalAsContributor } from "@/services/contributor/leave-contributor";
-import { Goal, GoalValues, ContributorValues, UserDetails } from "@/lib/types";
+import {
+	Goal,
+	GoalValues,
+	ContributorValues,
+	UserDetails,
+	GoalActiveState,
+} from "@/lib/types";
 
 export function GoalsDialog({
 	children,
 	userId,
-	goalId,
-	setGoalId,
+	goalState,
+	setGoalState,
 	userDetails,
 	showAlert,
 }: {
 	children: React.ReactNode;
 	userId?: string;
 	userDetails?: UserDetails | null;
-	goalId: string;
-	setGoalId: (goalId: string) => void;
+	goalState: GoalActiveState;
+	setGoalState: (goalState: GoalActiveState) => void;
 	showAlert: (status: number, message: string) => void;
 }) {
 	const [mode, setMode] = useState<"join" | "create">("join");
@@ -84,9 +90,7 @@ export function GoalsDialog({
 			filterStatus || "Active",
 			(data) => {
 				setGoals(data);
-				if (data.length && goalId != data[0].goal_id) {
-					setGoalId(String(data[0].goal_id));
-				}
+				handleSetGoal(String(data[0].goal_id), data[0].goal);
 			},
 			showAlert,
 		);
@@ -217,6 +221,17 @@ export function GoalsDialog({
 
 		await leaveGoalAsContributor(userId, goalId, status, showAlert);
 		refreshGoals();
+	};
+
+	const handleSetGoal = (goalId: string, goalHours?: number) => {
+		setGoalState({
+			...goalState,
+			goal_id: goalId,
+			goalHours:
+				goalHours ||
+				goals.find((g) => String(g.goal_id) === goalId)?.goal ||
+				400,
+		});
 	};
 
 	return (
@@ -350,9 +365,14 @@ export function GoalsDialog({
 							description="Join an existing goal or create a new one to get started."
 						/>
 					) : (
-						<RadioGroup value={goalId} onValueChange={setGoalId}>
+						<RadioGroup
+							value={goalState.goal_id}
+							onValueChange={(value) => {
+								handleSetGoal(value);
+							}}
+						>
 							{goals.map((goal) => {
-								const isSelected = goalId === String(goal.goal_id);
+								const isSelected = goalState.goal_id === String(goal.goal_id);
 								const isOwner = userId === goal.created_by;
 								const isInactive = goal.status === "Inactive";
 								const isAdmin = ["Admin", "Super Admin"].includes(
@@ -370,7 +390,9 @@ export function GoalsDialog({
 										/>
 										<div
 											className="flex-1 cursor-pointer"
-											onClick={() => setGoalId(String(goal.goal_id))}
+											onClick={() =>
+												handleSetGoal(String(goal.goal_id), goal.goal)
+											}
 										>
 											<p className="font-medium ">
 												{goal.title.charAt(0).toUpperCase() +

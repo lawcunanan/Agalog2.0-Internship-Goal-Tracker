@@ -6,19 +6,23 @@ import { Footer } from "@/components/footer";
 import { tempInsertLog } from "@/services/logs/temp-insert-log";
 import { useAuth } from "@/providers/auth-provider";
 import { useAlert } from "@/providers/alert-provider";
+import { GoalActiveState } from "@/lib/types";
 
 export default function DashboardPage() {
 	const { user } = useAuth();
 	const { showAlert } = useAlert();
 
-	const [goalId, setGoalId] = useState("");
+	const [goalState, setGoalState] = useState<GoalActiveState>({
+		goal_id: "",
+		goalHours: 400,
+	});
 	const [targetUserId, setTargetUserId] = useState("");
 	const [rawText, setRawText] = useState("");
 	const [loading, setLoading] = useState(false);
 
 	const handleTempInsert = async () => {
 		try {
-			if (!rawText || !goalId || !targetUserId) {
+			if (!rawText || !goalState.goal_id || !targetUserId) {
 				showAlert(400, "User ID, Goal ID, and raw data are required");
 				return;
 			}
@@ -28,7 +32,13 @@ export default function DashboardPage() {
 			const logs = Array.isArray(parsed) ? parsed : [parsed];
 
 			for (const log of logs) {
-				await tempInsertLog(targetUserId, goalId, log, showAlert, setLoading);
+				await tempInsertLog(
+					targetUserId,
+					goalState.goal_id,
+					log,
+					showAlert,
+					setLoading,
+				);
 			}
 
 			showAlert(200, "Temp insert completed");
@@ -40,7 +50,7 @@ export default function DashboardPage() {
 
 	return (
 		<main className="min-h-screen flex flex-col">
-			<Header goalId={goalId} setGoalId={setGoalId} />
+			<Header goalState={goalState} setGoalState={setGoalState} />
 
 			<div className="flex-1 p-4 pt-24 flex flex-col items-center">
 				<div className="max-w-3xl w-full space-y-4">
@@ -58,8 +68,10 @@ export default function DashboardPage() {
 						type="text"
 						placeholder="Goal ID"
 						className="w-full border p-2 rounded"
-						value={goalId}
-						onChange={(e) => setGoalId(e.target.value)}
+						value={goalState.goal_id}
+						onChange={(e) =>
+							setGoalState((prev) => ({ ...prev, goal_id: e.target.value }))
+						}
 					/>
 
 					<textarea

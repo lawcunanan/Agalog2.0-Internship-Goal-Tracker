@@ -1,10 +1,9 @@
 import { supabase } from "@/lib/supabase";
-import { WeeklyLogState } from "@/lib/types";
+import { GoalActiveState, WeeklyLogState } from "@/lib/types";
 
 export const getLatestGoal = async (
 	userId: string,
-	setGoalId: React.Dispatch<React.SetStateAction<string>>,
-	setAttendanceState: React.Dispatch<React.SetStateAction<WeeklyLogState>>,
+	setGoalState: (goalState: GoalActiveState) => void,
 	showAlert: (status: number, message: string) => void,
 ) => {
 	try {
@@ -38,11 +37,10 @@ export const getLatestGoal = async (
 			? data[0].goals[0]
 			: data[0].goals;
 
-		setGoalId(latestGoal.goal_id?.toString() || "");
-		setAttendanceState((prev) => ({
-			...prev,
+		setGoalState({
+			goal_id: latestGoal.goal_id?.toString() || "",
 			goalHours: latestGoal.goal || 400,
-		}));
+		});
 	} catch (error: any) {
 		console.error("Error fetching latest goal:", error);
 		showAlert(500, error.message || "Failed to fetch latest goal");

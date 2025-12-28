@@ -9,6 +9,11 @@ export interface UserDetails {
 	created_at?: string;
 }
 
+export interface GoalActiveState {
+	goal_id: string;
+	goalHours: number;
+}
+
 export interface GoalValues {
 	goal_id?: string;
 	title?: string;
@@ -35,7 +40,6 @@ export interface ContributorValues {
 
 export interface WeeklyLogState {
 	logs: WeeklyLogType[];
-	goalHours: number;
 	currentHours: number;
 	editLog: Log | null;
 }

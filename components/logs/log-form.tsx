@@ -229,7 +229,7 @@ export function LogForm({
 							: "Adding Log"
 						: editLog
 						? "Update Log"
-						: "Add Log"}
+						: "Log Today"}
 				</Button>
 
 				{editLog && (
