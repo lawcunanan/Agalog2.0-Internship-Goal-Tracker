@@ -12,17 +12,7 @@ import {
 import { supabase } from "@/lib/supabase";
 import type { User as SupabaseUser } from "@supabase/supabase-js";
 import { useAlert } from "@/providers/alert-provider";
-
-export interface UserDetails {
-	user_id: string;
-	role?: "Student" | "Admin" | "Super Admin";
-	email?: string;
-	section?: string;
-	full_name?: string;
-	avatar_url?: string;
-	status?: string;
-	created_at?: string;
-}
+import { UserDetails } from "@/lib/types";
 
 interface AuthContextType {
 	user: SupabaseUser | null;

@@ -7,10 +7,7 @@ export const getUserGoals = async (
 	statusFilter: "Active" | "Inactive",
 	setGoals: (goals: Goal[]) => void,
 	showAlert: (status: number, message: string) => void,
-	setIsLoading: (loading: boolean) => void,
 ) => {
-	setIsLoading(true);
-
 	try {
 		if (!userId) throw new Error("User ID is required");
 
@@ -38,7 +35,6 @@ export const getUserGoals = async (
 			)
 			.eq("user_id", userId)
 			.eq("status", statusFilter)
-			.eq("goals.status", statusFilter)
 			.order("created_at", { ascending: false });
 
 		if (error) throw error;
@@ -59,6 +55,7 @@ export const getUserGoals = async (
 
 				return {
 					...goal,
+					status: row.status,
 					metaText: metaParts.join(" • "),
 				};
 			})
@@ -68,7 +65,5 @@ export const getUserGoals = async (
 	} catch (error: any) {
 		console.error("Get user goals error:", error);
 		showAlert(500, error.message || "Failed to fetch goals");
-	} finally {
-		setIsLoading(false);
 	}
 };

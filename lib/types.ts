@@ -1,3 +1,14 @@
+export interface UserDetails {
+	user_id: string;
+	role?: "Student" | "Admin" | "Super Admin";
+	email?: string;
+	section?: string;
+	full_name?: string;
+	avatar_url?: string;
+	status?: string;
+	created_at?: string;
+}
+
 export interface GoalValues {
 	goal_id?: string;
 	title?: string;
@@ -22,14 +33,14 @@ export interface ContributorValues {
 	company?: string;
 }
 
-export interface WeeklyAttendanceState {
-	logs: WeeklyAttendanceType[];
+export interface WeeklyLogState {
+	logs: WeeklyLogType[];
 	goalHours: number;
 	currentHours: number;
 	editLog: Log | null;
 }
 
-export interface WeeklyAttendanceType {
+export interface WeeklyLogType {
 	weekLabel: string;
 	startDate: string;
 	endDate: string;
@@ -43,6 +54,7 @@ export interface WeeklyAttendanceType {
 export interface Log {
 	log_id: string;
 	date: string;
+	fullDate?: string | Date;
 	timeIn: string;
 	timeOut: string;
 	breakOut?: string;

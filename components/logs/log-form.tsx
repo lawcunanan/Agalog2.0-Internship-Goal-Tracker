@@ -7,15 +7,23 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Log } from "@/lib/types";
 import { toISODate, convert12To24 } from "@/lib/utils/dateTimeUtils";
+import { upsertLog } from "@/services/logs/upsert-log";
+import { set } from "date-fns";
 
 export function LogForm({
+	goal_id,
 	editLog,
+	onEdit,
 	user,
 	showAlert,
+	refreshLogs,
 }: {
+	goal_id: string;
 	editLog?: Log | null;
+	onEdit: (log: Log | null) => void;
 	user: any;
 	showAlert: (status: number, message: string) => void;
+	refreshLogs: () => void;
 }) {
 	const defaults = (): Log => ({
 		log_id: "",
@@ -38,7 +46,7 @@ export function LogForm({
 		if (editLog) {
 			setLogData({
 				...editLog,
-				date: toISODate(editLog.date),
+				date: toISODate(editLog.fullDate),
 				timeIn: convert12To24(editLog.timeIn),
 				timeOut: convert12To24(editLog.timeOut),
 				breakOut: convert12To24(editLog.breakOut),
@@ -97,7 +105,7 @@ export function LogForm({
 		setLogData((prev) => ({ ...prev, [id]: value }));
 	};
 
-	const handleSubmit = (e: React.FormEvent) => {
+	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
 
 		if (!user) {
@@ -105,18 +113,16 @@ export function LogForm({
 			return;
 		}
 
-		setLoading(true);
+		await upsertLog(user.user_id, goal_id, logData, showAlert, setLoading);
 
-		// TODO: Add your API call here to save logData
-
-		setLoading(false);
 		handleReset();
-		showAlert(200, "Attendance logged successfully!");
 	};
 
 	const handleReset = (e?: React.MouseEvent) => {
 		e?.preventDefault?.();
 		setLogData(defaults());
+		refreshLogs();
+		onEdit(null);
 	};
 
 	return (
@@ -215,9 +221,15 @@ export function LogForm({
 					type="submit"
 					className="w-full bg-blue-700 hover:bg-blue-800 text-white shadow-none cursor-pointer"
 					size="lg"
-					disabled={loading}
+					disabled={loading || !goal_id}
 				>
-					{loading ? "Logging..." : "Log Attendance"}
+					{loading
+						? editLog
+							? "Updating Log"
+							: "Adding Log"
+						: editLog
+						? "Update Log"
+						: "Add Log"}
 				</Button>
 
 				{editLog && (
@@ -226,7 +238,7 @@ export function LogForm({
 						onClick={handleReset}
 						className="text-sm text-blue-600 hover:text-blue-800 cursor-pointer"
 					>
-						Cancel Edit
+						Reset Form
 					</button>
 				)}
 			</form>

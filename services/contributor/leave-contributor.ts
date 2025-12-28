@@ -3,6 +3,7 @@ import { supabase } from "@/lib/supabase";
 export const leaveGoalAsContributor = async (
 	userId: string,
 	goalId: string,
+	status: "Active" | "Inactive",
 	showAlert: (status: number, message: string) => void,
 ) => {
 	try {
@@ -11,7 +12,7 @@ export const leaveGoalAsContributor = async (
 
 		const { error } = await supabase
 			.from("contributors")
-			.update({ status: "Inactive" })
+			.update({ status: status })
 			.eq("user_id", userId)
 			.eq("goal_id", goalId);
 

@@ -12,14 +12,22 @@ import {
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Edit, CalendarX } from "lucide-react";
-import { WeeklyAttendanceType, Log } from "@/lib/types";
+import { WeeklyLogType, Log } from "@/lib/types";
+import { DeleteLogDialog } from "../dialogs/delete-log-dialog";
 
-interface WeeklyAttendanceProps {
-	data: WeeklyAttendanceType[];
+interface WeeklyLogProps {
+	data: WeeklyLogType[];
 	onEdit: (log: Log) => void;
+	showAlert: (status: number, message: string) => void;
+	refreshLogs: () => void;
 }
 
-export function WeeklyAttendance({ data, onEdit }: WeeklyAttendanceProps) {
+export function WeeklyLog({
+	data,
+	onEdit,
+	showAlert,
+	refreshLogs,
+}: WeeklyLogProps) {
 	if (!data || data.length === 0) {
 		return (
 			<div className="flex flex-col items-center justify-center py-12 text-muted-foreground mb-8">
@@ -122,17 +130,25 @@ export function WeeklyAttendance({ data, onEdit }: WeeklyAttendanceProps) {
 									<div className="flex justify-between items-start gap-6">
 										<p>{log.description || "No description provided."}</p>
 
-										<button
-											type="button"
-											onClick={(e) => {
-												e.stopPropagation();
-												onEdit(log);
-											}}
-											className="p-2 rounded-md hover:bg-foreground/5 transition-colors"
-											aria-label="Edit attendance"
-										>
-											<Edit className="h-4 w-4 text-muted-foreground hover:text-green-500" />
-										</button>
+										<div className="flex items-center gap-1">
+											<button
+												type="button"
+												onClick={(e) => {
+													e.stopPropagation();
+													onEdit(log);
+												}}
+												className="p-2 rounded-md hover:bg-foreground/5 transition-colors"
+												aria-label="Edit attendance"
+											>
+												<Edit className="h-4 w-4 text-muted-foreground hover:text-green-500" />
+											</button>
+
+											<DeleteLogDialog
+												log_id={log.log_id}
+												showAlert={showAlert}
+												refreshLogs={refreshLogs}
+											/>
+										</div>
 									</div>
 								</AccordionContent>
 							</AccordionItem>

@@ -31,29 +31,27 @@ import {
 	Filter,
 } from "lucide-react";
 import { EmptyState } from "@/components/empty-state";
-import { UserDetails } from "@/providers/auth-provider";
-
 import { insertGoal } from "@/services/goals/insert-goal";
 import { updateGoalDetails } from "@/services/goals/update-goal";
 import { updateGoalStatus } from "@/services/goals/delete-goal";
 import { insertContributor } from "@/services/contributor/insert-contributor";
 import { getUserGoals } from "@/services/goals/select-goal";
 import { leaveGoalAsContributor } from "@/services/contributor/leave-contributor";
-import { Goal, GoalValues, ContributorValues } from "@/lib/types";
+import { Goal, GoalValues, ContributorValues, UserDetails } from "@/lib/types";
 
 export function GoalsDialog({
 	children,
 	userId,
-	selectedGoal,
-	setSelectedGoal,
+	goalId,
+	setGoalId,
 	userDetails,
 	showAlert,
 }: {
 	children: React.ReactNode;
 	userId?: string;
 	userDetails?: UserDetails | null;
-	selectedGoal: string;
-	setSelectedGoal: (goalId: string) => void;
+	goalId: string;
+	setGoalId: (goalId: string) => void;
 	showAlert: (status: number, message: string) => void;
 }) {
 	const [mode, setMode] = useState<"join" | "create">("join");
@@ -86,12 +84,11 @@ export function GoalsDialog({
 			filterStatus || "Active",
 			(data) => {
 				setGoals(data);
-				if (data.length && selectedGoal != data[0].goal_id) {
-					setSelectedGoal(String(data[0].goal_id));
+				if (data.length && goalId != data[0].goal_id) {
+					setGoalId(String(data[0].goal_id));
 				}
 			},
 			showAlert,
-			setIsLoading,
 		);
 	};
 
@@ -209,13 +206,16 @@ export function GoalsDialog({
 		refreshGoals();
 	};
 
-	const handleLeaveGoal = async (goalId: string) => {
+	const handleLeaveGoal = async (
+		goalId: string,
+		status: "Active" | "Inactive",
+	) => {
 		if (!userId) {
 			showAlert(500, "User details missing");
 			return;
 		}
 
-		await leaveGoalAsContributor(userId, goalId, showAlert);
+		await leaveGoalAsContributor(userId, goalId, status, showAlert);
 		refreshGoals();
 	};
 
@@ -272,6 +272,7 @@ export function GoalsDialog({
 									onChange={(e) =>
 										handleFormChange(setContributor, "section", e.target.value)
 									}
+									maxLength={30}
 								/>
 								<Input
 									placeholder="Enter company"
@@ -279,6 +280,7 @@ export function GoalsDialog({
 									onChange={(e) =>
 										handleFormChange(setContributor, "company", e.target.value)
 									}
+									maxLength={60}
 								/>
 							</>
 						)}
@@ -319,7 +321,7 @@ export function GoalsDialog({
 				{/* GOALS */}
 
 				<div className="flex items-center justify-between">
-					<Label className="text-sm font-medium">Registered Goals</Label>
+					<Label className="text-sm font-medium">Your Goals 🌟</Label>
 					<DropdownMenu>
 						<DropdownMenuTrigger asChild>
 							<Button
@@ -348,10 +350,14 @@ export function GoalsDialog({
 							description="Join an existing goal or create a new one to get started."
 						/>
 					) : (
-						<RadioGroup value={selectedGoal} onValueChange={setSelectedGoal}>
+						<RadioGroup value={goalId} onValueChange={setGoalId}>
 							{goals.map((goal) => {
-								const isSelected = selectedGoal === String(goal.goal_id);
+								const isSelected = goalId === String(goal.goal_id);
 								const isOwner = userId === goal.created_by;
+								const isInactive = goal.status === "Inactive";
+								const isAdmin = ["Admin", "Super Admin"].includes(
+									userDetails?.role || "",
+								);
 
 								return (
 									<div
@@ -364,7 +370,7 @@ export function GoalsDialog({
 										/>
 										<div
 											className="flex-1 cursor-pointer"
-											onClick={() => setSelectedGoal(String(goal.goal_id))}
+											onClick={() => setGoalId(String(goal.goal_id))}
 										>
 											<p className="font-medium ">
 												{goal.title.charAt(0).toUpperCase() +
@@ -374,9 +380,7 @@ export function GoalsDialog({
 												{goal.metaText}
 											</p>
 
-											{["Admin", "Super Admin"].includes(
-												userDetails?.role || "",
-											) && (
+											{isAdmin && (
 												<div className="flex gap-2 mt-5">
 													<Button
 														size="sm"
@@ -422,20 +426,18 @@ export function GoalsDialog({
 															size="icon"
 															variant="ghost"
 															className={
-																goal.status === "Inactive"
+																isInactive
 																	? "text-green-500"
 																	: "text-destructive"
 															}
 															onClick={() =>
 																handleDeleteGoal(
 																	goal.goal_id,
-																	goal.status === "Active"
-																		? "Inactive"
-																		: "Active",
+																	isInactive ? "Active" : "Inactive",
 																)
 															}
 														>
-															{goal.status === "Inactive" ? (
+															{isInactive ? (
 																<CheckCircle className="h-4 w-4" />
 															) : (
 																<Trash2 className="h-4 w-4" />
@@ -446,10 +448,21 @@ export function GoalsDialog({
 													<Button
 														size="icon"
 														variant="ghost"
-														className="text-destructive"
-														onClick={() => handleLeaveGoal(goal.goal_id)}
+														className={
+															isInactive ? "text-green-500" : "text-destructive"
+														}
+														onClick={() =>
+															handleLeaveGoal(
+																goal.goal_id,
+																isInactive ? "Active" : "Inactive",
+															)
+														}
 													>
-														<LogOut className="h-4 w-4" />
+														{isInactive ? (
+															<CheckCircle className="h-4 w-4" />
+														) : (
+															<LogOut className="h-4 w-4" />
+														)}
 													</Button>
 												)}
 											</div>

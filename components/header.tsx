@@ -16,19 +16,28 @@ import { useAuth } from "@/providers/auth-provider";
 import { LogoutDialog } from "@/components/dialogs/logout-dialog";
 import { GoalsDialog } from "@/components/dialogs/goals-dialog";
 import { useAlert } from "@/providers/alert-provider";
+import { exportExcel } from "@/lib/utils/export-utils";
+import { WeeklyLogState } from "@/lib/types";
 
 interface HeaderProps {
-	selectedGoal?: string;
-	setSelectedGoal?: (goalId: string) => void;
+	goalId?: string;
+	setGoalId?: (goalId: string) => void;
+	logState?: WeeklyLogState;
 }
 
-export function Header({ selectedGoal, setSelectedGoal }: HeaderProps) {
+export function Header({ goalId, setGoalId, logState }: HeaderProps) {
 	const pathname = usePathname();
 	const { user, userDetails } = useAuth();
 	const { showAlert } = useAlert();
 
 	const buttonClass = "w-full justify-start cursor-pointer";
 	const buttonSize = "sm";
+
+	const onExportClick = async () => {
+		if (logState) {
+			await exportExcel(logState, userDetails, showAlert);
+		}
+	};
 
 	return (
 		<header className="fixed top-0 left-0 right-0 w-full z-50 border-b border-border bg-background/60 backdrop-blur-sm  ">
@@ -90,12 +99,13 @@ export function Header({ selectedGoal, setSelectedGoal }: HeaderProps) {
 										</div>
 									</div>
 									<DropdownMenuSeparator />
-									{pathname === "/logs" && (
+									{pathname === "/logs" && logState && (
 										<>
 											<Button
 												variant="ghost"
 												size={buttonSize}
 												className={buttonClass}
+												onClick={onExportClick}
 											>
 												Download Report
 											</Button>
@@ -105,8 +115,8 @@ export function Header({ selectedGoal, setSelectedGoal }: HeaderProps) {
 									<GoalsDialog
 										userId={user?.id || ""}
 										userDetails={userDetails || ({} as any)}
-										selectedGoal={selectedGoal || ""}
-										setSelectedGoal={setSelectedGoal || (() => {})}
+										goalId={goalId || ""}
+										setGoalId={setGoalId || (() => {})}
 										showAlert={showAlert}
 									>
 										<Button

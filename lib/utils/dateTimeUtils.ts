@@ -20,3 +20,17 @@ export const convert12To24 = (t?: string) => {
 	if (ampm === "am" && hh === 12) hh = 0;
 	return `${hh.toString().padStart(2, "0")}:${mm}`;
 };
+
+export const combineDateTime = (date: string, time?: string) => {
+	if (!date || !time) return null;
+	return `${date}T${time}:00`;
+};
+
+export const formatDuration = (hours: number) => {
+	const h = Math.floor(hours);
+	const m = Math.round((hours - h) * 60);
+	if (h === 0 && m === 0) return "0min";
+	if (h === 0) return `${m}min`;
+	if (m === 0) return `${h}hr`;
+	return `${h}hr ${m}min`;
+};
