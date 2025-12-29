@@ -1,11 +1,11 @@
 import { supabase } from "@/lib/supabase";
-import { Log } from "@/lib/types";
+import { LogValues } from "@/lib/types";
 import { combineDateTime } from "@/lib/utils/dateTimeUtils";
 
 export const upsertLog = async (
 	userId: string,
 	goalId: string,
-	values: Log,
+	values: LogValues,
 	showAlert: (status: number, message: string) => void,
 	setIsLoading: (loading: boolean) => void,
 ) => {

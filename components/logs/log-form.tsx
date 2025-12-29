@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Log } from "@/lib/types";
+import { LogValues } from "@/lib/types";
 import { toISODate, convert12To24 } from "@/lib/utils/dateTimeUtils";
 import { upsertLog } from "@/services/logs/upsert-log";
 import { set } from "date-fns";
@@ -19,13 +19,13 @@ export function LogForm({
 	refreshLogs,
 }: {
 	goal_id: string;
-	editLog?: Log | null;
-	onEdit: (log: Log | null) => void;
+	editLog?: LogValues | null;
+	onEdit: (log: LogValues | null) => void;
 	user: any;
 	showAlert: (status: number, message: string) => void;
 	refreshLogs: () => void;
 }) {
-	const defaults = (): Log => ({
+	const defaults = (): LogValues => ({
 		log_id: "",
 		date: toISODate(new Date()),
 		timeIn: "",
@@ -39,7 +39,7 @@ export function LogForm({
 	});
 
 	const [loading, setLoading] = useState(false);
-	const [logData, setLogData] = useState<Log>(defaults());
+	const [logData, setLogData] = useState<LogValues>(defaults());
 
 	// Load edit log into state if provided
 	useEffect(() => {

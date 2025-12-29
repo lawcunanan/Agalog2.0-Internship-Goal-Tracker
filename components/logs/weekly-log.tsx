@@ -12,12 +12,12 @@ import {
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Edit, CalendarX } from "lucide-react";
-import { WeeklyLogType, Log } from "@/lib/types";
+import { WeeklyLogSelect, LogValues } from "@/lib/types";
 import { DeleteLogDialog } from "../dialogs/delete-log-dialog";
 
 interface WeeklyLogProps {
-	data: WeeklyLogType[];
-	onEdit: (log: Log) => void;
+	data: WeeklyLogSelect[];
+	onEdit: (log: LogValues) => void;
 	showAlert: (status: number, message: string) => void;
 	refreshLogs: () => void;
 }

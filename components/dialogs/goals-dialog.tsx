@@ -38,7 +38,7 @@ import { insertContributor } from "@/services/contributor/insert-contributor";
 import { getUserGoals } from "@/services/goals/select-goal";
 import { leaveGoalAsContributor } from "@/services/contributor/leave-contributor";
 import {
-	Goal,
+	GoalSelect,
 	GoalValues,
 	ContributorValues,
 	UserDetails,
@@ -61,7 +61,7 @@ export function GoalsDialog({
 	showAlert: (status: number, message: string) => void;
 }) {
 	const [mode, setMode] = useState<"join" | "create">("join");
-	const [goals, setGoals] = useState<Goal[]>([]);
+	const [goals, setGoals] = useState<GoalSelect[]>([]);
 	const [isLoading, setIsLoading] = useState(false);
 	const [filterStatus, setFilterStatus] = useState<"Active" | "Inactive">(
 		"Active",
@@ -188,7 +188,7 @@ export function GoalsDialog({
 		refreshGoals();
 	};
 
-	const handleEditGoal = (goal: Goal) => {
+	const handleEditGoal = (goal: GoalValues) => {
 		setGoalValues({
 			goal_id: goal.goal_id,
 			title: goal.title,

@@ -1,11 +1,11 @@
 import { supabase } from "@/lib/supabase";
-import { Goal } from "@/lib/types";
+import { GoalSelect } from "@/lib/types";
 
 export const getUserGoals = async (
 	userId: string,
 	role: string,
 	statusFilter: "Active" | "Inactive",
-	setGoals: (goals: Goal[]) => void,
+	setGoals: (goals: GoalSelect[]) => void,
 	showAlert: (status: number, message: string) => void,
 ) => {
 	try {

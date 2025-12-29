@@ -1,3 +1,4 @@
+//User details stored in redux state
 export interface UserDetails {
 	user_id: string;
 	role?: "Student" | "Admin" | "Super Admin";
@@ -9,18 +10,19 @@ export interface UserDetails {
 	created_at?: string;
 }
 
-export interface GoalActiveState {
-	goal_id: string;
-	goalHours: number;
-}
-
+// Goal details stored in redux state
 export interface GoalValues {
 	goal_id?: string;
 	title?: string;
 	goal?: number;
 }
 
-export interface Goal {
+export interface GoalActiveState {
+	goal_id: string;
+	goalHours: number;
+}
+
+export interface GoalSelect {
 	goal_id: string;
 	title: string;
 	status: "Active" | "Inactive";
@@ -32,30 +34,15 @@ export interface Goal {
 	created_at: string;
 }
 
+// Contributor details stored in redux state
 export interface ContributorValues {
 	token: string;
 	section?: string;
 	company?: string;
 }
 
-export interface WeeklyLogState {
-	logs: WeeklyLogType[];
-	currentHours: number;
-	editLog: Log | null;
-}
-
-export interface WeeklyLogType {
-	weekLabel: string;
-	startDate: string;
-	endDate: string;
-	previousHours: string;
-	thisPeriodHours: string;
-	totalHours: string;
-	rawTotalHours: number;
-	logs: Log[];
-}
-
-export interface Log {
+//Log details stored in redux state
+export interface LogValues {
 	log_id: string;
 	date: string;
 	fullDate?: string | Date;
@@ -68,4 +55,21 @@ export interface Log {
 	hoursWorked?: string;
 	rawHours?: number;
 	description: string;
+}
+
+export interface WeeklyLogState {
+	logs: WeeklyLogSelect[];
+	currentHours: number;
+	editLog: LogValues | null;
+}
+
+export interface WeeklyLogSelect {
+	weekLabel: string;
+	startDate: string;
+	endDate: string;
+	previousHours: string;
+	thisPeriodHours: string;
+	totalHours: string;
+	rawTotalHours: number;
+	logs: LogValues[];
 }

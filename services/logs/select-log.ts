@@ -1,5 +1,5 @@
 import { supabase } from "@/lib/supabase";
-import { WeeklyLogState, Log, WeeklyLogType } from "@/lib/types";
+import { WeeklyLogState, LogValues, WeeklyLogSelect } from "@/lib/types";
 import { format, startOfWeek, endOfWeek, differenceInMinutes } from "date-fns";
 import { formatDuration } from "@/lib/utils/dateTimeUtils";
 
@@ -23,7 +23,7 @@ export const getLogs = async (
 		if (error) throw error;
 
 		// Transform logs
-		const logs: Log[] = logsData.map((l) => {
+		const logs: LogValues[] = logsData.map((l) => {
 			const timeIn = l.timeIn ? new Date(l.timeIn) : null;
 			const timeOut = l.timeOut ? new Date(l.timeOut) : null;
 			const breakOut = l.breakOut ? new Date(l.breakOut) : null;
@@ -52,11 +52,11 @@ export const getLogs = async (
 				hoursWorked: formatDuration(rawHours),
 				rawHours,
 				description: l.description || "",
-			} as Log;
+			} as LogValues;
 		});
 
 		// Group logs by week
-		const groupedWeeks: { [key: string]: Log[] } = {};
+		const groupedWeeks: { [key: string]: LogValues[] } = {};
 		logs.forEach((log) => {
 			const fullDate = new Date(log.fullDate || "");
 			const weekStart = startOfWeek(fullDate, { weekStartsOn: 1 });
@@ -70,7 +70,7 @@ export const getLogs = async (
 
 		let runningTotal = 0;
 
-		const weeklyData: WeeklyLogType[] = sortedWeekKeys.map((key, index) => {
+		const weeklyData: WeeklyLogSelect[] = sortedWeekKeys.map((key, index) => {
 			const weekLogs = groupedWeeks[key];
 			const weekStart = new Date(key);
 			const weekEnd = endOfWeek(weekStart, { weekStartsOn: 1 });
