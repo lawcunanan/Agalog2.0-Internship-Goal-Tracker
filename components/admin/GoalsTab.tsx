@@ -1,0 +1,135 @@
+"use client";
+import { useState } from "react";
+import { Input } from "@/components/ui/input";
+import {
+	Select,
+	SelectTrigger,
+	SelectValue,
+	SelectContent,
+	SelectItem,
+} from "@/components/ui/select";
+import { Search } from "lucide-react";
+import { PaginationControls } from "@/components/pagination=controls";
+
+const goalsDummyData = [
+	{
+		title: "Complete Onboarding",
+		goalHours: "40",
+		createdBy: "Admin User",
+		createdDate: "2025-12-01",
+		status: "Active",
+	},
+	{
+		title: "Project Alpha",
+		goalHours: "100",
+		createdBy: "Jane Smith",
+		createdDate: "2025-11-15",
+		status: "Completed",
+	},
+];
+
+interface GoalsTabProps {
+	title: string;
+	goalHours: string;
+	createdBy: string;
+	createdDate: string;
+	status: string;
+}
+
+export function GoalsTab() {
+	const [statusFilter, setStatusFilter] = useState<string>("All");
+	const [searchQuery, setSearchQuery] = useState<string>("");
+	const [goalsData, setGoalsData] = useState<GoalsTabProps[]>(goalsDummyData);
+
+	return (
+		<div className="space-y-6 mt-4">
+			<div className="flex flex-col md:flex-row md:items-center gap-3 mb-4">
+				<div className="relative w-full md:w-64">
+					<Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+					<Input
+						placeholder="Search by title..."
+						className="pl-10 shadow-none w-full"
+						value={searchQuery}
+						onChange={(e) => setSearchQuery(e.target.value)}
+					/>
+				</div>
+				<div className="w-full md:w-48">
+					<Select value={statusFilter} onValueChange={setStatusFilter}>
+						<SelectTrigger className="w-full">
+							<SelectValue placeholder="Filter by status" />
+						</SelectTrigger>
+						<SelectContent>
+							{["All", "Active", "Inactive"].map((status) => (
+								<SelectItem key={status} value={status}>
+									{status}
+								</SelectItem>
+							))}
+						</SelectContent>
+					</Select>
+				</div>
+			</div>
+			<div className="overflow-x-auto border border-border rounded-lg">
+				<table className="w-full border-collapse">
+					<thead>
+						<tr className="border-b border-border bg-muted">
+							{[
+								"Title",
+								"Status",
+								"Goal Hours",
+								"Created By",
+								"Created Date",
+							].map((header) => (
+								<th
+									key={header}
+									className="text-left py-3 px-4 font-medium text-foreground text-xs sm:text-sm"
+								>
+									<span className="flex items-center gap-2">{header}</span>
+								</th>
+							))}
+						</tr>
+					</thead>
+					<tbody>
+						{goalsData.length ? (
+							goalsData.map((goal, idx) => (
+								<tr
+									key={idx}
+									className="border-b border-border hover:bg-muted/50 transition-colors"
+								>
+									<td className="py-4 px-4 text-xs sm:text-sm text-foreground min-w-50">
+										{goal.title}
+									</td>
+									<td className="py-4 px-4 text-xs sm:text-sm text-foreground min-w-50">
+										{goal.status}
+									</td>
+									<td className="py-4 px-4 text-xs sm:text-sm text-foreground min-w-50">
+										{goal.goalHours}
+									</td>
+									<td className="py-4 px-4 text-xs sm:text-sm text-foreground min-w-50">
+										{goal.createdBy}
+									</td>
+									<td className="py-4 px-4 text-xs sm:text-sm text-foreground min-w-50">
+										{goal.createdDate}
+									</td>
+								</tr>
+							))
+						) : (
+							<tr>
+								<td
+									colSpan={5}
+									className="py-4 px-4 text-center text-xs sm:text-sm text-foreground"
+								>
+									No goals found.
+								</td>
+							</tr>
+						)}
+					</tbody>
+				</table>
+			</div>
+			<PaginationControls
+				currentPage={1}
+				totalPages={5}
+				onPageChange={() => {}}
+			/>
+		</div>
+	);
+}

@@ -40,7 +40,8 @@ export async function middleware(request: NextRequest) {
 	// Define protected routes and allowed roles
 	const routePermissions = [
 		{ path: "/logs", roles: ["Student"] },
-		{ path: "/dashboard", roles: ["Admin"] },
+		{ path: "/admin", roles: ["Admin"] },
+		{ path: "/superadmin", roles: ["SuperAdmin", "Admin"] },
 	];
 
 	// Public routes that don't require authentication
@@ -76,7 +77,9 @@ export async function middleware(request: NextRequest) {
 			if (userRole === "Student") {
 				return NextResponse.redirect(new URL("/logs", request.url));
 			} else if (userRole === "Admin") {
-				return NextResponse.redirect(new URL("/dashboard", request.url));
+				return NextResponse.redirect(new URL("/admin", request.url));
+			} else if (userRole === "SuperAdmin") {
+				return NextResponse.redirect(new URL("/superadmin", request.url));
 			} else {
 				return NextResponse.redirect(new URL("/unauthorized", request.url));
 			}

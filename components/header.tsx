@@ -66,7 +66,7 @@ export function Header({ goalState, setGoalState, logState }: HeaderProps) {
 
 				<div className="flex items-center gap-4">
 					<ThemeToggle />
-					{["/logs", "/dashboard"].includes(pathname) && (
+					{["/logs", "/admin", "/superadmin"].includes(pathname) && (
 						<DropdownMenu>
 							<DropdownMenuTrigger asChild>
 								<Button
@@ -112,21 +112,23 @@ export function Header({ goalState, setGoalState, logState }: HeaderProps) {
 										</>
 									)}
 
-									<GoalsDialog
-										userId={user?.id || ""}
-										userDetails={userDetails || ({} as any)}
-										goalState={goalState || ({} as any)}
-										setGoalState={setGoalState || (() => {})}
-										showAlert={showAlert}
-									>
-										<Button
-											variant="ghost"
-											size={buttonSize}
-											className={buttonClass}
+									{pathname === "/admin" && (
+										<GoalsDialog
+											userId={user?.id || ""}
+											userDetails={userDetails || ({} as any)}
+											goalState={goalState || ({} as any)}
+											setGoalState={setGoalState || (() => {})}
+											showAlert={showAlert}
 										>
-											Manage Goals
-										</Button>
-									</GoalsDialog>
+											<Button
+												variant="ghost"
+												size={buttonSize}
+												className={buttonClass}
+											>
+												Manage Goals
+											</Button>
+										</GoalsDialog>
+									)}
 									<LogoutDialog>
 										<Button
 											variant="ghost"
