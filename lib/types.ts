@@ -73,3 +73,18 @@ export interface WeeklyLogSelect {
 	rawTotalHours: number;
 	logs: LogValues[];
 }
+
+//Admin section details stored in redux state
+
+export interface RealtimeLogsSelect {
+	picture: string;
+	fullname: string;
+	section: string;
+	date: string;
+	timeIn: string;
+	timeOut: string;
+	breakDuration: string;
+	description: string;
+	hoursWorked: string;
+	createdAt: string;
+}

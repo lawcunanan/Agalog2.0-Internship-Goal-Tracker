@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import {
@@ -11,60 +11,16 @@ import {
 } from "@/components/ui/select";
 import { Search } from "lucide-react";
 import { PaginationControls } from "@/components/pagination=controls";
+import { RealtimeLogsSelect } from "@/lib/types";
+import { getRealtimeLogs } from "@/services/admin/select-realtime-logs";
 
-const realtimeLogsDummyData = [
-	{
-		picture: "https://randomuser.me/api/portraits/men/11.jpg",
-		fullname: "Alex Johnson",
-		section: "Section A",
-		date: "2025-12-29",
-		timeIn: "08:00",
-		timeOut: "17:00",
-		breakDuration: "1h",
-		description: "Worked on project X",
-		hoursWorked: "8",
-		createdAt: "2025-12-29 17:05",
-	},
-	{
-		picture: "https://randomuser.me/api/portraits/women/22.jpg",
-		fullname: "Maria Lee",
-		section: "Section B",
-		date: "2025-12-29",
-		timeIn: "09:00",
-		timeOut: "18:00",
-		breakDuration: "1h",
-		description: "Documentation",
-		hoursWorked: "8",
-		createdAt: "2025-12-29 18:05",
-	},
-	{
-		picture: "https://randomuser.me/api/portraits/women/22.jpg",
-		fullname: "Maria Lee",
-		section: "Section B",
-		date: "2025-12-29",
-		timeIn: "09:00",
-		timeOut: "18:00",
-		breakDuration: "1h",
-		description: "Documentation",
-		hoursWorked: "8",
-		createdAt: "2025-12-29 18:05",
-	},
-];
-
-interface RealtimeLogsTabProps {
-	picture: string;
-	fullname: string;
-	section: string;
-	date: string;
-	timeIn: string;
-	timeOut: string;
-	breakDuration: string;
-	description: string;
-	hoursWorked: string;
-	createdAt: string;
-}
-
-export function RealtimeLogsTab() {
+export function RealtimeLogsTab({
+	goalId,
+	showAlert,
+}: {
+	goalId: string | null;
+	showAlert: (status: number, message: string) => void;
+}) {
 	const [sectionFilter, setSectionFilter] = useState<string>("All Sections");
 	const [sectionData, setSectionData] = useState<string[]>([
 		"All Sections",
@@ -73,9 +29,25 @@ export function RealtimeLogsTab() {
 		"Section C",
 	]);
 	const [searchQuery, setSearchQuery] = useState<string>("");
-	const [logsData, setLogsData] = useState<RealtimeLogsTabProps[]>(
-		realtimeLogsDummyData,
-	);
+	const [realtimeLogs, setRealtimeLogs] = useState<RealtimeLogsSelect[]>([]);
+
+	//Pagination states\
+	const itemsPerPage = 10;
+	const [currentPage, setCurrentPage] = useState<number>(1);
+	const [totalPages, setTotalPages] = useState<number>(5);
+
+	useEffect(() => {
+		getRealtimeLogs(
+			goalId,
+			setRealtimeLogs,
+			searchQuery,
+			sectionFilter,
+			itemsPerPage,
+			currentPage,
+			setTotalPages,
+			showAlert,
+		);
+	}, [goalId, searchQuery, sectionFilter, currentPage]);
 
 	return (
 		<div className="space-y-6 mt-4">
@@ -130,8 +102,8 @@ export function RealtimeLogsTab() {
 						</tr>
 					</thead>
 					<tbody>
-						{logsData.length > 0 ? (
-							logsData.map((log, idx) => (
+						{realtimeLogs.length > 0 ? (
+							realtimeLogs.map((log, idx) => (
 								<tr
 									key={idx}
 									className="border-b border-border hover:bg-muted/50 transition-colors cursor-pointer"
@@ -187,9 +159,9 @@ export function RealtimeLogsTab() {
 				</table>
 			</div>
 			<PaginationControls
-				currentPage={1}
-				totalPages={5}
-				onPageChange={() => {}}
+				currentPage={currentPage}
+				totalPages={totalPages}
+				onPageChange={(page) => setCurrentPage(page)}
 			/>
 		</div>
 	);

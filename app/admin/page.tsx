@@ -72,7 +72,7 @@ export default function AdminPage() {
 					</TabsList>
 
 					<TabsContent value="realtime-logs">
-						<RealtimeLogsTab />
+						<RealtimeLogsTab goalId={goalState.goal_id} showAlert={showAlert} />
 					</TabsContent>
 
 					<TabsContent value="user-summary">
