@@ -9,8 +9,10 @@ import { RealtimeLogsTab } from "@/components/admin/RealtimeLogsTab";
 import { UsersTab } from "@/components/admin/UsersTab";
 import { GoalsTab } from "@/components/admin/GoalsTab";
 import { StatCard } from "@/components/admin/StatCard";
+import { useAlert } from "@/providers/alert-provider";
 
 export default function SuperAdminPage() {
+	const { showAlert } = useAlert();
 	return (
 		<div className="min-h-screen flex flex-col relative md:overflow-hidden">
 			<Header />
@@ -53,15 +55,15 @@ export default function SuperAdminPage() {
 					</TabsList>
 
 					<TabsContent value="realtime-logs">
-						<RealtimeLogsTab />
+						<RealtimeLogsTab goalId={null} showAlert={showAlert} />
 					</TabsContent>
 
 					<TabsContent value="users">
-						<UsersTab />
+						<UsersTab showAlert={showAlert} />
 					</TabsContent>
 
 					<TabsContent value="goals">
-						<GoalsTab />
+						<GoalsTab showAlert={showAlert} />
 					</TabsContent>
 				</Tabs>
 

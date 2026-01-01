@@ -21,7 +21,7 @@ export const getRealtimeLogs = async (
 		let query = supabase
 			.from("realtime_logs_view")
 			.select("*", { count: "exact" })
-			//.eq("log_date", today)
+			// .eq("log_date", today)
 			.order("created_at", { ascending: false })
 			.range(from, to);
 
@@ -65,6 +65,7 @@ export const getRealtimeLogs = async (
 				}
 
 				return {
+					user_id: l.user_id || "",
 					picture: l.avatar_url || "",
 					fullname: l.full_name || "",
 					section: l.section || "",

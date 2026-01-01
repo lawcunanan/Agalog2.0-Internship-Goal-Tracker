@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import {
@@ -11,40 +11,37 @@ import {
 } from "@/components/ui/select";
 import { Search } from "lucide-react";
 import { PaginationControls } from "@/components/pagination=controls";
+import { UsersSelect } from "@/lib/types";
+import { getUsers } from "@/services/admin/select-users";
 
-const usersDummyData = [
-	{
-		picture: "https://randomuser.me/api/portraits/men/44.jpg",
-		fullname: "John Doe",
-		email: "john.doe@example.com",
-		status: "Active",
-		role: "Admin",
-		createdAt: "2023-05-10",
-	},
-	{
-		picture: "https://randomuser.me/api/portraits/women/45.jpg",
-		fullname: "Jane Smith",
-		email: "jane.smith@example.com",
-		status: "Inactive",
-		role: "User",
-		createdAt: "2022-11-22",
-	},
-];
-
-interface UsersTabProps {
-	picture: string;
-	fullname: string;
-	email: string;
-	status: string;
-	role: string;
-	createdAt: string;
-}
-
-export function UsersTab() {
+export function UsersTab({
+	showAlert,
+}: {
+	showAlert: (status: number, message: string) => void;
+}) {
 	const [statusFilter, setStatusFilter] = useState<string>("All");
 	const [roleFilter, setRoleFilter] = useState<string>("All");
 	const [searchQuery, setSearchQuery] = useState<string>("");
-	const [usersData, setUsersData] = useState<UsersTabProps[]>(usersDummyData);
+	const [usersData, setUsersData] = useState<UsersSelect[]>([]);
+
+	//Pagination states
+	const itemsPerPage = 10;
+	const [currentPage, setCurrentPage] = useState<number>(1);
+	const [totalPages, setTotalPages] = useState<number>(5);
+
+	useEffect(() => {
+		getUsers(
+			setUsersData,
+			searchQuery,
+			statusFilter,
+			roleFilter,
+			itemsPerPage,
+			currentPage,
+			setTotalPages,
+			showAlert,
+		);
+	}, [searchQuery, statusFilter, roleFilter, currentPage]);
+
 	return (
 		<div className="space-y-6 mt-4">
 			<div className="flex flex-col md:flex-row md:items-center gap-3 mb-4">
@@ -148,9 +145,9 @@ export function UsersTab() {
 				</table>
 			</div>
 			<PaginationControls
-				currentPage={1}
-				totalPages={5}
-				onPageChange={() => {}}
+				currentPage={currentPage}
+				totalPages={totalPages}
+				onPageChange={(page) => setCurrentPage(page)}
 			/>
 		</div>
 	);

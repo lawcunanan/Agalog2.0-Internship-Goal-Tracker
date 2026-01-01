@@ -76,11 +76,11 @@ export default function AdminPage() {
 					</TabsContent>
 
 					<TabsContent value="user-summary">
-						<UserSummaryTab />
+						<UserSummaryTab goalId={goalState.goal_id} showAlert={showAlert} />
 					</TabsContent>
 
 					<TabsContent value="goal-admin">
-						<GoalAdminTab />
+						<GoalAdminTab goalId={goalState.goal_id} showAlert={showAlert} />
 					</TabsContent>
 				</Tabs>
 

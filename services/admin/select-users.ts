@@ -1,12 +1,12 @@
 import { supabase } from "@/lib/supabase";
-import { GoalAdminSelect } from "@/lib/types";
+import { UsersSelect } from "@/lib/types";
 import { format } from "date-fns";
 
-export const getGoalAdmin = async (
-	goalId: string | null,
-	setGoalAdmin: React.Dispatch<React.SetStateAction<GoalAdminSelect[]>>,
+export const getUsers = async (
+	setUsers: React.Dispatch<React.SetStateAction<UsersSelect[]>>,
 	searchQuery: string,
 	statusFilter: string,
+	roleFilter: string,
 	itemsPerPage: number,
 	currentPage: number,
 	setTotalPages: React.Dispatch<React.SetStateAction<number>>,
@@ -16,49 +16,49 @@ export const getGoalAdmin = async (
 		const from = (currentPage - 1) * itemsPerPage;
 		const to = from + itemsPerPage - 1;
 
-		// Base query from the view
 		let query = supabase
-			.from("admin_contributors")
+			.from("users")
 			.select("*", { count: "exact" })
 			.range(from, to)
 			.order("full_name", { ascending: true });
 
-		// Filter by goalId if provided
-		if (goalId) {
-			query = query.eq("goal_id", Number(goalId));
+		// Search by name
+		if (searchQuery) {
+			query = query.or(
+				`full_name.ilike.%${searchQuery}%,email.ilike.%${searchQuery}%`,
+			);
 		}
 
-		// Filter by contributor status
+		// Filter by status
 		if (statusFilter && statusFilter !== "All") {
 			query = query.eq("status", statusFilter);
 		}
 
-		// Search by full_name
-		if (searchQuery) {
-			query = query.ilike("full_name", `%${searchQuery}%`);
+		// Filter by role
+		if (roleFilter && roleFilter !== "All") {
+			query = query.eq("role", roleFilter);
 		}
 
 		const { data, error, count } = await query;
 		if (error) throw error;
 
-		// Set total pages
 		setTotalPages(Math.ceil((count || 0) / itemsPerPage));
 
-		// Map data to GoalAdminSelect[]
-		setGoalAdmin(
+		setUsers(
 			(data || []).map((item: any) => ({
 				user_id: item.user_id,
-				goalId: item.goal_id,
+				picture: item.avatar_url,
 				fullname: item.full_name,
 				email: item.email,
-				picture: item.avatar_url,
-				role: item.role,
 				status: item.status,
-				createdAt: format(new Date(item.created_at), "MMM d, yyyy"),
+				role: item.role,
+				createdAt: item.created_at
+					? format(new Date(item.created_at), "MMM d, yyyy")
+					: "--:--",
 			})),
 		);
 	} catch (error: any) {
-		console.error("Error fetching admin data:", error);
-		showAlert(500, error.message || "Failed to fetch admin data");
+		console.error("Error fetching users:", error);
+		showAlert(500, error.message || "Failed to fetch users");
 	}
 };

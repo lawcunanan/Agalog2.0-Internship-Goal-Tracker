@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect, use } from "react";
 import { Input } from "@/components/ui/input";
 import {
 	Select,
@@ -10,36 +10,34 @@ import {
 } from "@/components/ui/select";
 import { Search } from "lucide-react";
 import { PaginationControls } from "@/components/pagination=controls";
+import { GoalsSelect } from "@/lib/types";
+import { getGoals } from "@/services/admin/select-goals";
 
-const goalsDummyData = [
-	{
-		title: "Complete Onboarding",
-		goalHours: "40",
-		createdBy: "Admin User",
-		createdDate: "2025-12-01",
-		status: "Active",
-	},
-	{
-		title: "Project Alpha",
-		goalHours: "100",
-		createdBy: "Jane Smith",
-		createdDate: "2025-11-15",
-		status: "Completed",
-	},
-];
-
-interface GoalsTabProps {
-	title: string;
-	goalHours: string;
-	createdBy: string;
-	createdDate: string;
-	status: string;
-}
-
-export function GoalsTab() {
+export function GoalsTab({
+	showAlert,
+}: {
+	showAlert: (status: number, message: string) => void;
+}) {
 	const [statusFilter, setStatusFilter] = useState<string>("All");
 	const [searchQuery, setSearchQuery] = useState<string>("");
-	const [goalsData, setGoalsData] = useState<GoalsTabProps[]>(goalsDummyData);
+	const [goalsData, setGoalsData] = useState<GoalsSelect[]>([]);
+
+	//Pagination states\
+	const itemsPerPage = 10;
+	const [currentPage, setCurrentPage] = useState<number>(1);
+	const [totalPages, setTotalPages] = useState<number>(5);
+
+	useEffect(() => {
+		getGoals(
+			setGoalsData,
+			searchQuery,
+			statusFilter,
+			itemsPerPage,
+			currentPage,
+			setTotalPages,
+			showAlert,
+		);
+	}, [searchQuery, statusFilter, currentPage]);
 
 	return (
 		<div className="space-y-6 mt-4">
@@ -102,7 +100,7 @@ export function GoalsTab() {
 										{goal.status}
 									</td>
 									<td className="py-4 px-4 text-xs sm:text-sm text-foreground min-w-50">
-										{goal.goalHours}
+										{goal.goalHours} hrs
 									</td>
 									<td className="py-4 px-4 text-xs sm:text-sm text-foreground min-w-50">
 										{goal.createdBy}
@@ -126,9 +124,9 @@ export function GoalsTab() {
 				</table>
 			</div>
 			<PaginationControls
-				currentPage={1}
-				totalPages={5}
-				onPageChange={() => {}}
+				currentPage={currentPage}
+				totalPages={totalPages}
+				onPageChange={(page) => setCurrentPage(page)}
 			/>
 		</div>
 	);

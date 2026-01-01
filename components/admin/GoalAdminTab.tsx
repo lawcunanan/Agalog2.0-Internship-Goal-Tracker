@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import {
 	Select,
@@ -12,37 +12,37 @@ import {
 import { Search } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { PaginationControls } from "@/components/pagination=controls";
+import { GoalAdminSelect } from "@/lib/types";
+import { getGoalAdmin } from "@/services/admin/select-goal-admin";
 
-interface GoalAdminTabProps {
-	picture?: string;
-	fullname: string;
-	email?: string;
-	role?: string;
-	status?: string;
-	createdAt?: string;
-}
-
-export function GoalAdminTab() {
+export function GoalAdminTab({
+	goalId,
+	showAlert,
+}: {
+	goalId: string | null;
+	showAlert: (status: number, message: string) => void;
+}) {
 	const [statusFilter, setStatusFilter] = useState<string>("All");
 	const [searchQuery, setSearchQuery] = useState<string>("");
-	const [adminsData, setAdminsData] = useState<GoalAdminTabProps[]>([
-		{
-			picture: "https://randomuser.me/api/portraits/men/32.jpg",
-			fullname: "John Doe",
-			email: "jdoe@email.com",
-			role: "Super Admin",
-			status: "Active",
-			createdAt: "2022-01-15",
-		},
-		{
-			picture: "https://randomuser.me/api/portraits/women/44.jpg",
-			fullname: "Jane Smith",
-			email: "jsmith@email.com",
-			role: "Admin",
-			status: "Inactive",
-			createdAt: "2023-03-10",
-		},
-	]);
+	const [adminsData, setAdminsData] = useState<GoalAdminSelect[]>([]);
+
+	//Pagination states\
+	const itemsPerPage = 10;
+	const [currentPage, setCurrentPage] = useState<number>(1);
+	const [totalPages, setTotalPages] = useState<number>(5);
+
+	useEffect(() => {
+		getGoalAdmin(
+			goalId,
+			setAdminsData,
+			searchQuery,
+			statusFilter,
+			itemsPerPage,
+			currentPage,
+			setTotalPages,
+			showAlert,
+		);
+	}, [goalId, searchQuery, statusFilter, currentPage]);
 
 	return (
 		<div className="space-y-6 mt-4">
@@ -132,9 +132,9 @@ export function GoalAdminTab() {
 				</table>
 			</div>
 			<PaginationControls
-				currentPage={1}
-				totalPages={5}
-				onPageChange={() => {}}
+				currentPage={currentPage}
+				totalPages={totalPages}
+				onPageChange={(page) => setCurrentPage(page)}
 			/>
 		</div>
 	);

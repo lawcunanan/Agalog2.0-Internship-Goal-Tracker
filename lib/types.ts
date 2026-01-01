@@ -77,6 +77,7 @@ export interface WeeklyLogSelect {
 //Admin section details stored in redux state
 
 export interface RealtimeLogsSelect {
+	user_id: string;
 	picture: string;
 	fullname: string;
 	section: string;
@@ -87,4 +88,45 @@ export interface RealtimeLogsSelect {
 	description: string;
 	hoursWorked: string;
 	createdAt: string;
+}
+
+export interface UserSummarySelect {
+	user_id: string;
+	picture: string;
+	fullname: string;
+	section: string;
+	company: string;
+	goalTitle: string;
+	goalHours: number;
+	totalHours: string;
+	hoursLeft: string;
+}
+
+export interface GoalAdminSelect {
+	user_id?: string;
+	picture?: string;
+	fullname: string;
+	email?: string;
+	role?: string;
+	status?: string;
+	createdAt?: string;
+}
+
+export interface UsersSelect {
+	user_id: string;
+	picture: string;
+	fullname: string;
+	email: string;
+	status: string;
+	role: string;
+	createdAt: string;
+}
+
+export interface GoalsSelect {
+	goal_id: string;
+	title: string;
+	goalHours: number;
+	createdBy: string;
+	createdDate: string;
+	status: string;
 }

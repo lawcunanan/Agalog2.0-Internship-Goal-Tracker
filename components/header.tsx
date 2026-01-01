@@ -112,7 +112,7 @@ export function Header({ goalState, setGoalState, logState }: HeaderProps) {
 										</>
 									)}
 
-									{pathname === "/admin" && (
+									{["/admin", "/logs"].includes(pathname) && (
 										<GoalsDialog
 											userId={user?.id || ""}
 											userDetails={userDetails || ({} as any)}

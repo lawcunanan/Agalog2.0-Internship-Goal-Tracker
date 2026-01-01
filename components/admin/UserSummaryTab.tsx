@@ -1,4 +1,5 @@
-import { useState } from "react";
+"use client";
+import { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import {
@@ -10,61 +11,55 @@ import {
 } from "@/components/ui/select";
 import { Search } from "lucide-react";
 import { PaginationControls } from "@/components/pagination=controls";
+import { UserSummarySelect } from "@/lib/types";
+import { getUserSummary } from "@/services/admin/select-user-summary";
 
-const userSummaryDummyData = [
-	{
-		picture: "https://randomuser.me/api/portraits/men/33.jpg",
-		fullname: "Chris Evans",
-		section: "Section C",
-		company: "Gamma LLC",
-		goalNumber: "G-001",
-		goalHours: "400",
-		totalHours: "320",
-		hoursLeft: "80",
-	},
-	{
-		picture: "https://randomuser.me/api/portraits/women/55.jpg",
-		fullname: "Lisa Ray",
-		section: "Section D",
-		company: "Delta Ltd",
-		goalNumber: "D-002",
-		goalHours: "350",
-		totalHours: "300",
-		hoursLeft: "50",
-	},
-];
-
-interface UserSummaryTabProps {
-	picture: string;
-	fullname: string;
-	section: string;
-	company: string;
-	goalNumber: string;
-	goalHours: string;
-	totalHours: string;
-	hoursLeft: string;
-}
-
-export function UserSummaryTab() {
-	const [sectionFilter, setSectionFilter] = useState<string>("All");
-	const [companyFilter, setCompanyFilter] = useState<string>("All");
+export function UserSummaryTab({
+	goalId,
+	showAlert,
+}: {
+	goalId: string | null;
+	showAlert: (status: number, message: string) => void;
+}) {
+	const [sectionFilter, setSectionFilter] = useState<string>("All Sections");
+	const [companyFilter, setCompanyFilter] = useState<string>("All Companies");
 	const [sectionData, setSectionData] = useState<string[]>([
-		"All",
-		"Section A",
+		"All Sections",
+		"ITE 222",
 		"Section B",
 		"Section C",
 		"Section D",
 	]);
 	const [companyData, setCompanyData] = useState<string[]>([
-		"All",
+		"All Companies",
 		"Acme Corp",
 		"Beta Inc",
 		"Gamma LLC",
 		"Delta Ltd",
 	]);
 	const [searchQuery, setSearchQuery] = useState<string>("");
-	const [userSummaryData, setUserSummaryData] =
-		useState<UserSummaryTabProps[]>(userSummaryDummyData);
+	const [userSummaryData, setUserSummaryData] = useState<UserSummarySelect[]>(
+		[],
+	);
+
+	//Pagination states\
+	const itemsPerPage = 10;
+	const [currentPage, setCurrentPage] = useState<number>(1);
+	const [totalPages, setTotalPages] = useState<number>(5);
+
+	useEffect(() => {
+		getUserSummary(
+			goalId,
+			setUserSummaryData,
+			searchQuery,
+			sectionFilter,
+			companyFilter,
+			itemsPerPage,
+			currentPage,
+			setTotalPages,
+			showAlert,
+		);
+	}, [goalId, searchQuery, sectionFilter, companyFilter, currentPage]);
 	return (
 		<div className="space-y-6 mt-4">
 			<div className="flex flex-col md:flex-row md:items-center gap-3 mb-4">
@@ -115,7 +110,7 @@ export function UserSummaryTab() {
 								"Student Name",
 								"Section",
 								"Company",
-								"Goal Number",
+								"Goal Title",
 								"Goal Hours",
 								"Total Hours",
 								"Hours Left",
@@ -154,10 +149,10 @@ export function UserSummaryTab() {
 										{user.company}
 									</td>
 									<td className="py-4 px-4 text-xs sm:text-sm text-foreground min-w-30">
-										{user.goalNumber}
+										{user.goalTitle}
 									</td>
 									<td className="py-4 px-4 text-xs sm:text-sm text-foreground min-w-30">
-										{user.goalHours}
+										{user.goalHours + "hrs"}
 									</td>
 									<td className="py-4 px-4 text-xs sm:text-sm font-medium text-foreground min-w-30">
 										{user.totalHours}
@@ -181,9 +176,9 @@ export function UserSummaryTab() {
 				</table>
 			</div>
 			<PaginationControls
-				currentPage={1}
-				totalPages={5}
-				onPageChange={() => {}}
+				currentPage={currentPage}
+				totalPages={totalPages}
+				onPageChange={(page) => setCurrentPage(page)}
 			/>
 		</div>
 	);
