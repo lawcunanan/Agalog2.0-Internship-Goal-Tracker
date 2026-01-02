@@ -10,7 +10,7 @@ import {
 	SelectItem,
 } from "@/components/ui/select";
 import { Search } from "lucide-react";
-import { PaginationControls } from "@/components/pagination=controls";
+import { PaginationControls } from "@/components/pagination-controls";
 import { TodayLogsSelect } from "@/lib/types";
 import { getTodayLogs } from "@/services/admin/select-today-logs";
 import { getSectionCompany } from "@/services/filter/select-section-company";

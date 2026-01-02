@@ -10,6 +10,15 @@ export interface UserDetails {
 	created_at?: string;
 }
 
+export interface StudentProfileSelect {
+	user_id: string;
+	name?: string;
+	email?: string;
+	section?: string;
+	company?: string;
+	picture?: string;
+}
+
 // Goal details stored in redux state
 export interface GoalValues {
 	goal_id?: string;
@@ -60,7 +69,7 @@ export interface LogValues {
 export interface WeeklyLogState {
 	logs: WeeklyLogSelect[];
 	currentHours: number;
-	editLog: LogValues | null;
+	editLog?: LogValues | null;
 }
 
 export interface WeeklyLogSelect {

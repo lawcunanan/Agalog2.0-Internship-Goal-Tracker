@@ -60,7 +60,6 @@ export const getUserSummary = async (
 			})),
 		);
 	} catch (error: any) {
-		console.error("Error fetching user summary:", error);
 		showAlert(500, error.message || "Failed to fetch user summary");
 	}
 };

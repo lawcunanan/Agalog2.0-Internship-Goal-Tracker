@@ -17,7 +17,6 @@ export const deleteLog = async (
 
 		showAlert(200, "Log deleted successfully.");
 	} catch (error: any) {
-		console.error("Delete log error:", error);
 		showAlert(500, error.message || "Failed to delete log");
 	} finally {
 		setIsLoading(false);

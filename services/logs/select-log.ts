@@ -102,7 +102,6 @@ export const getLogs = async (
 			currentHours: runningTotal,
 		}));
 	} catch (error: any) {
-		console.error("Error fetching logs:", error);
 		showAlert(500, error.message || "Failed to fetch logs");
 	}
 };

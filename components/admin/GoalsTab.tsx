@@ -9,7 +9,7 @@ import {
 	SelectItem,
 } from "@/components/ui/select";
 import { Search } from "lucide-react";
-import { PaginationControls } from "@/components/pagination=controls";
+import { PaginationControls } from "@/components/pagination-controls";
 import { GoalsSelect } from "@/lib/types";
 import { getGoals } from "@/services/admin/select-goals";
 

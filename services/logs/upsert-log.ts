@@ -35,7 +35,6 @@ export const upsertLog = async (
 
 		showAlert(200, "Attendance saved successfully.");
 	} catch (error: any) {
-		console.error("Insert/update log error:", error);
 		showAlert(500, error.message || "Failed to save attendance");
 	} finally {
 		setIsLoading(false);

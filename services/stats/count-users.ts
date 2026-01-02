@@ -44,7 +44,6 @@ export const getCountUsers = async (
 
 		setCountUsers?.(count || 0);
 	} catch (error: any) {
-		console.error("Error fetching users:", error);
 		showAlert?.(500, error.message || "Failed to fetch users");
 	}
 };

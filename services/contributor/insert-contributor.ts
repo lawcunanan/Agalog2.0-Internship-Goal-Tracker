@@ -75,7 +75,6 @@ export const insertContributor = async (
 			showAlert(200, "Successfully joined the goal");
 		}
 	} catch (error: any) {
-		console.error("Insert contributor error:", error);
 		showAlert(500, error.message || "Failed to join goal");
 	} finally {
 		setIsLoading(false);

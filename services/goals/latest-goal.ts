@@ -42,7 +42,6 @@ export const getLatestGoal = async (
 			goalHours: latestGoal.goal || 400,
 		});
 	} catch (error: any) {
-		console.error("Error fetching latest goal:", error);
 		showAlert(500, error.message || "Failed to fetch latest goal");
 	}
 };

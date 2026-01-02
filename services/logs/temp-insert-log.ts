@@ -41,7 +41,6 @@ export const tempInsertLog = async (
 
 		showAlert(200, "Temp log inserted successfully");
 	} catch (error: any) {
-		console.error("Temp insert log error:", error);
 		showAlert(500, error.message || "Temp insert failed");
 	} finally {
 		setIsLoading(false);

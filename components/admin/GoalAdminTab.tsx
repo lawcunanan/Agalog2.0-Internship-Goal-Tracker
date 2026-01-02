@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/select";
 import { Search } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { PaginationControls } from "@/components/pagination=controls";
+import { PaginationControls } from "@/components/pagination-controls";
 import { GoalAdminSelect } from "@/lib/types";
 import { getGoalAdmin } from "@/services/admin/select-goal-admin";
 

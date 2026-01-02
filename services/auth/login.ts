@@ -25,7 +25,6 @@ export const signInWithGoogle = async (
 		showAlert(200, "Redirecting to Google login…");
 		return data;
 	} catch (error: any) {
-		console.error("Error signing in with Google", error);
 		showAlert(500, "Error signing in with Google");
 		throw error;
 	}

@@ -83,7 +83,6 @@ export const getTodayLogs = async (
 
 		setTodayLogs(mapped);
 	} catch (error: any) {
-		console.error("Error fetching logs:", error);
 		showAlert(500, error.message || "Failed to fetch logs");
 	}
 };

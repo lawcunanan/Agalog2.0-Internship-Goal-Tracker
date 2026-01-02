@@ -63,7 +63,6 @@ export const getUserGoals = async (
 
 		setGoals(goals);
 	} catch (error: any) {
-		console.error("Get user goals error:", error);
 		showAlert(500, error.message || "Failed to fetch goals");
 	}
 };

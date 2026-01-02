@@ -1,14 +1,15 @@
 import ExcelJS from "exceljs";
 import { saveAs } from "file-saver";
 
-import { UserDetails, WeeklyLogState } from "../types";
+import { WeeklyLogState } from "../types";
 
 export const exportExcel = async (
+	full_name: string | null,
 	logState: WeeklyLogState,
-	userDetails: UserDetails | null,
+	goalHours: number,
 	showAlert: (status: number, message: string) => void,
 ) => {
-	if (!logState || !userDetails) return;
+	if (!logState || !full_name) return;
 
 	try {
 		const workbook = new ExcelJS.Workbook();
@@ -39,12 +40,12 @@ export const exportExcel = async (
 
 		sheet.mergeCells("M10:Q10");
 		const greetingCell = sheet.getCell("M10");
-		greetingCell.value = `Hello, ${userDetails.full_name || "User"}!`;
+		greetingCell.value = `Hello, ${full_name || "Student"}!`;
 		greetingCell.font = { name: "Arial", size: 14, bold: true };
 		greetingCell.alignment = { vertical: "middle", horizontal: "left" };
 
-		const goals = logState.goalHours || [];
-		const remaining = Math.max(0, logState.goalHours - logState.currentHours);
+		const goals = goalHours || 400;
+		const remaining = Math.max(0, goals - logState.currentHours);
 
 		sheet.mergeCells("M11:Q11");
 		const summaryCell1 = sheet.getCell("M11");

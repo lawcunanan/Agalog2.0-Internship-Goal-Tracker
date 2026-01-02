@@ -23,7 +23,6 @@ export const updateGoalDetails = async (
 
 		showAlert(200, "Goal updated successfully");
 	} catch (error: any) {
-		console.error("Update goal details error:", error);
 		showAlert(500, error.message || "Failed to update goal");
 	} finally {
 		setIsLoading(false);

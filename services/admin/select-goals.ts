@@ -55,7 +55,6 @@ export const getGoals = async (
 			})),
 		);
 	} catch (error: any) {
-		console.error("Error fetching goals:", error);
 		showAlert(500, error.message || "Failed to fetch goals");
 	}
 };

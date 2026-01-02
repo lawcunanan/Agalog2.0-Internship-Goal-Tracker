@@ -58,7 +58,6 @@ export const getGoalAdmin = async (
 			})),
 		);
 	} catch (error: any) {
-		console.error("Error fetching admin data:", error);
 		showAlert(500, error.message || "Failed to fetch admin data");
 	}
 };

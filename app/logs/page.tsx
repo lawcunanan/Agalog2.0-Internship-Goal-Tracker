@@ -50,6 +50,7 @@ export default function LogsPage() {
 				goalState={goalState}
 				setGoalState={setGoalState}
 				logState={logState}
+				goalHours={goalState.goalHours}
 			/>
 			<main className="flex-1 w-full max-w-300 mx-auto px-6 ">
 				<div className="grid md:grid-cols-2 gap-20 h-screen ">

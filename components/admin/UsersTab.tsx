@@ -10,7 +10,7 @@ import {
 	SelectItem,
 } from "@/components/ui/select";
 import { Search } from "lucide-react";
-import { PaginationControls } from "@/components/pagination=controls";
+import { PaginationControls } from "@/components/pagination-controls";
 import { UsersSelect } from "@/lib/types";
 import { getUsers } from "@/services/admin/select-users";
 

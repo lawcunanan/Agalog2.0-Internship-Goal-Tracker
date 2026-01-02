@@ -19,7 +19,6 @@ export const getCountCompletedLogs = async (
 
 		setCountCompleted?.(count || 0);
 	} catch (error: any) {
-		console.error("Error fetching completed logs:", error);
 		showAlert?.(500, error.message || "Failed to fetch completed logs");
 	}
 };

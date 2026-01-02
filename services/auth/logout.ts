@@ -18,7 +18,6 @@ export const signOutUser = async (
 		router.refresh();
 		router.push("/");
 	} catch (error: any) {
-		console.error("Error signing out", error);
 		showAlert(500, "Error signing out");
 	} finally {
 		setIsLoading(false);

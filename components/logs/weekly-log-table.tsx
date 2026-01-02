@@ -1,0 +1,117 @@
+"use client";
+
+import { useState } from "react";
+import { CalendarX } from "lucide-react";
+import { WeeklyLogSelect } from "@/lib/types";
+import { DescriptionCell } from "@/components/ui/description-cell";
+
+interface WeeklyLogTableProps {
+	data: WeeklyLogSelect[];
+}
+
+export function WeeklyLogTable({ data }: WeeklyLogTableProps) {
+	const [expandedLogId, setExpandedLogId] = useState<string | null>(null);
+
+	if (!data || data.length === 0) {
+		return (
+			<div className="flex flex-col items-center justify-center py-12 text-muted-foreground mb-8">
+				<CalendarX className="h-12 w-12 mb-4 opacity-20" />
+				<p>No attendance records found.</p>
+			</div>
+		);
+	}
+
+	return (
+		<div className="space-y-12 mb-8">
+			{data.map((week, weekIndex) => (
+				<div key={`${week.weekLabel}-${weekIndex}`} className="space-y-6">
+					<h3 className="text-xl font-semibold">{week.weekLabel}</h3>
+
+					{/* Summary Grid */}
+					<div className="grid grid-cols-3 text-sm text-muted-foreground pb-4 border-b gap-8">
+						<div className="space-y-1">
+							<span className="block text-xs uppercase tracking-wider opacity-70">
+								Previous
+							</span>
+							<span className="block font-medium text-foreground text-lg">
+								{week.previousHours}h
+							</span>
+						</div>
+						<div className="space-y-1">
+							<span className="block text-xs uppercase tracking-wider opacity-70">
+								This Period
+							</span>
+							<span className="block font-medium text-foreground text-lg">
+								{week.thisPeriodHours}h
+							</span>
+						</div>
+						<div className="space-y-1">
+							<span className="block text-xs uppercase tracking-wider opacity-70">
+								Total
+							</span>
+							<span className="block font-medium text-foreground text-lg">
+								{week.totalHours}h
+							</span>
+						</div>
+					</div>
+
+					<div className="overflow-x-auto border border-border rounded-lg">
+						<table className="w-full border-collapse">
+							<thead className="bg-muted">
+								<tr className="border-b border-border">
+									<th className="text-left py-3 px-4 font-medium text-foreground text-sm">
+										Date
+									</th>
+									<th className="text-left py-3 px-4 font-medium text-foreground text-sm">
+										Time In
+									</th>
+									<th className="text-left py-3 px-4 font-medium text-foreground text-sm">
+										Time Out
+									</th>
+									<th className="text-left py-3 px-4 font-medium text-foreground text-sm">
+										Break Duration
+									</th>
+									<th className="text-left py-3 px-4 font-medium text-foreground text-sm">
+										Total Hours
+									</th>
+									<th className="text-left py-3 px-4 font-medium text-foreground text-sm">
+										Description
+									</th>
+								</tr>
+							</thead>
+							<tbody>
+								{week.logs.map((log) => (
+									<tr
+										key={log.log_id}
+										className={`border-b border-x border-border hover:bg-muted/50 transition-colors ${
+											expandedLogId === log.log_id ? "bg-muted/30" : ""
+										}`}
+									>
+										<td className="py-4 px-4 text-sm font-medium text-foreground">
+											{log.date}
+										</td>
+										<td className="py-4 px-4 text-sm text-muted-foreground">
+											{log.timeIn}
+										</td>
+										<td className="py-4 px-4 text-sm text-muted-foreground">
+											{log.timeOut}
+										</td>
+										<td className="py-4 px-4 text-sm text-muted-foreground">
+											{log.breakDuration}
+										</td>
+										<td className="py-4 px-4 text-sm font-medium text-blue-700">
+											{log.hoursWorked}h
+										</td>
+										<td className="py-4 px-4 text-sm text-muted-foreground">
+											<DescriptionCell description={log.description} />
+										</td>
+									</tr>
+								))}
+							</tbody>
+						</table>
+					</div>
+				</div>
+			))}
+		</div>
+	);
+}

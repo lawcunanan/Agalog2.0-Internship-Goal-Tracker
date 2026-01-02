@@ -20,7 +20,6 @@ export const leaveGoalAsContributor = async (
 
 		showAlert(200, "You have left the goal successfully");
 	} catch (error: any) {
-		console.error("Leave contributor error:", error);
 		showAlert(500, error.message || "Failed to leave the goal");
 	}
 };

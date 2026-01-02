@@ -24,7 +24,6 @@ export const getCountTodayLogs = async (
 
 		setCountLogs?.(count || 0);
 	} catch (error: any) {
-		console.error("Error fetching today's log count:", error);
 		showAlert?.(500, error.message || "Failed to fetch today's logs");
 	}
 };

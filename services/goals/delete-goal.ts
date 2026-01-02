@@ -27,7 +27,6 @@ export const updateGoalStatus = async (
 
 		showAlert(200, `Goal and contributors marked as ${status}`);
 	} catch (error: any) {
-		console.error("Update goal status error:", error);
 		showAlert(500, error.message || "Failed to update goal status");
 	}
 };

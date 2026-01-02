@@ -52,7 +52,6 @@ export const getSectionCompany = async (
 			setCompany(["All Companies", ...companies]);
 		}
 	} catch (error: any) {
-		console.error("Error fetching section/company:", error);
 		showAlert?.(500, error.message || "Failed to fetch section and company");
 	}
 };

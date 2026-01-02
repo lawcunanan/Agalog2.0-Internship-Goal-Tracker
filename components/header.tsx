@@ -23,9 +23,15 @@ interface HeaderProps {
 	goalState?: GoalActiveState;
 	setGoalState?: (goalState: GoalActiveState) => void;
 	logState?: WeeklyLogState;
+	goalHours?: number;
 }
 
-export function Header({ goalState, setGoalState, logState }: HeaderProps) {
+export function Header({
+	goalState,
+	setGoalState,
+	logState,
+	goalHours,
+}: HeaderProps) {
 	const pathname = usePathname();
 	const { user, userDetails } = useAuth();
 	const { showAlert } = useAlert();
@@ -34,8 +40,13 @@ export function Header({ goalState, setGoalState, logState }: HeaderProps) {
 	const buttonSize = "sm";
 
 	const onExportClick = async () => {
-		if (logState) {
-			await exportExcel(logState, userDetails, showAlert);
+		if (logState && userDetails && goalHours) {
+			await exportExcel(
+				userDetails.full_name || null,
+				logState,
+				goalHours,
+				showAlert,
+			);
 		}
 	};
 

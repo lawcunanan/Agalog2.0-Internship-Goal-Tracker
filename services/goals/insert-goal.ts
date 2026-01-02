@@ -61,7 +61,6 @@ export const insertGoal = async (
 
 		showAlert(200, "Goal inserted successfully");
 	} catch (error: any) {
-		console.error("Error inserting goal:", error);
 		showAlert(500, error.message || "Error inserting goal");
 	} finally {
 		setIsLoading(false);
