@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import {
@@ -23,6 +24,7 @@ export function UsersTab({
 	const [roleFilter, setRoleFilter] = useState<string>("All Roles");
 	const [searchQuery, setSearchQuery] = useState<string>("");
 	const [usersData, setUsersData] = useState<UsersSelect[]>([]);
+	const router = useRouter();
 
 	//Pagination states
 	const itemsPerPage = 10;
@@ -104,7 +106,14 @@ export function UsersTab({
 							usersData.map((user, idx) => (
 								<tr
 									key={idx}
-									className="border-b border-border hover:bg-muted/50 transition-colors"
+									className={`border-b border-border hover:bg-muted/50 transition-colors ${
+										user.role === "Student" ? "cursor-pointer" : ""
+									}`}
+									onClick={() => {
+										if (user.role === "Student") {
+											router.push(`/student/null/${user.user_id}`);
+										}
+									}}
 								>
 									<td className="py-4 px-4 min-w-20">
 										<Avatar className="w-9 h-9">

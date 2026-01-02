@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import {
@@ -30,6 +31,7 @@ export function UserSummaryTab({
 	const [userSummaryData, setUserSummaryData] = useState<UserSummarySelect[]>(
 		[],
 	);
+	const router = useRouter();
 
 	//Pagination states
 	const itemsPerPage = 10;
@@ -127,6 +129,9 @@ export function UserSummaryTab({
 								<tr
 									key={idx}
 									className="border-b border-border hover:bg-muted/50 transition-colors cursor-pointer"
+									onClick={() =>
+										router.push(`/student/${goalId || "null"}/${user.user_id}`)
+									}
 								>
 									<td className="py-4 px-4 min-w-20">
 										<Avatar className="w-9 h-9">

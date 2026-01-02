@@ -10,13 +10,13 @@ import {
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Download } from "lucide-react";
-import { GoalActiveState, GoalValues } from "@/lib/types";
+import { GoalActiveState, GoalStudentSelect } from "@/lib/types";
 
 interface HoursProgressProps {
 	completed: number;
 	required: number;
 	description?: string;
-	goals?: GoalValues[];
+	goals?: GoalStudentSelect[];
 	goalState?: GoalActiveState;
 	setGoalState?: (goalState: GoalActiveState) => void;
 	onExport?: () => void;
@@ -46,7 +46,7 @@ export function HoursProgress({
 					<span className="text-2xl font-normal">Hours</span>
 				</div>
 
-				{goals && goalState && setGoalState && (
+				{goals && goals.length > 0 && goalState && setGoalState && (
 					<div className="flex items-center gap-2">
 						<Select
 							value={goalState.goal_id}
@@ -59,7 +59,7 @@ export function HoursProgress({
 							</SelectTrigger>
 							<SelectContent>
 								{goals.map((goal) => (
-									<SelectItem key={goal.goal_id} value={goal.goal_id!}>
+									<SelectItem key={goal.goal_id} value={goal.goal_id}>
 										{goal.title}
 									</SelectItem>
 								))}

@@ -36,6 +36,7 @@ export function Header({
 	const { user, userDetails } = useAuth();
 	const { showAlert } = useAlert();
 
+	const role = userDetails?.role || "";
 	const buttonClass = "w-full justify-start cursor-pointer";
 	const buttonSize = "sm";
 
@@ -77,7 +78,8 @@ export function Header({
 
 				<div className="flex items-center gap-4">
 					<ThemeToggle />
-					{["/logs", "/admin", "/superadmin"].includes(pathname) && (
+					{(["/logs", "/admin", "/superadmin"].includes(pathname) ||
+						pathname.startsWith("/student/")) && (
 						<DropdownMenu>
 							<DropdownMenuTrigger asChild>
 								<Button
@@ -110,7 +112,7 @@ export function Header({
 										</div>
 									</div>
 									<DropdownMenuSeparator />
-									{pathname === "/logs" && logState && (
+									{role === "Student" && logState && (
 										<>
 											<Button
 												variant="ghost"
@@ -123,7 +125,7 @@ export function Header({
 										</>
 									)}
 
-									{["/admin", "/logs"].includes(pathname) && (
+									{["Student", "Admin"].includes(role) && (
 										<GoalsDialog
 											userId={user?.id || ""}
 											userDetails={userDetails || ({} as any)}

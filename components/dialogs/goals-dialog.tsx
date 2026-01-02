@@ -66,6 +66,7 @@ export function GoalsDialog({
 	const [filterStatus, setFilterStatus] = useState<"Active" | "Inactive">(
 		"Active",
 	);
+	const [isOpen, setIsOpen] = useState(false);
 
 	// Join
 	const [contributor, setContributor] = useState<ContributorValues>({
@@ -89,16 +90,21 @@ export function GoalsDialog({
 			userDetails?.role || "Student",
 			filterStatus || "Active",
 			(data) => {
+				data.length === 0
+					? handleSetGoal("", 400)
+					: handleSetGoal(String(data[0].goal_id), data[0].goal);
+
 				setGoals(data);
-				handleSetGoal(String(data[0].goal_id), data[0].goal);
 			},
 			showAlert,
 		);
 	};
 
 	useEffect(() => {
-		refreshGoals();
-	}, [userId, filterStatus]);
+		if (isOpen) {
+			refreshGoals();
+		}
+	}, [userId, filterStatus, isOpen]);
 
 	const handleFormChange = <T extends object>(
 		setState: React.Dispatch<React.SetStateAction<T>>,
@@ -235,7 +241,7 @@ export function GoalsDialog({
 	};
 
 	return (
-		<AlertDialog>
+		<AlertDialog open={isOpen} onOpenChange={setIsOpen}>
 			<AlertDialogTrigger asChild>{children}</AlertDialogTrigger>
 
 			<AlertDialogContent className="sm:max-w-175">

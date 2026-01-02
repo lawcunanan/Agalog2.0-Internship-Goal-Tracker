@@ -27,7 +27,7 @@ export function DescriptionCell({
 					e.stopPropagation();
 					setIsExpanded(!isExpanded);
 				}}
-				className="ml-1 text-blue-700 font-medium hover:underline focus:outline-none"
+				className="ml-1 text-foreground  hover:underline focus:outline-none"
 			>
 				{isExpanded ? "See Less" : "See More"}
 			</button>

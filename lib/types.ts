@@ -11,8 +11,8 @@ export interface UserDetails {
 }
 
 export interface StudentProfileSelect {
-	user_id: string;
-	name?: string;
+	user_id?: string;
+	name: string;
 	email?: string;
 	section?: string;
 	company?: string;
@@ -41,6 +41,14 @@ export interface GoalSelect {
 	priToken?: string | null;
 	created_by: string;
 	created_at: string;
+}
+
+export interface GoalStudentSelect {
+	goal_id: string;
+	title?: string;
+	goal: number;
+	section?: string;
+	company?: string;
 }
 
 // Contributor details stored in redux state

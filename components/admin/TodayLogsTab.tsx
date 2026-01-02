@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import {
@@ -29,6 +30,7 @@ export function TodayLogsTab({
 	const [sectionData, setSectionData] = useState<string[]>([]);
 	const [searchQuery, setSearchQuery] = useState<string>("");
 	const [todayLogs, setTodayLogs] = useState<TodayLogsSelect[]>([]);
+	const router = useRouter();
 
 	//Pagination states\
 	const itemsPerPage = 10;
@@ -112,6 +114,9 @@ export function TodayLogsTab({
 								<tr
 									key={idx}
 									className="border-b border-border hover:bg-muted/50 transition-colors cursor-pointer"
+									onClick={() =>
+										router.push(`/student/${goalId || "null"}/${log.user_id}`)
+									}
 								>
 									<td className="py-4 px-4 min-w-20">
 										<Avatar className="w-9 h-9">

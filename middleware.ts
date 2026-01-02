@@ -42,7 +42,7 @@ export async function middleware(request: NextRequest) {
 		{ path: "/logs", roles: ["Student"] },
 		{ path: "/admin", roles: ["Admin"] },
 		{ path: "/superadmin", roles: ["SuperAdmin", "Admin"] },
-		{ path: "/student", roles: ["Admin", "SuperAdmin"] },
+		{ path: "/student/", roles: ["Admin", "SuperAdmin"] },
 	];
 
 	// Public routes that don't require authentication

@@ -120,7 +120,7 @@ export default function AdminPage() {
 				<Tabs defaultValue="today-logs" className="w-full">
 					<TabsList className="grid grid-cols-3 w-full">
 						<TabsTrigger value="today-logs">Today Logs</TabsTrigger>
-						<TabsTrigger value="user-summary">User Summary</TabsTrigger>
+						<TabsTrigger value="user-summary">Student Summary</TabsTrigger>
 						<TabsTrigger value="goal-admin">Goal Admin</TabsTrigger>
 					</TabsList>
 

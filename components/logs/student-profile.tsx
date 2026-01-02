@@ -10,7 +10,7 @@ export function StudentProfileHeader({
 }) {
 	return (
 		<div className="border-b border-border p-6 flex gap-6 items-start px-0 py-6">
-			<Avatar className="h-32 w-32 shrink-0 rounded-none">
+			<Avatar className="h-32 w-32 shrink-0 rounded-lg">
 				<AvatarImage src={student.picture} alt={student.name} />
 				<AvatarFallback className=" text-2xl font-bold text-muted-foreground rounded-sm bg-card">
 					{student.name.charAt(0) || "S"}
