@@ -11,25 +11,24 @@ import {
 } from "@/components/ui/select";
 import { Search } from "lucide-react";
 import { PaginationControls } from "@/components/pagination=controls";
-import { RealtimeLogsSelect } from "@/lib/types";
-import { getRealtimeLogs } from "@/services/admin/select-realtime-logs";
+import { TodayLogsSelect } from "@/lib/types";
+import { getTodayLogs } from "@/services/admin/select-today-logs";
+import { getSectionCompany } from "@/services/filter/select-section-company";
+import { DescriptionCell } from "@/components/ui/description-cell";
 
-export function RealtimeLogsTab({
+export function TodayLogsTab({
+	role,
 	goalId,
 	showAlert,
 }: {
+	role: "Admin" | "Super Admin";
 	goalId: string | null;
 	showAlert: (status: number, message: string) => void;
 }) {
 	const [sectionFilter, setSectionFilter] = useState<string>("All Sections");
-	const [sectionData, setSectionData] = useState<string[]>([
-		"All Sections",
-		"Section A",
-		"Section B",
-		"Section C",
-	]);
+	const [sectionData, setSectionData] = useState<string[]>([]);
 	const [searchQuery, setSearchQuery] = useState<string>("");
-	const [realtimeLogs, setRealtimeLogs] = useState<RealtimeLogsSelect[]>([]);
+	const [todayLogs, setTodayLogs] = useState<TodayLogsSelect[]>([]);
 
 	//Pagination states\
 	const itemsPerPage = 10;
@@ -37,9 +36,10 @@ export function RealtimeLogsTab({
 	const [totalPages, setTotalPages] = useState<number>(5);
 
 	useEffect(() => {
-		getRealtimeLogs(
+		if (!goalId && role == "Admin") return;
+		getTodayLogs(
 			goalId,
-			setRealtimeLogs,
+			setTodayLogs,
 			searchQuery,
 			sectionFilter,
 			itemsPerPage,
@@ -47,7 +47,12 @@ export function RealtimeLogsTab({
 			setTotalPages,
 			showAlert,
 		);
-	}, [goalId, searchQuery, sectionFilter, currentPage]);
+	}, [goalId, role, searchQuery, sectionFilter, currentPage]);
+
+	useEffect(() => {
+		if (!goalId && role == "Admin") return;
+		getSectionCompany(goalId!, setSectionData, undefined, showAlert);
+	}, [goalId, role]);
 
 	return (
 		<div className="space-y-6 mt-4">
@@ -102,8 +107,8 @@ export function RealtimeLogsTab({
 						</tr>
 					</thead>
 					<tbody>
-						{realtimeLogs.length > 0 ? (
-							realtimeLogs.map((log, idx) => (
+						{todayLogs.length > 0 ? (
+							todayLogs.map((log, idx) => (
 								<tr
 									key={idx}
 									className="border-b border-border hover:bg-muted/50 transition-colors cursor-pointer"
@@ -135,7 +140,7 @@ export function RealtimeLogsTab({
 										{log.breakDuration}
 									</td>
 									<td className="py-4 px-4 text-xs sm:text-sm text-muted-foreground min-w-50">
-										{log.description}
+										<DescriptionCell description={log.description} />
 									</td>
 									<td className="py-4 px-4 text-xs sm:text-sm text-foreground font-medium min-w-30">
 										{log.hoursWorked}

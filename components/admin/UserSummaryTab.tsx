@@ -13,6 +13,7 @@ import { Search } from "lucide-react";
 import { PaginationControls } from "@/components/pagination=controls";
 import { UserSummarySelect } from "@/lib/types";
 import { getUserSummary } from "@/services/admin/select-user-summary";
+import { getSectionCompany } from "@/services/filter/select-section-company";
 
 export function UserSummaryTab({
 	goalId,
@@ -23,31 +24,21 @@ export function UserSummaryTab({
 }) {
 	const [sectionFilter, setSectionFilter] = useState<string>("All Sections");
 	const [companyFilter, setCompanyFilter] = useState<string>("All Companies");
-	const [sectionData, setSectionData] = useState<string[]>([
-		"All Sections",
-		"ITE 222",
-		"Section B",
-		"Section C",
-		"Section D",
-	]);
-	const [companyData, setCompanyData] = useState<string[]>([
-		"All Companies",
-		"Acme Corp",
-		"Beta Inc",
-		"Gamma LLC",
-		"Delta Ltd",
-	]);
+	const [sectionData, setSectionData] = useState<string[]>([]);
+	const [companyData, setCompanyData] = useState<string[]>([]);
 	const [searchQuery, setSearchQuery] = useState<string>("");
 	const [userSummaryData, setUserSummaryData] = useState<UserSummarySelect[]>(
 		[],
 	);
 
-	//Pagination states\
+	//Pagination states
 	const itemsPerPage = 10;
 	const [currentPage, setCurrentPage] = useState<number>(1);
 	const [totalPages, setTotalPages] = useState<number>(5);
 
 	useEffect(() => {
+		if (!goalId) return;
+
 		getUserSummary(
 			goalId,
 			setUserSummaryData,
@@ -60,6 +51,12 @@ export function UserSummaryTab({
 			showAlert,
 		);
 	}, [goalId, searchQuery, sectionFilter, companyFilter, currentPage]);
+
+	useEffect(() => {
+		if (!goalId) return;
+		getSectionCompany(goalId, setSectionData, setCompanyData, showAlert);
+	}, [goalId]);
+
 	return (
 		<div className="space-y-6 mt-4">
 			<div className="flex flex-col md:flex-row md:items-center gap-3 mb-4">

@@ -29,7 +29,7 @@ export const getGoalAdmin = async (
 		}
 
 		// Filter by contributor status
-		if (statusFilter && statusFilter !== "All") {
+		if (statusFilter && statusFilter !== "All Status") {
 			query = query.eq("status", statusFilter);
 		}
 

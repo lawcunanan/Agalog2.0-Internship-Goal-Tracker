@@ -18,7 +18,7 @@ export function GoalsTab({
 }: {
 	showAlert: (status: number, message: string) => void;
 }) {
-	const [statusFilter, setStatusFilter] = useState<string>("All");
+	const [statusFilter, setStatusFilter] = useState<string>("All Status");
 	const [searchQuery, setSearchQuery] = useState<string>("");
 	const [goalsData, setGoalsData] = useState<GoalsSelect[]>([]);
 
@@ -57,7 +57,7 @@ export function GoalsTab({
 							<SelectValue placeholder="Filter by status" />
 						</SelectTrigger>
 						<SelectContent>
-							{["All", "Active", "Inactive"].map((status) => (
+							{["All Status", "Active", "Inactive"].map((status) => (
 								<SelectItem key={status} value={status}>
 									{status}
 								</SelectItem>

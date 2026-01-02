@@ -22,7 +22,7 @@ export function GoalAdminTab({
 	goalId: string | null;
 	showAlert: (status: number, message: string) => void;
 }) {
-	const [statusFilter, setStatusFilter] = useState<string>("All");
+	const [statusFilter, setStatusFilter] = useState<string>("All Status");
 	const [searchQuery, setSearchQuery] = useState<string>("");
 	const [adminsData, setAdminsData] = useState<GoalAdminSelect[]>([]);
 
@@ -32,6 +32,8 @@ export function GoalAdminTab({
 	const [totalPages, setTotalPages] = useState<number>(5);
 
 	useEffect(() => {
+		if (!goalId) return;
+
 		getGoalAdmin(
 			goalId,
 			setAdminsData,
@@ -61,7 +63,7 @@ export function GoalAdminTab({
 						<SelectValue placeholder="Filter by status" />
 					</SelectTrigger>
 					<SelectContent>
-						{["All", "Active", "Inactive"].map((status) => (
+						{["All Status", "Active", "Inactive"].map((status) => (
 							<SelectItem key={status} value={status}>
 								{status}
 							</SelectItem>

@@ -28,7 +28,7 @@ export const getGoals = async (
 			.order("created_at", { ascending: false });
 
 		// Filter by status
-		if (statusFilter && statusFilter !== "All") {
+		if (statusFilter && statusFilter !== "All Status") {
 			query = query.eq("status", statusFilter);
 		}
 

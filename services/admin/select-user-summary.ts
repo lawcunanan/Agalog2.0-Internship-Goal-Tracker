@@ -28,11 +28,11 @@ export const getUserSummary = async (
 		}
 
 		if (sectionFilter && sectionFilter !== "All Sections") {
-			query = query.eq("section", sectionFilter);
+			query = query.ilike("section", `%${sectionFilter}%`);
 		}
 
 		if (companyFilter && companyFilter !== "All Companies") {
-			query = query.eq("company", companyFilter);
+			query = query.ilike("company", `%${companyFilter}%`);
 		}
 
 		if (searchQuery) {

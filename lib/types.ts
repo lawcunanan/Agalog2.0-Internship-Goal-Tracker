@@ -76,7 +76,7 @@ export interface WeeklyLogSelect {
 
 //Admin section details stored in redux state
 
-export interface RealtimeLogsSelect {
+export interface TodayLogsSelect {
 	user_id: string;
 	picture: string;
 	fullname: string;

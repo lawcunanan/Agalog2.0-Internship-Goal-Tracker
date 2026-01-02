@@ -1,18 +1,53 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, use } from "react";
 import { Users, LogIn, ShieldCheck } from "lucide-react";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { RealtimeLogsTab } from "@/components/admin/RealtimeLogsTab";
+import { TodayLogsTab } from "@/components/admin/TodayLogsTab";
 import { UsersTab } from "@/components/admin/UsersTab";
 import { GoalsTab } from "@/components/admin/GoalsTab";
 import { StatCard } from "@/components/admin/StatCard";
 import { useAlert } from "@/providers/alert-provider";
+import { getCountTodayLogs } from "@/services/stats/count-today-logs";
+import { getCountUsers } from "@/services/stats/count-users";
 
 export default function SuperAdminPage() {
 	const { showAlert } = useAlert();
+	const [countStats, setCountStats] = useState<{
+		todayLogs: number;
+		totalUsers: number;
+		totalAdmins: number;
+	}>({
+		todayLogs: 0,
+		totalUsers: 0,
+		totalAdmins: 0,
+	});
+
+	useEffect(() => {
+		getCountTodayLogs(
+			null,
+			(count) => setCountStats((prev) => ({ ...prev, todayLogs: count })),
+			showAlert,
+		);
+
+		getCountUsers(
+			null,
+			"Student",
+			"users",
+			(count) => setCountStats((prev) => ({ ...prev, totalUsers: count })),
+			showAlert,
+		);
+		getCountUsers(
+			null,
+			"Admin",
+			"users",
+			(count) => setCountStats((prev) => ({ ...prev, totalAdmins: count })),
+			showAlert,
+		);
+	}, [showAlert]);
+
 	return (
 		<div className="min-h-screen flex flex-col relative md:overflow-hidden">
 			<Header />
@@ -29,33 +64,37 @@ export default function SuperAdminPage() {
 				<div className="flex gap-4 mb-14">
 					<StatCard
 						title="Today's Logs"
-						value={25}
+						value={countStats.todayLogs}
 						color="bg-green-800"
 						icon={<LogIn className="w-4 h-4 text-white" />}
 					/>
 					<StatCard
 						title="Number of Students"
-						value={120}
+						value={countStats.totalUsers}
 						color="bg-blue-800"
 						icon={<Users className="w-4 h-4 text-white" />}
 					/>
 					<StatCard
 						title="Number of Admin"
-						value={8}
+						value={countStats.totalAdmins}
 						color="bg-purple-700"
 						icon={<ShieldCheck className="w-4 h-4 text-white" />}
 					/>
 				</div>
 
-				<Tabs defaultValue="realtime-logs" className="w-full">
+				<Tabs defaultValue="today-logs" className="w-full">
 					<TabsList className="grid grid-cols-3 w-full">
-						<TabsTrigger value="realtime-logs">Realtime Logs</TabsTrigger>
+						<TabsTrigger value="today-logs">Today Logs</TabsTrigger>
 						<TabsTrigger value="users">Users</TabsTrigger>
 						<TabsTrigger value="goals">Goals</TabsTrigger>
 					</TabsList>
 
-					<TabsContent value="realtime-logs">
-						<RealtimeLogsTab goalId={null} showAlert={showAlert} />
+					<TabsContent value="today-logs">
+						<TodayLogsTab
+							role="Super Admin"
+							goalId={null}
+							showAlert={showAlert}
+						/>
 					</TabsContent>
 
 					<TabsContent value="users">

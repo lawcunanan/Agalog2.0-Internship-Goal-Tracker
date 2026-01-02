@@ -30,12 +30,12 @@ export const getUsers = async (
 		}
 
 		// Filter by status
-		if (statusFilter && statusFilter !== "All") {
+		if (statusFilter && statusFilter !== "All Status") {
 			query = query.eq("status", statusFilter);
 		}
 
 		// Filter by role
-		if (roleFilter && roleFilter !== "All") {
+		if (roleFilter && roleFilter !== "All Roles") {
 			query = query.eq("role", roleFilter);
 		}
 

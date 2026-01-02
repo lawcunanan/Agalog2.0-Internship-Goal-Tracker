@@ -19,8 +19,8 @@ export function UsersTab({
 }: {
 	showAlert: (status: number, message: string) => void;
 }) {
-	const [statusFilter, setStatusFilter] = useState<string>("All");
-	const [roleFilter, setRoleFilter] = useState<string>("All");
+	const [statusFilter, setStatusFilter] = useState<string>("All Status");
+	const [roleFilter, setRoleFilter] = useState<string>("All Roles");
 	const [searchQuery, setSearchQuery] = useState<string>("");
 	const [usersData, setUsersData] = useState<UsersSelect[]>([]);
 
@@ -60,7 +60,7 @@ export function UsersTab({
 							<SelectValue placeholder="Filter by status" />
 						</SelectTrigger>
 						<SelectContent>
-							{["All", "Active", "Inactive"].map((status) => (
+							{["All Status", "Active", "Inactive"].map((status) => (
 								<SelectItem key={status} value={status}>
 									{status}
 								</SelectItem>
@@ -74,7 +74,7 @@ export function UsersTab({
 							<SelectValue placeholder="Filter by role" />
 						</SelectTrigger>
 						<SelectContent>
-							{["All", "Student", "Admin"].map((role) => (
+							{["All Roles", "Student", "Admin"].map((role) => (
 								<SelectItem key={role} value={role}>
 									{role}
 								</SelectItem>

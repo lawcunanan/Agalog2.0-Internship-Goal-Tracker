@@ -1,11 +1,11 @@
 import { supabase } from "@/lib/supabase";
 import { format, differenceInMinutes } from "date-fns";
 import { formatDuration } from "@/lib/utils/dateTimeUtils";
-import { RealtimeLogsSelect } from "@/lib/types";
+import { TodayLogsSelect } from "@/lib/types";
 
-export const getRealtimeLogs = async (
+export const getTodayLogs = async (
 	goalId: string | null,
-	setRealtimeLogs: React.Dispatch<React.SetStateAction<RealtimeLogsSelect[]>>,
+	setTodayLogs: React.Dispatch<React.SetStateAction<TodayLogsSelect[]>>,
 	searchQuery: string,
 	sectionFilter: string,
 	itemsPerPage: number,
@@ -19,7 +19,7 @@ export const getRealtimeLogs = async (
 		const to = from + itemsPerPage - 1;
 
 		let query = supabase
-			.from("realtime_logs_view")
+			.from("today_logs_view")
 			.select("*", { count: "exact" })
 			// .eq("log_date", today)
 			.order("created_at", { ascending: false })
@@ -32,7 +32,7 @@ export const getRealtimeLogs = async (
 
 		// section filter
 		if (sectionFilter && sectionFilter !== "All Sections") {
-			query = query.eq("section", sectionFilter);
+			query = query.ilike("section", `%${sectionFilter}%`);
 		}
 
 		// search by fullname
@@ -46,7 +46,7 @@ export const getRealtimeLogs = async (
 		// total pages
 		setTotalPages(Math.ceil((count || 0) / itemsPerPage));
 
-		const mapped: RealtimeLogsSelect[] =
+		const mapped: TodayLogsSelect[] =
 			data?.map((l: any) => {
 				const timeIn = l.time_in ? new Date(l.time_in) : null;
 				const timeOut = l.time_out ? new Date(l.time_out) : null;
@@ -81,7 +81,7 @@ export const getRealtimeLogs = async (
 				};
 			}) || [];
 
-		setRealtimeLogs(mapped);
+		setTodayLogs(mapped);
 	} catch (error: any) {
 		console.error("Error fetching logs:", error);
 		showAlert(500, error.message || "Failed to fetch logs");
