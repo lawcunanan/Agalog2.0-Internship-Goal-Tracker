@@ -139,32 +139,32 @@ export default function AdminPage({ params }: AdminPageProps) {
 	return (
 		<div className="min-h-screen flex flex-col relative md:overflow-hidden">
 			<Header />
-			<main className="flex-1 w-full max-w-300 mx-auto p-6 pt-28  space-y-16">
-				<div className="mb-12">
-					{/* Back Button */}
-					<button
-						onClick={() => router.back()}
-						className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
-					>
-						<ChevronLeft className="w-4 h-4" />
-						Back to Previous Page
-					</button>
+			<main className="flex-1 w-full max-w-300 mx-auto p-6 pt-28 ">
+				{/* Back Button */}
+				<button
+					onClick={() => router.back()}
+					className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-8 cursor-pointer"
+				>
+					<ChevronLeft className="w-4 h-4" />
+					Back to Previous Page
+				</button>
+
+				<div className="space-y-16">
+					<StudentProfileHeader student={studentDetails!} />
+
+					{goals && goals.length > 0 && (
+						<HoursProgress
+							completed={logState.currentHours}
+							required={goalState.goalHours}
+							goals={goals}
+							goalState={goalState}
+							setGoalState={setGoalState}
+							onExport={onExportClick}
+						/>
+					)}
+					<WeeklyLogTable data={logState.logs} />
+					<Footer />
 				</div>
-
-				<StudentProfileHeader student={studentDetails!} />
-
-				{goals && goals.length > 0 && (
-					<HoursProgress
-						completed={logState.currentHours}
-						required={goalState.goalHours}
-						goals={goals}
-						goalState={goalState}
-						setGoalState={setGoalState}
-						onExport={onExportClick}
-					/>
-				)}
-				<WeeklyLogTable data={logState.logs} />
-				<Footer />
 			</main>
 		</div>
 	);

@@ -35,7 +35,7 @@ export default function Home() {
 						</h1>
 					</div>
 
-					<p className="text-lg text-muted-foreground max-w-150 mx-auto leading-relaxed">
+					<p className="text-base sm:text-lg text-muted-foreground max-w-150 mx-auto leading-relaxed">
 						A minimal, elegant internship goal tracker designed for interns.
 						Track your tasks, monitor your progress, and stay aligned with your
 						goals.

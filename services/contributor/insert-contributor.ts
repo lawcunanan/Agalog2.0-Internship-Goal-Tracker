@@ -25,7 +25,7 @@ export const insertContributor = async (
 			.single();
 
 		if (goalError || !goalData) {
-			throw new Error("Invalid token or goal not found");
+			throw new Error("Invalid Token or Goal not found");
 		}
 
 		const goalId = goalData.goal_id;

@@ -66,7 +66,7 @@ export default function LogsPage() {
 							refreshLogs={refreshLogs}
 						/>
 					</div>
-					<div className="md:overflow-y-auto no-scrollbar pt-0 md:pt-42">
+					<div className="md:overflow-y-auto no-scrollbar pt-0 md:pt-42 space-y-16">
 						<HoursProgress
 							completed={logState.currentHours}
 							required={goalState.goalHours}

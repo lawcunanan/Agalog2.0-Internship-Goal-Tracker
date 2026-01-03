@@ -73,33 +73,35 @@ export function UserSummaryTab({
 						onChange={(e) => setSearchQuery(e.target.value)}
 					/>
 				</div>
-				<div className="w-full md:w-48">
-					<Select value={sectionFilter} onValueChange={setSectionFilter}>
-						<SelectTrigger className="w-full">
-							<SelectValue placeholder="Filter by section" />
-						</SelectTrigger>
-						<SelectContent>
-							{sectionData.map((section) => (
-								<SelectItem key={section} value={section}>
-									{section}
-								</SelectItem>
-							))}
-						</SelectContent>
-					</Select>
-				</div>
-				<div className="w-full md:w-48">
-					<Select value={companyFilter} onValueChange={setCompanyFilter}>
-						<SelectTrigger className="w-full">
-							<SelectValue placeholder="Filter by company" />
-						</SelectTrigger>
-						<SelectContent>
-							{companyData.map((company) => (
-								<SelectItem key={company} value={company}>
-									{company}
-								</SelectItem>
-							))}
-						</SelectContent>
-					</Select>
+				<div className="flex gap-3">
+					<div className="w-full md:w-48">
+						<Select value={sectionFilter} onValueChange={setSectionFilter}>
+							<SelectTrigger className="w-full">
+								<SelectValue placeholder="Filter by section" />
+							</SelectTrigger>
+							<SelectContent>
+								{sectionData.map((section) => (
+									<SelectItem key={section} value={section}>
+										{section}
+									</SelectItem>
+								))}
+							</SelectContent>
+						</Select>
+					</div>
+					<div className="w-full md:w-48">
+						<Select value={companyFilter} onValueChange={setCompanyFilter}>
+							<SelectTrigger className="w-full">
+								<SelectValue placeholder="Filter by company" />
+							</SelectTrigger>
+							<SelectContent>
+								{companyData.map((company) => (
+									<SelectItem key={company} value={company}>
+										{company}
+									</SelectItem>
+								))}
+							</SelectContent>
+						</Select>
+					</div>
 				</div>
 			</div>
 			<div className="overflow-x-auto border border-border rounded-lg">

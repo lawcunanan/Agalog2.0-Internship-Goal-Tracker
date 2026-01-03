@@ -36,7 +36,7 @@ export function HoursProgress({
 		required > 0 ? Math.min(100, (completed / required) * 100) : 0;
 
 	return (
-		<FadeIn className="mb-16 space-y-4">
+		<FadeIn className=" space-y-4">
 			<div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
 				<div className="flex items-baseline gap-3 text-3xl sm:text-5xl font-light text-muted-foreground">
 					<span className="text-foreground font-medium">
@@ -44,7 +44,7 @@ export function HoursProgress({
 					</span>
 					<span>/</span>
 					<span className="font-bold text-blue-700">{required}</span>
-					<span className="text-2xl font-normal">Hours</span>
+					<span className="text-base sm:text-2xl font-normal">Hours</span>
 				</div>
 
 				{goals && goals.length > 0 && goalState && setGoalState && (

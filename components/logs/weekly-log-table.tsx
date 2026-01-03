@@ -55,24 +55,21 @@ export function WeeklyLogTable({ data }: WeeklyLogTableProps) {
 						<table className="w-full border-collapse">
 							<thead className="bg-muted">
 								<tr className="border-b border-border">
-									<th className="text-left py-3 px-4 font-medium text-foreground text-sm">
-										Date
-									</th>
-									<th className="text-left py-3 px-4 font-medium text-foreground text-sm">
-										Time In
-									</th>
-									<th className="text-left py-3 px-4 font-medium text-foreground text-sm">
-										Time Out
-									</th>
-									<th className="text-left py-3 px-4 font-medium text-foreground text-sm">
-										Break Duration
-									</th>
-									<th className="text-left py-3 px-4 font-medium text-foreground text-sm">
-										Total Hours
-									</th>
-									<th className="text-left py-3 px-4 font-medium text-foreground text-sm">
-										Description
-									</th>
+									{[
+										"Date",
+										"Time In",
+										"Time Out",
+										"Break Duration",
+										"Total Hours",
+										"Description",
+									].map((header) => (
+										<th
+											key={header}
+											className="text-left py-3 px-4 font-medium text-foreground text-xs sm:text-sm"
+										>
+											{header}
+										</th>
+									))}
 								</tr>
 							</thead>
 							<tbody>
@@ -83,22 +80,22 @@ export function WeeklyLogTable({ data }: WeeklyLogTableProps) {
 											expandedLogId === log.log_id ? "bg-muted/30" : ""
 										}`}
 									>
-										<td className="py-4 px-4 text-sm font-medium text-foreground">
+										<td className="py-4 px-4 text-xs sm:text-sm font-medium text-foreground min-w-30">
 											{log.date}
 										</td>
-										<td className="py-4 px-4 text-sm text-muted-foreground">
+										<td className="py-4 px-4 text-xs sm:text-sm text-muted-foreground min-w-30">
 											{log.timeIn}
 										</td>
-										<td className="py-4 px-4 text-sm text-muted-foreground">
+										<td className="py-4 px-4 text-xs sm:text-sm text-muted-foreground min-w-30">
 											{log.timeOut}
 										</td>
-										<td className="py-4 px-4 text-sm text-muted-foreground">
+										<td className="py-4 px-4 text-xs sm:text-sm text-muted-foreground min-w-30">
 											{log.breakDuration}
 										</td>
-										<td className="py-4 px-4 text-sm font-medium text-blue-700">
+										<td className="py-4 px-4 text-xs sm:text-sm font-medium text-blue-700 min-w-30">
 											{log.hoursWorked}h
 										</td>
-										<td className="py-4 px-4 text-sm text-muted-foreground">
+										<td className="py-4 px-4 text-xs sm:text-sm text-muted-foreground min-w-100">
 											<DescriptionCell description={log.description} />
 										</td>
 									</tr>

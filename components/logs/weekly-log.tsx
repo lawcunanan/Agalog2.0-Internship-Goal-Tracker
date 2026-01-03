@@ -15,7 +15,6 @@ import {
 import { Edit } from "lucide-react";
 import { WeeklyLogSelect, LogValues } from "@/lib/types";
 import { DeleteLogDialog } from "../dialogs/delete-log-dialog";
-import { DescriptionCell } from "@/components/ui/description-cell";
 import { EmptyLogs } from "@/components/empty-state/empty-logs";
 
 interface WeeklyLogProps {
@@ -126,12 +125,7 @@ export function WeeklyLog({
 
 								<AccordionContent className="px-3 pb-4 pt-2 text-muted-foreground text-xs sm:text-sm pl-4">
 									<div className="flex justify-between items-start gap-6">
-										<div className="flex-1">
-											<DescriptionCell
-												description={log.description}
-												emptyText="No description provided."
-											/>
-										</div>
+										<div className="flex-1">{log.description}</div>
 
 										<div className="flex items-center gap-1">
 											<button

@@ -60,7 +60,7 @@ export function TodayLogsTab({
 
 	return (
 		<FadeIn className="space-y-6 mt-4">
-			<div className="flex flex-col md:flex-row md:items-center gap-3 mb-4">
+			<div className="flex flex-row md:items-center gap-3 mb-4">
 				<div className="relative w-full md:w-64">
 					<Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
 					<Input
@@ -70,7 +70,7 @@ export function TodayLogsTab({
 						onChange={(e) => setSearchQuery(e.target.value)}
 					/>
 				</div>
-				<div className="w-full md:w-48">
+				<div className="md:w-48">
 					<Select value={sectionFilter} onValueChange={setSectionFilter}>
 						<SelectTrigger className="w-full">
 							<SelectValue placeholder="Filter by section" />
@@ -134,13 +134,13 @@ export function TodayLogsTab({
 									<td className="py-4 px-4 text-xs sm:text-sm text-foreground min-w-30">
 										{log.section}
 									</td>
-									<td className="py-4 px-4 text-xs sm:text-sm text-foreground min-w-25">
+									<td className="py-4 px-4 text-xs sm:text-sm text-foreground min-w-30">
 										{log.date}
 									</td>
-									<td className="py-4 px-4 text-xs sm:text-sm text-foreground min-w-25">
+									<td className="py-4 px-4 text-xs sm:text-sm text-foreground min-w-30">
 										{log.timeIn}
 									</td>
-									<td className="py-4 px-4 text-xs sm:text-sm text-foreground min-w-25">
+									<td className="py-4 px-4 text-xs sm:text-sm text-foreground min-w-30">
 										{log.timeOut}
 									</td>
 									<td className="py-4 px-4 text-xs sm:text-sm text-foreground min-w-35">

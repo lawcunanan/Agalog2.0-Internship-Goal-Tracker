@@ -88,7 +88,7 @@ export default function AdminPage() {
 					</p>
 				</div>
 
-				<div className="flex gap-4  mb-14">
+				<div className="flex gap-4 mb-14 overflow-x-auto">
 					<StatCard
 						title="New Logs Today"
 						value={countStats.todayLogs}

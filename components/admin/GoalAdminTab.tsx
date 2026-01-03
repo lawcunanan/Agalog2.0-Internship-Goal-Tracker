@@ -50,7 +50,7 @@ export function GoalAdminTab({
 
 	return (
 		<FadeIn className="space-y-6 mt-4">
-			<div className="flex flex-col md:flex-row md:items-center gap-3 mb-4">
+			<div className="flex flex-row md:items-center gap-3 mb-4">
 				<div className="relative w-full md:w-64">
 					<Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
 					<Input
@@ -61,7 +61,7 @@ export function GoalAdminTab({
 					/>
 				</div>
 				<Select value={statusFilter} onValueChange={setStatusFilter}>
-					<SelectTrigger className="w-full md:w-48">
+					<SelectTrigger className="md:w-48">
 						<SelectValue placeholder="Filter by status" />
 					</SelectTrigger>
 					<SelectContent>

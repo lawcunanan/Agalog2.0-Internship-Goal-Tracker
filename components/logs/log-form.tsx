@@ -132,15 +132,15 @@ export function LogForm({
 				Log & Go!
 			</h2>
 
-			<form onSubmit={handleSubmit} className="space-y-6">
-				<div className="space-y-2">
+			<form onSubmit={handleSubmit} className="space-y-6 ">
+				<div className="space-y-2 ">
 					<Label htmlFor="date">
 						Date <span className="text-red-500">*</span>
 					</Label>
 					<Input
 						type="date"
 						id="date"
-						className="shadow-none"
+						className="shadow-none "
 						value={logData.date}
 						onChange={handleChange}
 						max={new Date().toISOString().split("T")[0]}

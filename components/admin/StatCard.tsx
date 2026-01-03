@@ -10,7 +10,7 @@ interface StatCardProps {
 
 export function StatCard({ title, value, color, icon }: StatCardProps) {
 	return (
-		<FadeIn className="flex-1 bg-card border border-border rounded-lg p-4 flex items-center gap-3 max-w-57.5">
+		<FadeIn className="flex-1 bg-card border border-border rounded-lg p-4 flex items-center gap-3 max-w-57.5 min-w-57.5">
 			<div
 				className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${color}`}
 			>

@@ -58,33 +58,35 @@ export function UsersTab({
 						onChange={(e) => setSearchQuery(e.target.value)}
 					/>
 				</div>
-				<div className="w-full md:w-48">
-					<Select value={statusFilter} onValueChange={setStatusFilter}>
-						<SelectTrigger className="w-full">
-							<SelectValue placeholder="Filter by status" />
-						</SelectTrigger>
-						<SelectContent>
-							{["All Status", "Active", "Inactive"].map((status) => (
-								<SelectItem key={status} value={status}>
-									{status}
-								</SelectItem>
-							))}
-						</SelectContent>
-					</Select>
-				</div>
-				<div className="w-full md:w-48">
-					<Select value={roleFilter} onValueChange={setRoleFilter}>
-						<SelectTrigger className="w-full">
-							<SelectValue placeholder="Filter by role" />
-						</SelectTrigger>
-						<SelectContent>
-							{["All Roles", "Student", "Admin"].map((role) => (
-								<SelectItem key={role} value={role}>
-									{role}
-								</SelectItem>
-							))}
-						</SelectContent>
-					</Select>
+				<div className="flex gap-3">
+					<div className="w-full md:w-48">
+						<Select value={statusFilter} onValueChange={setStatusFilter}>
+							<SelectTrigger className="w-full">
+								<SelectValue placeholder="Filter by status" />
+							</SelectTrigger>
+							<SelectContent>
+								{["All Status", "Active", "Inactive"].map((status) => (
+									<SelectItem key={status} value={status}>
+										{status}
+									</SelectItem>
+								))}
+							</SelectContent>
+						</Select>
+					</div>
+					<div className="w-full md:w-48">
+						<Select value={roleFilter} onValueChange={setRoleFilter}>
+							<SelectTrigger className="w-full">
+								<SelectValue placeholder="Filter by role" />
+							</SelectTrigger>
+							<SelectContent>
+								{["All Roles", "Student", "Admin"].map((role) => (
+									<SelectItem key={role} value={role}>
+										{role}
+									</SelectItem>
+								))}
+							</SelectContent>
+						</Select>
+					</div>
 				</div>
 			</div>
 			<div className="overflow-x-auto border border-border rounded-lg">
@@ -125,13 +127,13 @@ export function UsersTab({
 											</AvatarFallback>
 										</Avatar>
 									</td>
-									<td className="py-4 px-4 text-xs sm:text-sm text-foreground min-w-25">
+									<td className="py-4 px-4 text-xs sm:text-sm text-foreground min-w-30">
 										{user.fullname}
 									</td>
-									<td className="py-4 px-4 text-xs sm:text-sm text-foreground min-w-25">
+									<td className="py-4 px-4 text-xs sm:text-sm text-foreground min-w-30">
 										{user.status}
 									</td>
-									<td className="py-4 px-4 text-xs sm:text-sm text-foreground min-w-25">
+									<td className="py-4 px-4 text-xs sm:text-sm text-foreground min-w-30">
 										{user.role}
 									</td>
 									<td className="py-4 px-4 text-xs sm:text-sm text-foreground min-w-50">

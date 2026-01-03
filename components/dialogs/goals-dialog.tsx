@@ -68,6 +68,7 @@ export function GoalsDialog({
 		"Active",
 	);
 	const [isOpen, setIsOpen] = useState(false);
+	const role = userDetails?.role || "Student";
 
 	// Join
 	const [contributor, setContributor] = useState<ContributorValues>({
@@ -88,7 +89,7 @@ export function GoalsDialog({
 
 		getUserGoals(
 			userId,
-			userDetails?.role || "Student",
+			role || "Student",
 			filterStatus || "Active",
 			(data) => {
 				data.length === 0
@@ -131,14 +132,14 @@ export function GoalsDialog({
 	};
 
 	const handleJoinGoal = async () => {
-		if (!userId || !userDetails?.role) {
+		if (!userId || !role) {
 			showAlert(500, "User details missing");
 			return;
 		}
 
 		if (
 			!contributor.token.trim() ||
-			(userDetails?.role === "Student" &&
+			(role === "Student" &&
 				(!contributor.section?.trim() || !contributor.company?.trim()))
 		) {
 			showAlert(400, "Please enter all required fields");
@@ -147,7 +148,7 @@ export function GoalsDialog({
 
 		await insertContributor(
 			userId,
-			userDetails.role,
+			role,
 			{
 				token: contributor.token,
 				section: contributor.section,
@@ -161,7 +162,7 @@ export function GoalsDialog({
 	};
 
 	const handleGoal = async (action: "create" | "edit") => {
-		if (!userId || !userDetails?.role) {
+		if (!userId || !role) {
 			showAlert(500, "User details missing");
 			return;
 		}
@@ -177,7 +178,7 @@ export function GoalsDialog({
 		if (action === "create") {
 			await insertGoal(
 				userId,
-				userDetails.role,
+				role,
 				{ title: goalValues.title, goal: goalValues.goal },
 				showAlert,
 				setIsLoading,
@@ -254,7 +255,11 @@ export function GoalsDialog({
 
 				{/* JOIN */}
 				{mode === "join" && (
-					<div className="flex gap-2 items-end">
+					<div
+						className={`flex gap-2 w-full  ${
+							role === "Student" ? "flex-col sm:flex-row " : "flex-row"
+						} items-stretch sm:items-end`}
+					>
 						<div className="relative w-full">
 							<Key className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
 							<Input
@@ -266,8 +271,8 @@ export function GoalsDialog({
 								}
 							/>
 						</div>
-						{userDetails?.role === "Student" && (
-							<>
+						{role === "Student" && (
+							<div className="flex gap-2 w-full">
 								<Input
 									placeholder="Enter section"
 									value={contributor.section}
@@ -284,7 +289,7 @@ export function GoalsDialog({
 									}
 									maxLength={60}
 								/>
-							</>
+							</div>
 						)}
 
 						<Button onClick={handleJoinGoal} disabled={isLoading}>
@@ -363,14 +368,12 @@ export function GoalsDialog({
 								const isSelected = goalState.goal_id === String(goal.goal_id);
 								const isOwner = userId === goal.created_by;
 								const isInactive = goal.status === "Inactive";
-								const isAdmin = ["Admin", "Super Admin"].includes(
-									userDetails?.role || "",
-								);
+								const isAdmin = ["Admin", "Super Admin"].includes(role);
 
 								return (
 									<div
 										key={goal.goal_id}
-										className="pb-6 pr-2  flex gap-6 items-start"
+										className="pb-6 pr-2 flex gap-6 items-start"
 									>
 										<RadioGroupItem
 											value={String(goal.goal_id)}
@@ -382,7 +385,7 @@ export function GoalsDialog({
 												handleSetGoal(String(goal.goal_id), goal.goal)
 											}
 										>
-											<p className="font-medium ">
+											<p className="text-sm sm:text-base font-medium ">
 												{goal.title.charAt(0).toUpperCase() +
 													goal.title.slice(1)}
 											</p>
@@ -395,6 +398,7 @@ export function GoalsDialog({
 													<Button
 														size="sm"
 														variant="outline"
+														className="text-xs sm:text-sm"
 														onClick={() => {
 															navigator.clipboard.writeText(
 																goal.priToken || "",
@@ -407,6 +411,7 @@ export function GoalsDialog({
 													<Button
 														size="sm"
 														variant="outline"
+														className="text-xs sm:text-sm"
 														onClick={() => {
 															navigator.clipboard.writeText(
 																goal.pubToken || "",
