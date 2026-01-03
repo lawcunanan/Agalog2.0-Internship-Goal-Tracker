@@ -32,6 +32,7 @@ import {
 	Key,
 } from "lucide-react";
 import { EmptyState } from "@/components/empty-state/empty-state";
+import { FadeIn } from "@/components/ui/fade-in";
 import { insertGoal } from "@/services/goals/insert-goal";
 import { updateGoalDetails } from "@/services/goals/update-goal";
 import { insertContributor } from "@/services/contributor/insert-contributor";
@@ -358,86 +359,114 @@ export function GoalsDialog({
 							description="Join an existing goal or create a new one to get started."
 						/>
 					) : (
-						<RadioGroup
-							value={goalState.goal_id}
-							onValueChange={(value) => {
-								handleSetGoal(value);
-							}}
-						>
-							{goals.map((goal) => {
-								const isSelected = goalState.goal_id === String(goal.goal_id);
-								const isOwner = userId === goal.created_by;
-								const isInactive = goal.status === "Inactive";
-								const isAdmin = ["Admin", "Super Admin"].includes(role);
+						<FadeIn>
+							<RadioGroup
+								value={goalState.goal_id}
+								onValueChange={(value) => {
+									handleSetGoal(value);
+								}}
+							>
+								{goals.map((goal) => {
+									const isSelected = goalState.goal_id === String(goal.goal_id);
+									const isOwner = userId === goal.created_by;
+									const isInactive = goal.status === "Inactive";
+									const isAdmin = ["Admin", "Super Admin"].includes(role);
 
-								return (
-									<div
-										key={goal.goal_id}
-										className="pb-6 pr-2 flex gap-6 items-start"
-									>
-										<RadioGroupItem
-											value={String(goal.goal_id)}
-											className="mt-1"
-										/>
+									return (
 										<div
-											className="flex-1 cursor-pointer"
-											onClick={() =>
-												handleSetGoal(String(goal.goal_id), goal.goal)
-											}
+											key={goal.goal_id}
+											className="pb-6 pr-2 flex gap-6 items-start"
 										>
-											<p className="text-sm sm:text-base font-medium ">
-												{goal.title.charAt(0).toUpperCase() +
-													goal.title.slice(1)}
-											</p>
-											<p className="text-xs text-muted-foreground">
-												{goal.metaText}
-											</p>
+											<RadioGroupItem
+												value={String(goal.goal_id)}
+												className="mt-1"
+											/>
+											<div
+												className="flex-1 cursor-pointer"
+												onClick={() =>
+													handleSetGoal(String(goal.goal_id), goal.goal)
+												}
+											>
+												<p className="text-sm sm:text-base font-medium ">
+													{goal.title.charAt(0).toUpperCase() +
+														goal.title.slice(1)}
+												</p>
+												<p className="text-xs text-muted-foreground">
+													{goal.metaText}
+												</p>
 
-											{isAdmin && (
-												<div className="flex gap-2 mt-5">
-													<Button
-														size="sm"
-														variant="outline"
-														className="text-xs sm:text-sm"
-														onClick={() => {
-															navigator.clipboard.writeText(
-																goal.priToken || "",
-															);
-															showAlert(200, "Private token copied");
-														}}
-													>
-														<Copy className="h-3 w-3 mr-1" /> Private
-													</Button>
-													<Button
-														size="sm"
-														variant="outline"
-														className="text-xs sm:text-sm"
-														onClick={() => {
-															navigator.clipboard.writeText(
-																goal.pubToken || "",
-															);
-															showAlert(200, "Public token copied");
-														}}
-													>
-														<Copy className="h-3 w-3 mr-1" /> Public
-													</Button>
-												</div>
-											)}
-										</div>
-
-										{isSelected && (
-											<div className="flex gap-2">
-												{isOwner ? (
-													<>
+												{isAdmin && (
+													<div className="flex gap-2 mt-5">
 														<Button
-															size="icon"
-															variant="ghost"
-															onClick={() => handleEditGoal(goal)}
+															size="sm"
+															variant="outline"
+															className="text-xs sm:text-sm"
+															onClick={() => {
+																navigator.clipboard.writeText(
+																	goal.priToken || "",
+																);
+																showAlert(200, "Private token copied");
+															}}
 														>
-															<Edit2 className="h-4 w-4" />
+															<Copy className="h-3 w-3 mr-1" /> Private
 														</Button>
+														<Button
+															size="sm"
+															variant="outline"
+															className="text-xs sm:text-sm"
+															onClick={() => {
+																navigator.clipboard.writeText(
+																	goal.pubToken || "",
+																);
+																showAlert(200, "Public token copied");
+															}}
+														>
+															<Copy className="h-3 w-3 mr-1" /> Public
+														</Button>
+													</div>
+												)}
+											</div>
 
-														<DeleteGoalDialog
+											{isSelected && (
+												<div className="flex gap-2">
+													{isOwner ? (
+														<>
+															<Button
+																size="icon"
+																variant="ghost"
+																onClick={() => handleEditGoal(goal)}
+															>
+																<Edit2 className="h-4 w-4" />
+															</Button>
+
+															<DeleteGoalDialog
+																userId={userId || ""}
+																goalId={String(goal.goal_id)}
+																targetStatus={
+																	isInactive ? "Active" : "Inactive"
+																}
+																showAlert={showAlert}
+																refreshGoals={refreshGoals}
+															>
+																<Button
+																	size="icon"
+																	variant="ghost"
+																	className={
+																		isInactive
+																			? "text-green-500"
+																			: "text-destructive"
+																	}
+																>
+																	{isInactive ? (
+																		<CheckCircle className="h-4 w-4" />
+																	) : (
+																		<Trash2 className="h-4 w-4" />
+																	)}
+																</Button>
+															</DeleteGoalDialog>
+														</>
+													) : (
+														<LeaveGoalDialog
 															userId={userId || ""}
 															goalId={String(goal.goal_id)}
 															targetStatus={isInactive ? "Active" : "Inactive"}
@@ -456,42 +485,18 @@ export function GoalsDialog({
 																{isInactive ? (
 																	<CheckCircle className="h-4 w-4" />
 																) : (
-																	<Trash2 className="h-4 w-4" />
+																	<LogOut className="h-4 w-4" />
 																)}
 															</Button>
-														</DeleteGoalDialog>
-													</>
-												) : (
-													<LeaveGoalDialog
-														userId={userId || ""}
-														goalId={String(goal.goal_id)}
-														targetStatus={isInactive ? "Active" : "Inactive"}
-														showAlert={showAlert}
-														refreshGoals={refreshGoals}
-													>
-														<Button
-															size="icon"
-															variant="ghost"
-															className={
-																isInactive
-																	? "text-green-500"
-																	: "text-destructive"
-															}
-														>
-															{isInactive ? (
-																<CheckCircle className="h-4 w-4" />
-															) : (
-																<LogOut className="h-4 w-4" />
-															)}
-														</Button>
-													</LeaveGoalDialog>
-												)}
-											</div>
-										)}
-									</div>
-								);
-							})}
-						</RadioGroup>
+														</LeaveGoalDialog>
+													)}
+												</div>
+											)}
+										</div>
+									);
+								})}
+							</RadioGroup>
+						</FadeIn>
 					)}
 				</div>
 			</AlertDialogContent>

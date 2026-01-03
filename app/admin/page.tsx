@@ -118,10 +118,16 @@ export default function AdminPage() {
 				</div>
 
 				<Tabs defaultValue="today-logs" className="w-full">
-					<TabsList className="grid grid-cols-3 w-full">
-						<TabsTrigger value="today-logs">Today Logs</TabsTrigger>
-						<TabsTrigger value="user-summary">Student Summary</TabsTrigger>
-						<TabsTrigger value="goal-admin">Goal Admin</TabsTrigger>
+					<TabsList className="flex w-full">
+						<TabsTrigger value="today-logs" className="flex-1">
+							Today Logs
+						</TabsTrigger>
+						<TabsTrigger value="user-summary" className="flex-1">
+							Student Summary
+						</TabsTrigger>
+						<TabsTrigger value="goal-admin" className="flex-1">
+							Goal Admin
+						</TabsTrigger>
 					</TabsList>
 
 					<TabsContent value="today-logs">

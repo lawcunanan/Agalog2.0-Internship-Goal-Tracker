@@ -29,7 +29,7 @@ export function WeeklyLogTable({ data }: WeeklyLogTableProps) {
 							<span className="block text-xs uppercase tracking-wider opacity-70">
 								Previous
 							</span>
-							<span className="block font-medium text-foreground text-lg">
+							<span className="block font-medium text-foreground text-md sm:text-lg">
 								{week.previousHours}
 							</span>
 						</div>
@@ -37,7 +37,7 @@ export function WeeklyLogTable({ data }: WeeklyLogTableProps) {
 							<span className="block text-xs uppercase tracking-wider opacity-70">
 								This Period
 							</span>
-							<span className="block font-medium text-foreground text-lg">
+							<span className="block font-medium text-foreground text-md sm:text-lg">
 								{week.thisPeriodHours}
 							</span>
 						</div>
@@ -45,7 +45,7 @@ export function WeeklyLogTable({ data }: WeeklyLogTableProps) {
 							<span className="block text-xs uppercase tracking-wider opacity-70">
 								Total
 							</span>
-							<span className="block font-medium text-foreground text-lg">
+							<span className="block font-medium text-foreground text-md sm:text-lg">
 								{week.totalHours}
 							</span>
 						</div>

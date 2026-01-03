@@ -83,10 +83,16 @@ export default function SuperAdminPage() {
 				</div>
 
 				<Tabs defaultValue="today-logs" className="w-full">
-					<TabsList className="grid grid-cols-3 w-full">
-						<TabsTrigger value="today-logs">Today Logs</TabsTrigger>
-						<TabsTrigger value="users">Users</TabsTrigger>
-						<TabsTrigger value="goals">Goals</TabsTrigger>
+					<TabsList className="flex w-full">
+						<TabsTrigger value="today-logs" className="flex-1">
+							Today Logs
+						</TabsTrigger>
+						<TabsTrigger value="users" className="flex-1">
+							Users
+						</TabsTrigger>
+						<TabsTrigger value="goals" className="flex-1">
+							Goals
+						</TabsTrigger>
 					</TabsList>
 
 					<TabsContent value="today-logs">
