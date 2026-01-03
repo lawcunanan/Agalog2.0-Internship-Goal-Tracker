@@ -87,6 +87,18 @@ export function GoalsDialog({
 	const refreshGoals = () => {
 		if (!userId) return;
 
+		setGoalValues({
+			goal_id: undefined,
+			title: "",
+			goal: 400,
+		});
+
+		setContributor({
+			token: "",
+			section: "",
+			company: "",
+		});
+
 		getUserGoals(
 			userId,
 			role || "Student",
@@ -104,18 +116,6 @@ export function GoalsDialog({
 
 	useEffect(() => {
 		if (isOpen) {
-			setGoalValues({
-				goal_id: undefined,
-				title: "",
-				goal: 400,
-			});
-
-			setContributor({
-				token: "",
-				section: "",
-				company: "",
-			});
-
 			refreshGoals();
 		}
 	}, [userId, filterStatus, isOpen]);
