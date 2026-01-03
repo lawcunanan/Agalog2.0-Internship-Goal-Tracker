@@ -22,14 +22,16 @@ export function LogoutDialog({ children }: { children: React.ReactNode }) {
 	const router = useRouter();
 	const { showAlert } = useAlert();
 	const [isLoading, setIsLoading] = React.useState(false);
+	const [open, setOpen] = React.useState(false);
 
 	const handleLogout = async (e: React.MouseEvent) => {
 		e.preventDefault();
 		await signOutUser(showAlert, router, setIsLoading);
+		setOpen(false);
 	};
 
 	return (
-		<AlertDialog>
+		<AlertDialog open={open} onOpenChange={setOpen}>
 			<AlertDialogTrigger asChild>{children}</AlertDialogTrigger>
 			<AlertDialogContent>
 				<AlertDialogHeader>

@@ -1,9 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { CalendarX } from "lucide-react";
+import { FadeIn } from "@/components/ui/fade-in";
 import { WeeklyLogSelect } from "@/lib/types";
 import { DescriptionCell } from "@/components/ui/description-cell";
+import { EmptyLogs } from "@/components/empty-state/empty-logs";
 
 interface WeeklyLogTableProps {
 	data: WeeklyLogSelect[];
@@ -13,16 +14,11 @@ export function WeeklyLogTable({ data }: WeeklyLogTableProps) {
 	const [expandedLogId, setExpandedLogId] = useState<string | null>(null);
 
 	if (!data || data.length === 0) {
-		return (
-			<div className="flex flex-col items-center justify-center py-12 text-muted-foreground mb-8">
-				<CalendarX className="h-12 w-12 mb-4 opacity-20" />
-				<p>No attendance records found.</p>
-			</div>
-		);
+		return <EmptyLogs />;
 	}
 
 	return (
-		<div className="space-y-12 mb-8">
+		<FadeIn delay={0.2} className="space-y-12 mb-8">
 			{data.map((week, weekIndex) => (
 				<div key={`${week.weekLabel}-${weekIndex}`} className="space-y-6">
 					<h3 className="text-xl font-semibold">{week.weekLabel}</h3>
@@ -34,7 +30,7 @@ export function WeeklyLogTable({ data }: WeeklyLogTableProps) {
 								Previous
 							</span>
 							<span className="block font-medium text-foreground text-lg">
-								{week.previousHours}h
+								{week.previousHours}
 							</span>
 						</div>
 						<div className="space-y-1">
@@ -42,7 +38,7 @@ export function WeeklyLogTable({ data }: WeeklyLogTableProps) {
 								This Period
 							</span>
 							<span className="block font-medium text-foreground text-lg">
-								{week.thisPeriodHours}h
+								{week.thisPeriodHours}
 							</span>
 						</div>
 						<div className="space-y-1">
@@ -50,7 +46,7 @@ export function WeeklyLogTable({ data }: WeeklyLogTableProps) {
 								Total
 							</span>
 							<span className="block font-medium text-foreground text-lg">
-								{week.totalHours}h
+								{week.totalHours}
 							</span>
 						</div>
 					</div>
@@ -112,6 +108,6 @@ export function WeeklyLogTable({ data }: WeeklyLogTableProps) {
 					</div>
 				</div>
 			))}
-		</div>
+		</FadeIn>
 	);
 }

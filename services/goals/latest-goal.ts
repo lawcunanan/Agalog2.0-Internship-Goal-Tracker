@@ -29,7 +29,6 @@ export const getLatestGoal = async (
 		if (error) throw error;
 
 		if (!data || data.length === 0 || !data[0].goals) {
-			showAlert(404, "No active goal found");
 			return;
 		}
 

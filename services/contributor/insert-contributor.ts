@@ -25,7 +25,7 @@ export const insertContributor = async (
 			.single();
 
 		if (goalError || !goalData) {
-			throw new Error("Invalid token, inactive goal, or you are the owner");
+			throw new Error("Invalid token or goal not found");
 		}
 
 		const goalId = goalData.goal_id;

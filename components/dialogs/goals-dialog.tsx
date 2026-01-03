@@ -29,14 +29,15 @@ import {
 	CheckCircle,
 	LogOut,
 	Filter,
+	Key,
 } from "lucide-react";
-import { EmptyState } from "@/components/empty-state";
+import { EmptyState } from "@/components/empty-state/empty-state";
 import { insertGoal } from "@/services/goals/insert-goal";
 import { updateGoalDetails } from "@/services/goals/update-goal";
-import { updateGoalStatus } from "@/services/goals/delete-goal";
 import { insertContributor } from "@/services/contributor/insert-contributor";
 import { getUserGoals } from "@/services/goals/select-goal";
-import { leaveGoalAsContributor } from "@/services/contributor/leave-contributor";
+import { DeleteGoalDialog } from "./delete-goal-dialog";
+import { LeaveGoalDialog } from "./leave-goal-dialog";
 import {
 	GoalSelect,
 	GoalValues,
@@ -91,7 +92,7 @@ export function GoalsDialog({
 			filterStatus || "Active",
 			(data) => {
 				data.length === 0
-					? handleSetGoal("", 400)
+					? handleSetGoal("0", 400)
 					: handleSetGoal(String(data[0].goal_id), data[0].goal);
 
 				setGoals(data);
@@ -102,6 +103,18 @@ export function GoalsDialog({
 
 	useEffect(() => {
 		if (isOpen) {
+			setGoalValues({
+				goal_id: undefined,
+				title: "",
+				goal: 400,
+			});
+
+			setContributor({
+				token: "",
+				section: "",
+				company: "",
+			});
+
 			refreshGoals();
 		}
 	}, [userId, filterStatus, isOpen]);
@@ -144,11 +157,6 @@ export function GoalsDialog({
 			setIsLoading,
 		);
 
-		setContributor({
-			token: "",
-			section: "",
-			company: "",
-		});
 		refreshGoals();
 	};
 
@@ -186,11 +194,6 @@ export function GoalsDialog({
 			);
 		}
 
-		setGoalValues({
-			goal_id: undefined,
-			title: "",
-			goal: 400,
-		});
 		refreshGoals();
 	};
 
@@ -201,32 +204,6 @@ export function GoalsDialog({
 			goal: goal.goal,
 		});
 		setMode("create");
-	};
-
-	const handleDeleteGoal = async (
-		goalId: string,
-		status: "Active" | "Inactive",
-	) => {
-		if (!userId) {
-			showAlert(500, "User details missing");
-			return;
-		}
-
-		await updateGoalStatus(userId, goalId, status, showAlert);
-		refreshGoals();
-	};
-
-	const handleLeaveGoal = async (
-		goalId: string,
-		status: "Active" | "Inactive",
-	) => {
-		if (!userId) {
-			showAlert(500, "User details missing");
-			return;
-		}
-
-		await leaveGoalAsContributor(userId, goalId, status, showAlert);
-		refreshGoals();
 	};
 
 	const handleSetGoal = (goalId: string, goalHours?: number) => {
@@ -278,13 +255,17 @@ export function GoalsDialog({
 				{/* JOIN */}
 				{mode === "join" && (
 					<div className="flex gap-2 items-end">
-						<Input
-							placeholder="Enter goal token"
-							value={contributor.token}
-							onChange={(e) =>
-								handleFormChange(setContributor, "token", e.target.value)
-							}
-						/>
+						<div className="relative w-full">
+							<Key className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+							<Input
+								placeholder="Enter goal token"
+								className="pl-9"
+								value={contributor.token}
+								onChange={(e) =>
+									handleFormChange(setContributor, "token", e.target.value)
+								}
+							/>
+						</div>
 						{userDetails?.role === "Student" && (
 							<>
 								<Input
@@ -306,7 +287,7 @@ export function GoalsDialog({
 							</>
 						)}
 
-						<Button onClick={handleJoinGoal}>
+						<Button onClick={handleJoinGoal} disabled={isLoading}>
 							{isLoading ? "Joining..." : "Join"}
 						</Button>
 					</div>
@@ -316,7 +297,7 @@ export function GoalsDialog({
 				{mode === "create" && (
 					<div className="flex gap-2 items-end">
 						<Input
-							placeholder="Title"
+							placeholder="Goal Title"
 							value={goalValues.title}
 							onChange={(e) =>
 								handleFormChange(setGoalValues, "title", e.target.value)
@@ -333,6 +314,7 @@ export function GoalsDialog({
 						/>
 						<Button
 							onClick={() => handleGoal(goalValues.goal_id ? "edit" : "create")}
+							disabled={isLoading}
 						>
 							{goalValues.goal_id ? "Update" : "Create"}
 						</Button>
@@ -450,6 +432,38 @@ export function GoalsDialog({
 															<Edit2 className="h-4 w-4" />
 														</Button>
 
+														<DeleteGoalDialog
+															userId={userId || ""}
+															goalId={String(goal.goal_id)}
+															targetStatus={isInactive ? "Active" : "Inactive"}
+															showAlert={showAlert}
+															refreshGoals={refreshGoals}
+														>
+															<Button
+																size="icon"
+																variant="ghost"
+																className={
+																	isInactive
+																		? "text-green-500"
+																		: "text-destructive"
+																}
+															>
+																{isInactive ? (
+																	<CheckCircle className="h-4 w-4" />
+																) : (
+																	<Trash2 className="h-4 w-4" />
+																)}
+															</Button>
+														</DeleteGoalDialog>
+													</>
+												) : (
+													<LeaveGoalDialog
+														userId={userId || ""}
+														goalId={String(goal.goal_id)}
+														targetStatus={isInactive ? "Active" : "Inactive"}
+														showAlert={showAlert}
+														refreshGoals={refreshGoals}
+													>
 														<Button
 															size="icon"
 															variant="ghost"
@@ -458,40 +472,14 @@ export function GoalsDialog({
 																	? "text-green-500"
 																	: "text-destructive"
 															}
-															onClick={() =>
-																handleDeleteGoal(
-																	goal.goal_id,
-																	isInactive ? "Active" : "Inactive",
-																)
-															}
 														>
 															{isInactive ? (
 																<CheckCircle className="h-4 w-4" />
 															) : (
-																<Trash2 className="h-4 w-4" />
+																<LogOut className="h-4 w-4" />
 															)}
 														</Button>
-													</>
-												) : (
-													<Button
-														size="icon"
-														variant="ghost"
-														className={
-															isInactive ? "text-green-500" : "text-destructive"
-														}
-														onClick={() =>
-															handleLeaveGoal(
-																goal.goal_id,
-																isInactive ? "Active" : "Inactive",
-															)
-														}
-													>
-														{isInactive ? (
-															<CheckCircle className="h-4 w-4" />
-														) : (
-															<LogOut className="h-4 w-4" />
-														)}
-													</Button>
+													</LeaveGoalDialog>
 												)}
 											</div>
 										)}

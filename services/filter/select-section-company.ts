@@ -25,7 +25,9 @@ export const getSectionCompany = async (
 
 			rows.forEach((r) => {
 				if (r.section && r.section.trim()) {
-					sectionSet.add(r.section.trim());
+					const normalized = r.section.replace(/\s+/g, "").toUpperCase();
+					const formatted = normalized.replace(/([A-Z]+)(\d+)/, "$1 $2");
+					sectionSet.add(formatted);
 				}
 			});
 
@@ -41,7 +43,11 @@ export const getSectionCompany = async (
 
 			rows.forEach((r) => {
 				if (r.company && r.company.trim()) {
-					companySet.add(r.company.trim());
+					const formattedCompany = (r.company as string)
+						.trim()
+						.toLowerCase()
+						.replace(/\b\w/g, (char) => char.toUpperCase());
+					companySet.add(formattedCompany);
 				}
 			});
 

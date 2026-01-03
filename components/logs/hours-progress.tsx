@@ -1,5 +1,6 @@
 "use client";
 
+import { FadeIn } from "@/components/ui/fade-in";
 import { Progress } from "@/components/ui/progress";
 import {
 	Select,
@@ -35,7 +36,7 @@ export function HoursProgress({
 		required > 0 ? Math.min(100, (completed / required) * 100) : 0;
 
 	return (
-		<div className="mb-16 space-y-4">
+		<FadeIn className="mb-16 space-y-4">
 			<div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
 				<div className="flex items-baseline gap-3 text-3xl sm:text-5xl font-light text-muted-foreground">
 					<span className="text-foreground font-medium">
@@ -77,6 +78,6 @@ export function HoursProgress({
 			<p className="text-sm sm:text-base text-muted-foreground">
 				{description}
 			</p>
-		</div>
+		</FadeIn>
 	);
 }

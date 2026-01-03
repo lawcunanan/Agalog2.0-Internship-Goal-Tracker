@@ -1,5 +1,6 @@
 "use client";
 
+import { FadeIn } from "@/components/ui/fade-in";
 import {
 	Accordion,
 	AccordionContent,
@@ -11,10 +12,11 @@ import {
 	TooltipContent,
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { Edit, CalendarX } from "lucide-react";
+import { Edit } from "lucide-react";
 import { WeeklyLogSelect, LogValues } from "@/lib/types";
 import { DeleteLogDialog } from "../dialogs/delete-log-dialog";
 import { DescriptionCell } from "@/components/ui/description-cell";
+import { EmptyLogs } from "@/components/empty-state/empty-logs";
 
 interface WeeklyLogProps {
 	data: WeeklyLogSelect[];
@@ -30,16 +32,11 @@ export function WeeklyLog({
 	refreshLogs,
 }: WeeklyLogProps) {
 	if (!data || data.length === 0) {
-		return (
-			<div className="flex flex-col items-center justify-center py-12 text-muted-foreground mb-8">
-				<CalendarX className="h-12 w-12 mb-4 opacity-20" />
-				<p>No attendance records found.</p>
-			</div>
-		);
+		return <EmptyLogs />;
 	}
 
 	return (
-		<div className="space-y-12 mb-8">
+		<FadeIn delay={0.2} className="space-y-12 mb-8">
 			{data.map((week, index) => (
 				<div key={`${week.weekLabel}-${index}`} className="space-y-6">
 					<h3 className="text-xl font-semibold">{week.weekLabel}</h3>
@@ -162,6 +159,6 @@ export function WeeklyLog({
 					</Accordion>
 				</div>
 			))}
-		</div>
+		</FadeIn>
 	);
 }

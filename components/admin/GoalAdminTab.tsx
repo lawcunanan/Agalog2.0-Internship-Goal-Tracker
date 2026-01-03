@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { FadeIn } from "@/components/ui/fade-in";
 import { Input } from "@/components/ui/input";
 import {
 	Select,
@@ -14,6 +15,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { PaginationControls } from "@/components/pagination-controls";
 import { GoalAdminSelect } from "@/lib/types";
 import { getGoalAdmin } from "@/services/admin/select-goal-admin";
+import { EmptyAdminTable } from "@/components/empty-state/empty-admin-table";
 
 export function GoalAdminTab({
 	goalId,
@@ -47,7 +49,7 @@ export function GoalAdminTab({
 	}, [goalId, searchQuery, statusFilter, currentPage]);
 
 	return (
-		<div className="space-y-6 mt-4">
+		<FadeIn className="space-y-6 mt-4">
 			<div className="flex flex-col md:flex-row md:items-center gap-3 mb-4">
 				<div className="relative w-full md:w-64">
 					<Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
@@ -122,11 +124,8 @@ export function GoalAdminTab({
 							))
 						) : (
 							<tr>
-								<td
-									colSpan={7}
-									className="py-4 px-4 text-center text-xs sm:text-sm text-foreground"
-								>
-									No admin data available.
+								<td colSpan={7} className="py-12">
+									<EmptyAdminTable />
 								</td>
 							</tr>
 						)}
@@ -138,6 +137,6 @@ export function GoalAdminTab({
 				totalPages={totalPages}
 				onPageChange={(page) => setCurrentPage(page)}
 			/>
-		</div>
+		</FadeIn>
 	);
 }

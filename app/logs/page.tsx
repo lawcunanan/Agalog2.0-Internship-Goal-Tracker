@@ -35,10 +35,10 @@ export default function LogsPage() {
 	};
 
 	useEffect(() => {
-		if (user) {
+		if (user?.id) {
 			getLatestGoal(user.id, setGoalState, showAlert);
 		}
-	}, [user]);
+	}, [user?.id]);
 
 	useEffect(() => {
 		refreshLogs();

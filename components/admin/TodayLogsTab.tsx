@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { FadeIn } from "@/components/ui/fade-in";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import {
@@ -16,6 +17,7 @@ import { TodayLogsSelect } from "@/lib/types";
 import { getTodayLogs } from "@/services/admin/select-today-logs";
 import { getSectionCompany } from "@/services/filter/select-section-company";
 import { DescriptionCell } from "@/components/ui/description-cell";
+import { EmptyAdminTable } from "@/components/empty-state/empty-admin-table";
 
 export function TodayLogsTab({
 	role,
@@ -57,7 +59,7 @@ export function TodayLogsTab({
 	}, [goalId, role]);
 
 	return (
-		<div className="space-y-6 mt-4">
+		<FadeIn className="space-y-6 mt-4">
 			<div className="flex flex-col md:flex-row md:items-center gap-3 mb-4">
 				<div className="relative w-full md:w-64">
 					<Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
@@ -157,11 +159,8 @@ export function TodayLogsTab({
 							))
 						) : (
 							<tr>
-								<td
-									colSpan={10}
-									className="py-4 px-4 text-center text-xs sm:text-sm text-foreground"
-								>
-									No logs found.
+								<td colSpan={10} className="py-12">
+									<EmptyAdminTable />
 								</td>
 							</tr>
 						)}
@@ -173,6 +172,6 @@ export function TodayLogsTab({
 				totalPages={totalPages}
 				onPageChange={(page) => setCurrentPage(page)}
 			/>
-		</div>
+		</FadeIn>
 	);
 }

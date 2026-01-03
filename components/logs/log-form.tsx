@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { FadeIn } from "@/components/ui/fade-in";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -126,7 +127,7 @@ export function LogForm({
 	};
 
 	return (
-		<div className="space-y-8">
+		<FadeIn className="space-y-8">
 			<h2 className="text-3xl sm:text-4xl font-bold tracking-tight">
 				Log & Go!
 			</h2>
@@ -142,6 +143,7 @@ export function LogForm({
 						className="shadow-none"
 						value={logData.date}
 						onChange={handleChange}
+						max={new Date().toISOString().split("T")[0]}
 						required
 					/>
 				</div>
@@ -210,7 +212,7 @@ export function LogForm({
 					<Label htmlFor="description">Description</Label>
 					<Textarea
 						id="description"
-						placeholder="Describe your tasks for the day..."
+						placeholder="Briefly describe your tasks for the day..."
 						className="min-h-25 resize-none shadow-none"
 						value={logData.description}
 						onChange={handleChange}
@@ -242,6 +244,6 @@ export function LogForm({
 					</button>
 				)}
 			</form>
-		</div>
+		</FadeIn>
 	);
 }
