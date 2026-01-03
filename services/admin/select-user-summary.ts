@@ -28,11 +28,21 @@ export const getUserSummary = async (
 		}
 
 		if (sectionFilter && sectionFilter !== "All Sections") {
-			query = query.ilike("section", `%${sectionFilter}%`);
+			query = query.or(
+				`section.ilike.%${sectionFilter}%,section.ilike.%${sectionFilter.replace(
+					/\s+/g,
+					"",
+				)}%`,
+			);
 		}
 
 		if (companyFilter && companyFilter !== "All Companies") {
-			query = query.ilike("company", `%${companyFilter}%`);
+			query = query.or(
+				`company.ilike.%${companyFilter}%,company.ilike.%${companyFilter.replace(
+					/\s+/g,
+					"",
+				)}%`,
+			);
 		}
 
 		if (searchQuery) {

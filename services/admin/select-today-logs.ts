@@ -32,7 +32,12 @@ export const getTodayLogs = async (
 
 		// section filter
 		if (sectionFilter && sectionFilter !== "All Sections") {
-			query = query.ilike("section", `%${sectionFilter}%`);
+			query = query.or(
+				`section.ilike.%${sectionFilter}%,section.ilike.%${sectionFilter.replace(
+					/\s+/g,
+					"",
+				)}%`,
+			);
 		}
 
 		// search by fullname
