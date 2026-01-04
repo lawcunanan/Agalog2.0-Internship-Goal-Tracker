@@ -1,8 +1,23 @@
 import { supabase } from "@/lib/supabase";
 
-const fsToDate = (ts?: { seconds: number; nanoseconds: number }) => {
+const toPHTime = (date: Date) => {
+	const PH_OFFSET = 8 * 60 * 60 * 1000; // UTC+8
+	return new Date(date.getTime() + PH_OFFSET);
+};
+
+const fsToDate = (ts?: any) => {
 	if (!ts) return null;
-	return new Date(ts.seconds * 1000);
+
+	if (typeof ts.toDate === "function") {
+		return ts.toDate();
+	}
+
+	// Fallback (plain object)
+	if (ts.seconds) {
+		return new Date(ts.seconds * 1000);
+	}
+
+	return null;
 };
 
 export const tempInsertLog = async (
@@ -23,16 +38,33 @@ export const tempInsertLog = async (
 			user_id: userId,
 			goal_id: goalId,
 
-			log_date: fsToDate(rawLog.timeIn)?.toISOString().split("T")[0] ?? null,
+			log_date: fsToDate(rawLog.timeIn)
+				? toPHTime(fsToDate(rawLog.timeIn)!).toLocaleDateString("en-CA")
+				: null,
 
-			timeIn: fsToDate(rawLog.timeIn),
-			timeOut: fsToDate(rawLog.timeOut),
-			breakOut: fsToDate(rawLog.breakOut),
-			breakBack: fsToDate(rawLog.breakBack),
+			timeIn: fsToDate(rawLog.timeIn)
+				? toPHTime(fsToDate(rawLog.timeIn)!)
+				: null,
+
+			timeOut: fsToDate(rawLog.timeOut)
+				? toPHTime(fsToDate(rawLog.timeOut)!)
+				: null,
+
+			breakOut: fsToDate(rawLog.breakOut)
+				? toPHTime(fsToDate(rawLog.breakOut)!)
+				: null,
+
+			breakBack: fsToDate(rawLog.breakBack)
+				? toPHTime(fsToDate(rawLog.breakBack)!)
+				: null,
 
 			description: rawLog.description ?? null,
-			created_at: fsToDate(rawLog.createdAt),
-			updated_at: fsToDate(rawLog.updatedAt),
+			created_at: fsToDate(rawLog.createdAt)
+				? toPHTime(fsToDate(rawLog.createdAt)!)
+				: null,
+			updated_at: fsToDate(rawLog.updatedAt)
+				? toPHTime(fsToDate(rawLog.updatedAt)!)
+				: null,
 		};
 
 		const { error } = await supabase.from("logs").insert(payload);

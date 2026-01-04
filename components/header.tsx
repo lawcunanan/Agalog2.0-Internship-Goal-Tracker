@@ -15,6 +15,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useAuth } from "@/providers/auth-provider";
 import { LogoutDialog } from "@/components/dialogs/logout-dialog";
 import { GoalsDialog } from "@/components/dialogs/goals-dialog";
+import { TempInsertDialog } from "@/components/dialogs/temp-insert-dialog";
 import { useAlert } from "@/providers/alert-provider";
 import { exportExcel } from "@/lib/utils/export-utils";
 import { GoalActiveState, WeeklyLogState } from "@/lib/types";
@@ -142,6 +143,19 @@ export function Header({
 											</Button>
 										</GoalsDialog>
 									)}
+
+									{["Admin", "Superadmin"].includes(role) && (
+										<TempInsertDialog>
+											<Button
+												variant="ghost"
+												size={buttonSize}
+												className={buttonClass}
+											>
+												Data Transfer
+											</Button>
+										</TempInsertDialog>
+									)}
+
 									<LogoutDialog>
 										<Button
 											variant="ghost"
