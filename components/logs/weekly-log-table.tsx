@@ -93,7 +93,7 @@ export function WeeklyLogTable({ data }: WeeklyLogTableProps) {
 											{log.breakDuration}
 										</td>
 										<td className="py-4 px-4 text-xs sm:text-sm font-medium text-blue-700 min-w-30">
-											{log.hoursWorked}h
+											{log.hoursWorked}
 										</td>
 										<td className="py-4 px-4 text-xs sm:text-sm text-muted-foreground min-w-100">
 											<DescriptionCell description={log.description} />
