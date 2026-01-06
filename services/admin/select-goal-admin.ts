@@ -54,7 +54,7 @@ export const getGoalAdmin = async (
 				picture: item.avatar_url,
 				role: item.role,
 				status: item.status,
-				createdAt: format(new Date(item.created_at), "MMM d, yyyy"),
+				createdAt: format(new Date(item.created_at), "MMM d, yyyy h:mm a"),
 			})),
 		);
 	} catch (error: any) {

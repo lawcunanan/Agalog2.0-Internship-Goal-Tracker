@@ -49,7 +49,7 @@ export const getGoals = async (
 				goalHours: item.goal || 0,
 				createdBy: item.users?.full_name || "N/A",
 				createdDate: item.created_at
-					? format(new Date(item.created_at), "MMM d, yyyy")
+					? format(new Date(item.created_at), "MMM d, yyyy h:mm a")
 					: "--:--",
 				status: item.status,
 			})),

@@ -53,7 +53,7 @@ export const getUsers = async (
 				status: item.status,
 				role: item.role,
 				createdAt: item.created_at
-					? format(new Date(item.created_at), "MMM d, yyyy")
+					? format(new Date(item.created_at), "MMM d, yyyy h:mm a")
 					: "--:--",
 			})),
 		);
