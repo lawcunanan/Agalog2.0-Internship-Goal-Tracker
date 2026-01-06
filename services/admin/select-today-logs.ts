@@ -81,7 +81,7 @@ export const getTodayLogs = async (
 					hoursWorked: formatDuration(rawHours),
 					description: l.description || "",
 					createdAt: l.created_at
-						? format(new Date(l.created_at), "MMM d, yyyy")
+						? format(new Date(l.created_at), "MMM d, yyyy h:mm a")
 						: "--:--",
 				};
 			}) || [];
