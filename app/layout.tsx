@@ -1,10 +1,9 @@
 import type { ReactNode } from "react";
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/providers/theme-provider";
 import { AlertProvider } from "@/providers/alert-provider";
-import { AuthProvider } from "@/providers/auth-provider";
 
 const _geist = Geist({ subsets: ["latin"] });
 
@@ -27,16 +26,14 @@ export default function RootLayout({ children }: { children: ReactNode }) {
 		<html lang="en" suppressHydrationWarning>
 			<body className={`font-sans antialiased ${_geist.className}`}>
 				<AlertProvider>
-					<AuthProvider>
-						<ThemeProvider
-							attribute="class"
-							defaultTheme="dark"
-							enableSystem
-							disableTransitionOnChange
-						>
-							{children}
-						</ThemeProvider>
-					</AuthProvider>
+					<ThemeProvider
+						attribute="class"
+						defaultTheme="dark"
+						enableSystem
+						disableTransitionOnChange
+					>
+						{children}
+					</ThemeProvider>
 				</AlertProvider>
 			</body>
 		</html>

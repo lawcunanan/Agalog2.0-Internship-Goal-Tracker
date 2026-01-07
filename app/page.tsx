@@ -10,8 +10,8 @@ import { cn } from "@/lib/utils";
 
 export default function Home() {
 	const searchParams = useSearchParams();
-	const { showAlert } = useAlert();
 	const userRole = searchParams.get("role");
+	const { showAlert } = useAlert();
 
 	return (
 		<main className="min-h-screen flex flex-col">

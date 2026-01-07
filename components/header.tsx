@@ -13,44 +13,15 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useAuth } from "@/providers/auth-provider";
-import { LogoutDialog } from "@/components/dialogs/logout-dialog";
-import { GoalsDialog } from "@/components/dialogs/goals-dialog";
-import { TempInsertDialog } from "@/components/dialogs/temp-insert-dialog";
 import { useAlert } from "@/providers/alert-provider";
-import { exportExcel } from "@/lib/utils/export-utils";
-import { GoalActiveState, WeeklyLogState } from "@/lib/types";
 
-interface HeaderProps {
-	goalState?: GoalActiveState;
-	setGoalState?: (goalState: GoalActiveState) => void;
-	logState?: WeeklyLogState;
-	goalHours?: number;
-}
-
-export function Header({
-	goalState,
-	setGoalState,
-	logState,
-	goalHours,
-}: HeaderProps) {
+export function Header() {
 	const pathname = usePathname();
 	const { user, userDetails } = useAuth();
 	const { showAlert } = useAlert();
 
-	const role = userDetails?.role || "";
 	const buttonClass = "w-full justify-start cursor-pointer";
 	const buttonSize = "sm";
-
-	const onExportClick = async () => {
-		if (logState && userDetails && goalHours) {
-			await exportExcel(
-				userDetails.full_name || null,
-				logState,
-				goalHours,
-				showAlert,
-			);
-		}
-	};
 
 	return (
 		<header className="fixed top-0 left-0 right-0 w-full z-50 border-b border-border bg-background/60 backdrop-blur-sm">
@@ -113,58 +84,38 @@ export function Header({
 										</div>
 									</div>
 									<DropdownMenuSeparator />
-									{role === "Student" && logState && (
-										<>
-											<Button
-												variant="ghost"
-												size={buttonSize}
-												className={buttonClass}
-												onClick={onExportClick}
-											>
-												Download Report
-											</Button>
-										</>
-									)}
 
-									{["Student", "Admin"].includes(role) && (
-										<GoalsDialog
-											userId={user?.id || ""}
-											userDetails={userDetails || ({} as any)}
-											goalState={goalState || ({} as any)}
-											setGoalState={setGoalState || (() => {})}
-											showAlert={showAlert}
-										>
-											<Button
-												variant="ghost"
-												size={buttonSize}
-												className={buttonClass}
-											>
-												Manage Goals
-											</Button>
-										</GoalsDialog>
-									)}
+									<Button
+										variant="ghost"
+										size={buttonSize}
+										className={buttonClass}
+									>
+										Download Report
+									</Button>
 
-									{["Admin", "Superadmin"].includes(role) && (
-										<TempInsertDialog>
-											<Button
-												variant="ghost"
-												size={buttonSize}
-												className={buttonClass}
-											>
-												Data Transfer
-											</Button>
-										</TempInsertDialog>
-									)}
+									<Button
+										variant="ghost"
+										size={buttonSize}
+										className={buttonClass}
+									>
+										Manage Goals
+									</Button>
 
-									<LogoutDialog>
-										<Button
-											variant="ghost"
-											size={buttonSize}
-											className={`${buttonClass} text-destructive hover:text-destructive`}
-										>
-											Logout
-										</Button>
-									</LogoutDialog>
+									<Button
+										variant="ghost"
+										size={buttonSize}
+										className={buttonClass}
+									>
+										Data Transfer
+									</Button>
+
+									<Button
+										variant="ghost"
+										size={buttonSize}
+										className={`${buttonClass} text-destructive hover:text-destructive`}
+									>
+										Logout
+									</Button>
 								</div>
 							</DropdownMenuContent>
 						</DropdownMenu>
