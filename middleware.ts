@@ -1,48 +1,29 @@
-import { createServerClient } from "@supabase/ssr";
+import { createMiddlewareClient } from "@/lib/supabase/middleware";
+import { getUser } from "@/services/auth/get-user";
 import { NextResponse, type NextRequest } from "next/server";
 
 export async function middleware(request: NextRequest) {
-	let response = NextResponse.next({
-		request: {
-			headers: request.headers,
-		},
-	});
+	const { supabase, response } = createMiddlewareClient(request);
 
-	const supabase = createServerClient(
-		process.env.NEXT_PUBLIC_SUPABASE_URL!,
-		process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-		{
-			cookies: {
-				getAll() {
-					return request.cookies.getAll();
-				},
-				setAll(cookiesToSet) {
-					cookiesToSet.forEach(({ name, value, options }) =>
-						request.cookies.set(name, value),
-					);
-					response = NextResponse.next({
-						request,
-					});
-					cookiesToSet.forEach(({ name, value, options }) =>
-						response.cookies.set(name, value, options),
-					);
-				},
-			},
-		},
-	);
+	// Handle OAuth redirect falling back to root
+	if (
+		request.nextUrl.pathname === "/" &&
+		request.nextUrl.searchParams.has("code")
+	) {
+		const callbackUrl = request.nextUrl.clone();
+		callbackUrl.pathname = "/auth/callback";
+		return NextResponse.redirect(callbackUrl);
+	}
 
-	const {
-		data: { user },
-	} = await supabase.auth.getUser();
-
+	const user = await getUser(supabase);
 	const path = request.nextUrl.pathname;
 
 	// Define protected routes and allowed roles
 	const routePermissions = [
+		{ path: "/student", roles: ["Student"] },
 		{ path: "/logs", roles: ["Student"] },
 		{ path: "/admin", roles: ["Admin"] },
-		{ path: "/superadmin", roles: ["SuperAdmin", "Admin"] },
-		{ path: "/student/", roles: ["Admin", "SuperAdmin"] },
+		{ path: "/superadmin", roles: ["Super Admin", "Admin"] },
 	];
 
 	// Public routes that don't require authentication
@@ -60,26 +41,15 @@ export async function middleware(request: NextRequest) {
 
 	// If user is logged in
 	if (user) {
-		// Fetch user role
-		const { data: userData, error } = await supabase
-			.from("users")
-			.select("role")
-			.eq("user_id", user.id)
-			.single();
-
-		if (error) {
-			console.error("Middleware: Error fetching user role:", error);
-		}
-
-		const userRole = userData?.role;
+		const userRole = user.user_metadata.role;
 
 		// Redirect logged-in users from landing page based on role
 		if (path === "/") {
 			if (userRole === "Student") {
-				return NextResponse.redirect(new URL("/logs", request.url));
+				return NextResponse.redirect(new URL("/student", request.url));
 			} else if (userRole === "Admin") {
 				return NextResponse.redirect(new URL("/admin", request.url));
-			} else if (userRole === "SuperAdmin") {
+			} else if (userRole === "Super Admin") {
 				return NextResponse.redirect(new URL("/superadmin", request.url));
 			} else {
 				return NextResponse.redirect(new URL("/unauthorized", request.url));

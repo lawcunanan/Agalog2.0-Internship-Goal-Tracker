@@ -14,7 +14,14 @@ export function ThemeToggle() {
 		setMounted(true);
 	}, []);
 
-	if (!mounted) return null;
+	if (!mounted) {
+		return (
+			<div className="flex bg-muted rounded-full p-1 border">
+				<div className="w-9 h-9" />
+				<div className="w-9 h-9" />
+			</div>
+		);
+	}
 
 	const renderButton = (mode: "light" | "dark", Icon: LucideIcon) => {
 		const isActive = theme === mode;
@@ -45,7 +52,7 @@ export function ThemeToggle() {
 	};
 
 	return (
-		<div className="flex items-center gap-1 border rounded-full p-1 bg-background/50 backdrop-blur-sm">
+		<div className="flex items-center gap-1 border rounded-full p-1 bg-background/50 backdrop-blur-sm animate-in fade-in zoom-in-95 duration-200">
 			{renderButton("light", Sun)}
 			{renderButton("dark", Moon)}
 		</div>

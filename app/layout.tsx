@@ -4,6 +4,9 @@ import { Geist } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/providers/theme-provider";
 import { AlertProvider } from "@/providers/alert-provider";
+import { AuthProvider } from "@/providers/auth-provider";
+import { supabaseServer } from "@/lib/supabase/server";
+import { getAuthValues } from "@/services/auth/get-user";
 
 const _geist = Geist({ subsets: ["latin"] });
 
@@ -21,19 +24,28 @@ export const metadata: Metadata = {
 	},
 };
 
-export default function RootLayout({ children }: { children: ReactNode }) {
+export default async function RootLayout({
+	children,
+}: {
+	children: ReactNode;
+}) {
+	const supabase = await supabaseServer();
+	const { data: userDetails } = await getAuthValues(supabase);
+
 	return (
 		<html lang="en" suppressHydrationWarning>
 			<body className={`font-sans antialiased ${_geist.className}`}>
 				<AlertProvider>
-					<ThemeProvider
-						attribute="class"
-						defaultTheme="dark"
-						enableSystem
-						disableTransitionOnChange
-					>
-						{children}
-					</ThemeProvider>
+					<AuthProvider userDetails={userDetails}>
+						<ThemeProvider
+							attribute="class"
+							defaultTheme="dark"
+							enableSystem
+							disableTransitionOnChange
+						>
+							{children}
+						</ThemeProvider>
+					</AuthProvider>
 				</AlertProvider>
 			</body>
 		</html>

@@ -1,5 +1,6 @@
 "use client";
 
+import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
@@ -8,7 +9,7 @@ import { signInWithGoogle } from "@/services/auth/login";
 import { useAlert } from "@/providers/alert-provider";
 import { cn } from "@/lib/utils";
 
-export default function Home() {
+function HomeContent() {
 	const searchParams = useSearchParams();
 	const userRole = searchParams.get("role");
 	const { showAlert } = useAlert();
@@ -77,5 +78,13 @@ export default function Home() {
 
 			<Footer />
 		</main>
+	);
+}
+
+export default function Home() {
+	return (
+		<Suspense fallback={null}>
+			<HomeContent />
+		</Suspense>
 	);
 }

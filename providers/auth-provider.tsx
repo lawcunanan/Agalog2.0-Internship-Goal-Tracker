@@ -1,88 +1,71 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import Lottie from "lottie-react";
 import authAnimation from "@/public/lottie/authLoading.json";
 import {
 	createContext,
 	useContext,
-	useEffect,
 	useState,
+	useEffect,
 	type ReactNode,
 } from "react";
-import { supabase } from "@/lib/supabase";
-import type { User as SupabaseUser } from "@supabase/supabase-js";
-import { useAlert } from "@/providers/alert-provider";
+import { supabaseBrowser } from "@/lib/supabase/client";
+import { useAlert } from "./alert-provider";
 import { UserDetails } from "@/lib/types";
+import { getAuthValues } from "@/services/auth/get-user";
 
 interface AuthContextType {
-	user: SupabaseUser | null;
-	userDetails: UserDetails | null;
+	user: UserDetails | null;
 	loading: boolean;
+	setUser: (user: UserDetails | null) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export function AuthProvider({ children }: { children: ReactNode }) {
+export function AuthProvider({
+	children,
+	userDetails,
+}: {
+	children: ReactNode;
+	userDetails: UserDetails | null;
+}) {
+	const router = useRouter();
+	const [user, setUser] = useState<UserDetails | null>(userDetails);
+	const [loading, setLoading] = useState(false);
 	const { showAlert } = useAlert();
 
-	const [user, setUser] = useState<SupabaseUser | null>(null);
-	const [userDetails, setUserDetails] = useState<UserDetails | null>(null);
-	const [loading, setLoading] = useState(true);
-
 	useEffect(() => {
-		let mounted = true;
+		const {
+			data: { subscription },
+		} = supabaseBrowser.auth.onAuthStateChange(async (event, session) => {
+			if (event === "SIGNED_IN" || event === "TOKEN_REFRESHED") {
+				if (session?.user) {
+					if (!user || user.user_id !== session.user.id) {
+						setLoading(true);
+						const { data, error } = await getAuthValues(supabaseBrowser);
+						if (error) {
+							showAlert(500, error);
+							setUser(null);
+						} else {
+							setUser(data);
+							router.refresh();
+						}
 
-		const fetchUserDetails = async (userId: string) => {
-			const { data, error } = await supabase
-				.from("users")
-				.select("*")
-				.eq("user_id", userId)
-				.maybeSingle();
-
-			if (error) {
-				console.error("Supabase fetch error:", error.message);
-				showAlert(500, "Error fetching user details");
-				return;
+						setLoading(false);
+					}
+				}
+			} else if (event === "SIGNED_OUT") {
+				setUser(null);
+				setLoading(false);
+				router.push("/");
 			}
-
-			if (mounted) {
-				setUserDetails(data);
-			}
-		};
-
-		// Initial session check
-		supabase.auth.getSession().then(({ data }) => {
-			const sessionUser = data.session?.user ?? null;
-			setUser(sessionUser);
-
-			if (sessionUser) {
-				fetchUserDetails(sessionUser.id);
-			}
-
-			setLoading(false);
 		});
 
-		// Listen to auth changes
-		const { data: authListener } = supabase.auth.onAuthStateChange(
-			(_event, session) => {
-				const sessionUser = session?.user ?? null;
-				setUser(sessionUser);
-
-				if (sessionUser) {
-					fetchUserDetails(sessionUser.id);
-				} else {
-					setUserDetails(null);
-				}
-
-				setLoading(false);
-			},
-		);
-
 		return () => {
-			mounted = false;
-			authListener.subscription.unsubscribe();
+			subscription.unsubscribe();
 		};
-	}, [showAlert]);
+	}, [user, showAlert]);
 
 	if (loading) {
 		return (
@@ -95,7 +78,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 	}
 
 	return (
-		<AuthContext.Provider value={{ user, userDetails, loading }}>
+		<AuthContext.Provider value={{ user, loading, setUser }}>
 			{children}
 		</AuthContext.Provider>
 	);

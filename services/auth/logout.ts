@@ -1,4 +1,4 @@
-import { supabase } from "@/lib/supabase";
+import { supabaseBrowser } from "@/lib/supabase/client";
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 
 export const signOutUser = async (
@@ -8,7 +8,7 @@ export const signOutUser = async (
 ) => {
 	setIsLoading(true);
 	try {
-		const { error } = await supabase.auth.signOut();
+		const { error } = await supabaseBrowser.auth.signOut();
 
 		if (error) {
 			throw error;

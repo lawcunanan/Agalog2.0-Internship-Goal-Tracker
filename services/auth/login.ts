@@ -1,4 +1,4 @@
-import { supabase } from "@/lib/supabase";
+import { supabaseBrowser } from "@/lib/supabase/client";
 
 export const signInWithGoogle = async (
 	role: string | null,
@@ -11,7 +11,7 @@ export const signInWithGoogle = async (
 			userRole = "Admin";
 		}
 
-		const { data, error } = await supabase.auth.signInWithOAuth({
+		const { data, error } = await supabaseBrowser.auth.signInWithOAuth({
 			provider: "google",
 			options: {
 				redirectTo: `${window.location.origin}/auth/callback?role=${userRole}`,
