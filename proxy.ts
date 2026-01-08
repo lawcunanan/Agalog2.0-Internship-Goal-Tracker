@@ -1,8 +1,8 @@
 import { createMiddlewareClient } from "@/lib/supabase/middleware";
-import { getUser } from "@/services/auth/get-user";
+import { getUser } from "@/services/csr/auth/get-user";
 import { NextResponse, type NextRequest } from "next/server";
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
 	const { supabase, response } = createMiddlewareClient(request);
 
 	// Handle OAuth redirect falling back to root

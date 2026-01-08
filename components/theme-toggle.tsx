@@ -17,8 +17,8 @@ export function ThemeToggle() {
 	if (!mounted) {
 		return (
 			<div className="flex bg-muted rounded-full p-1 border">
-				<div className="w-9 h-9" />
-				<div className="w-9 h-9" />
+				<div className="w-8 h-8" />
+				<div className="w-8 h-8" />
 			</div>
 		);
 	}

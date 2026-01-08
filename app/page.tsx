@@ -5,7 +5,7 @@ import { useSearchParams } from "next/navigation";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { TypewriterText } from "@/components/ui/typewriter-text";
-import { signInWithGoogle } from "@/services/auth/login";
+import { signInWithGoogle } from "@/services/ssr/auth/login";
 import { useAlert } from "@/providers/alert-provider";
 import { cn } from "@/lib/utils";
 

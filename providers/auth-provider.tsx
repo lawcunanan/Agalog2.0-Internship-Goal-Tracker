@@ -13,7 +13,7 @@ import {
 import { supabaseBrowser } from "@/lib/supabase/client";
 import { useAlert } from "./alert-provider";
 import { UserDetails } from "@/lib/types";
-import { getAuthValues } from "@/services/auth/get-user";
+import { getAuthValues } from "@/services/csr/auth/get-user";
 
 interface AuthContextType {
 	user: UserDetails | null;

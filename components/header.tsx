@@ -1,6 +1,6 @@
 "use client";
 
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
@@ -12,25 +12,19 @@ import {
 	DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+
 import { useAlert } from "@/providers/alert-provider";
 import { useAuth } from "@/providers/auth-provider";
-import { signOutUser } from "@/services/auth/logout";
-import { useState } from "react";
+import { LogoutDialog } from "@/components/dialogs/logout-dialog";
 import { getInitials } from "@/lib/utils";
 
 export function Header() {
 	const pathname = usePathname();
-	const router = useRouter();
 	const { showAlert } = useAlert();
 	const { user } = useAuth();
-	const [isLoading, setIsLoading] = useState(false);
 
 	const buttonClass = "w-full justify-start cursor-pointer";
 	const buttonSize = "sm";
-
-	const handleLogout = async () => {
-		await signOutUser(showAlert, router, setIsLoading);
-	};
 
 	return (
 		<header className="fixed top-0 left-0 right-0 w-full z-50 border-b border-border bg-background/60 backdrop-blur-sm">
@@ -59,7 +53,7 @@ export function Header() {
 
 				<div className="flex items-center gap-4">
 					<ThemeToggle />
-					{!isLoading && user && (
+					{user && (
 						<DropdownMenu>
 							<DropdownMenuTrigger asChild>
 								<Button
@@ -76,7 +70,8 @@ export function Header() {
 										<Avatar className="h-14 w-14 border-3 border-border">
 											<AvatarImage
 												src={user.avatar_url}
-												alt={user.full_name || "User"}
+												loading="lazy"
+												referrerPolicy="no-referrer"
 											/>
 											<AvatarFallback>
 												{getInitials(user.full_name || user.email)}
@@ -109,7 +104,15 @@ export function Header() {
 										size={buttonSize}
 										className={buttonClass}
 									>
-										Manage Goals
+										Join Goal
+									</Button>
+
+									<Button
+										variant="ghost"
+										size={buttonSize}
+										className={buttonClass}
+									>
+										Manage Goal
 									</Button>
 
 									<Button
@@ -120,15 +123,7 @@ export function Header() {
 										Data Transfer
 									</Button>
 
-									<Button
-										variant="ghost"
-										size={buttonSize}
-										className={`${buttonClass} text-destructive hover:text-destructive`}
-										onClick={handleLogout}
-										disabled={isLoading}
-									>
-										{isLoading ? "Logging out..." : "Logout"}
-									</Button>
+									<LogoutDialog showAlert={showAlert} />
 								</div>
 							</DropdownMenuContent>
 						</DropdownMenu>

@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { ShieldAlert } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useAlert } from "@/providers/alert-provider";
-import { signOutUser } from "@/services/auth/logout";
+import { signOutUser } from "@/services/ssr/auth/logout";
 import { supabaseBrowser } from "@/lib/supabase/client";
 import { useState } from "react";
 

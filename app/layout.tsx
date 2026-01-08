@@ -6,7 +6,7 @@ import { ThemeProvider } from "@/providers/theme-provider";
 import { AlertProvider } from "@/providers/alert-provider";
 import { AuthProvider } from "@/providers/auth-provider";
 import { supabaseServer } from "@/lib/supabase/server";
-import { getAuthValues } from "@/services/auth/get-user";
+import { getAuthValues } from "@/services/csr/auth/get-user";
 
 const _geist = Geist({ subsets: ["latin"] });
 
