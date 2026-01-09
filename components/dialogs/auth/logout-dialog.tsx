@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import { LogOut } from "lucide-react";
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -22,13 +22,12 @@ export function LogoutDialog({
 }: {
 	showAlert: (status: number, message: string) => void;
 }) {
-	const router = useRouter();
 	const [isLoading, setIsLoading] = useState(false);
 	const [open, setOpen] = useState(false);
 
 	const handleLogout = async (e: React.MouseEvent) => {
 		e.preventDefault();
-		await signOutUser(showAlert, router, setIsLoading);
+		await signOutUser(showAlert, setIsLoading);
 		setOpen(false);
 	};
 
@@ -38,9 +37,9 @@ export function LogoutDialog({
 				<Button
 					variant="ghost"
 					size="sm"
-					className="w-full justify-start cursor-pointer"
+					className="w-full justify-start cursor-pointer gap-2 text-destructive hover:text-red-600"
 				>
-					Logout
+					<LogOut className="h-4 w-4" /> Logout
 				</Button>
 			</AlertDialogTrigger>
 			<AlertDialogContent>

@@ -17,7 +17,7 @@ import { getAuthValues } from "@/services/csr/auth/get-user";
 
 interface AuthContextType {
 	user: UserDetails | null;
-	loading: boolean;
+	isLoading: boolean;
 	setUser: (user: UserDetails | null) => void;
 }
 
@@ -32,7 +32,7 @@ export function AuthProvider({
 }) {
 	const router = useRouter();
 	const [user, setUser] = useState<UserDetails | null>(userDetails);
-	const [loading, setLoading] = useState(false);
+	const [isLoading, setIsLoading] = useState(true);
 	const { showAlert } = useAlert();
 
 	useEffect(() => {
@@ -42,7 +42,6 @@ export function AuthProvider({
 			if (event === "SIGNED_IN" || event === "TOKEN_REFRESHED") {
 				if (session?.user) {
 					if (!user || user.user_id !== session.user.id) {
-						setLoading(true);
 						const { data, error } = await getAuthValues(supabaseBrowser);
 						if (error) {
 							showAlert(500, error);
@@ -51,23 +50,22 @@ export function AuthProvider({
 							setUser(data);
 							router.refresh();
 						}
-
-						setLoading(false);
 					}
 				}
 			} else if (event === "SIGNED_OUT") {
 				setUser(null);
-				setLoading(false);
-				router.push("/");
+				router.refresh();
 			}
+
+			isLoading && setIsLoading(false);
 		});
 
 		return () => {
 			subscription.unsubscribe();
 		};
-	}, [user, showAlert]);
+	}, [user, showAlert, router]);
 
-	if (loading) {
+	if (isLoading) {
 		return (
 			<div className="flex items-center justify-center h-screen w-full bg-background">
 				<div className="w-72 h-72">
@@ -78,7 +76,7 @@ export function AuthProvider({
 	}
 
 	return (
-		<AuthContext.Provider value={{ user, loading, setUser }}>
+		<AuthContext.Provider value={{ user, isLoading, setUser }}>
 			{children}
 		</AuthContext.Provider>
 	);
@@ -87,7 +85,7 @@ export function AuthProvider({
 export function useAuth() {
 	const context = useContext(AuthContext);
 	if (!context) {
-		throw new Error("useAuth must be used within AuthProvider");
+		throw new Error("Auth must be used within AuthProvider");
 	}
 	return context;
 }

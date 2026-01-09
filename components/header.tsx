@@ -4,7 +4,7 @@ import { usePathname } from "next/navigation";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
-import { Menu } from "lucide-react";
+import { Menu, Download, ArrowLeftRight } from "lucide-react";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -15,7 +15,9 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 import { useAlert } from "@/providers/alert-provider";
 import { useAuth } from "@/providers/auth-provider";
-import { LogoutDialog } from "@/components/dialogs/logout-dialog";
+import { LogoutDialog } from "@/components/dialogs/auth/logout-dialog";
+import { JoinGoalDialog } from "./dialogs/goals/join-dialog";
+import { ManageGoalsDialog } from "./dialogs/goals/manage-dialog";
 import { getInitials } from "@/lib/utils";
 
 export function Header() {
@@ -23,7 +25,7 @@ export function Header() {
 	const { showAlert } = useAlert();
 	const { user } = useAuth();
 
-	const buttonClass = "w-full justify-start cursor-pointer";
+	const buttonClass = "w-full justify-start cursor-pointer gap-2";
 	const buttonSize = "sm";
 
 	return (
@@ -90,12 +92,14 @@ export function Header() {
 										</div>
 									</div>
 									<DropdownMenuSeparator />
-
+									<JoinGoalDialog />
+									<ManageGoalsDialog />
 									<Button
 										variant="ghost"
 										size={buttonSize}
 										className={buttonClass}
 									>
+										<Download className="h-4 w-4" />
 										Download Report
 									</Button>
 
@@ -104,22 +108,7 @@ export function Header() {
 										size={buttonSize}
 										className={buttonClass}
 									>
-										Join Goal
-									</Button>
-
-									<Button
-										variant="ghost"
-										size={buttonSize}
-										className={buttonClass}
-									>
-										Manage Goal
-									</Button>
-
-									<Button
-										variant="ghost"
-										size={buttonSize}
-										className={buttonClass}
-									>
+										<ArrowLeftRight className="h-4 w-4" />
 										Data Transfer
 									</Button>
 
