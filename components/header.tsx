@@ -27,6 +27,8 @@ export function Header() {
 
 	const buttonClass = "w-full justify-start cursor-pointer gap-2";
 	const buttonSize = "sm";
+	const isStudent = user?.role === "Student";
+	const isAdmin = user?.role === "Admin";
 
 	return (
 		<header className="fixed top-0 left-0 right-0 w-full z-50 border-b border-border bg-background/60 backdrop-blur-sm">
@@ -92,25 +94,30 @@ export function Header() {
 										</div>
 									</div>
 									<DropdownMenuSeparator />
-									<JoinGoalDialog />
-									<ManageGoalsDialog />
-									<Button
-										variant="ghost"
-										size={buttonSize}
-										className={buttonClass}
-									>
-										<Download className="h-4 w-4" />
-										Download Report
-									</Button>
-
-									<Button
-										variant="ghost"
-										size={buttonSize}
-										className={buttonClass}
-									>
-										<ArrowLeftRight className="h-4 w-4" />
-										Data Transfer
-									</Button>
+									{(isStudent || isAdmin) && (
+										<>
+											<JoinGoalDialog user={user} showAlert={showAlert} />
+											<ManageGoalsDialog user={user} showAlert={showAlert} />
+											<Button
+												variant="ghost"
+												size={buttonSize}
+												className={buttonClass}
+											>
+												<Download className="h-4 w-4" />
+												Download Report
+											</Button>
+											{isAdmin && (
+												<Button
+													variant="ghost"
+													size={buttonSize}
+													className={buttonClass}
+												>
+													<ArrowLeftRight className="h-4 w-4" />
+													Data Transfer
+												</Button>
+											)}
+										</>
+									)}
 
 									<LogoutDialog showAlert={showAlert} />
 								</div>

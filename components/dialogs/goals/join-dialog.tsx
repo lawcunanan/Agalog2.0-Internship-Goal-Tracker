@@ -21,61 +21,62 @@ import {
 	SelectValue,
 } from "@/components/ui/select";
 import { X, Shield, Target } from "lucide-react";
+import { LoadingButtonText } from "@/components/ui/loading-button-text";
+import { UserState, GoalsState } from "@/lib/types";
+import { getHandleValues } from "@/lib/utils";
 
-const GOALS_DATABASE: Record<
-	string,
-	{ title: string; hours: number; company: string; sections: string[] }
-> = {
-	"1234": {
-		title: "Summer Internship 2024",
-		hours: 400,
-		company: "Tech Corp",
-		sections: ["Web Development", "UI/UX Design", "Backend Development"],
-	},
-};
+import { checkToken } from "@/services/csr/contributors/check-token";
+import { upsertContributor } from "@/services/csr/contributors/upsert-contributor";
 
-export function JoinGoalDialog() {
+export function JoinGoalDialog({
+	user,
+	showAlert,
+}: {
+	user: UserState;
+	showAlert: (status: number, message: string) => void;
+}) {
 	const [open, setOpen] = useState(false);
+	const [isLoading, setIsLoading] = useState(false);
 	const [token, setToken] = useState("");
-	const [foundGoal, setFoundGoal] = useState<{
-		title: string;
-		hours: number;
-		company: string;
-		sections: string[];
-	} | null>(null);
-	const [selectedSection, setSelectedSection] = useState("");
-	const [company, setCompany] = useState("");
+	const [goalValues, setGoalValues] = useState<GoalsState | null>(null);
+
+	const isStudent = user?.role === "Student";
+	const requiredValues =
+		(isStudent && (!goalValues?.company || !goalValues?.section)) ||
+		!goalValues?.goal_id;
 
 	const handleCheckToken = async () => {
-		if (!token.trim()) return;
+		if (!user) return showAlert(500, "User not found.");
+		if (!token.trim()) return showAlert(300, "Please enter a valid token.");
 
-		const goalData = GOALS_DATABASE[token];
-		if (goalData) {
-			setFoundGoal(goalData);
-			setCompany(goalData.company);
-		} else {
-			alert("Token not found. Please check and try again.");
-			setFoundGoal(null);
-		}
-	};
-
-	const handleJoinGoal = () => {
-		if (!selectedSection) {
-			alert("Please select a section");
-			return;
-		}
-		alert(
-			`Successfully joined goal: ${foundGoal?.title} with section: ${selectedSection}`,
+		await checkToken(
+			user.user_id,
+			token.trim(),
+			user.role || "Student",
+			setGoalValues,
+			showAlert,
+			setIsLoading,
 		);
-		resetForm();
-		setOpen(false);
+
+		setToken("");
 	};
 
-	const resetForm = () => {
-		setToken("");
-		setFoundGoal(null);
-		setSelectedSection("");
-		setCompany("");
+	const handleJoinGoal = async () => {
+		if (!user) return showAlert(500, "User not found.");
+		if (requiredValues)
+			return showAlert(300, "Please fill in all required fields.");
+
+		await upsertContributor(
+			user.user_id,
+			goalValues!.goal_id,
+			user.role || "Student",
+			{ ...goalValues },
+			showAlert,
+			setIsLoading,
+		);
+
+		setGoalValues(null);
+		setOpen(false);
 	};
 
 	return (
@@ -109,21 +110,20 @@ export function JoinGoalDialog() {
 							Join a Goal
 						</AlertDialogTitle>
 						<AlertDialogDescription className="text-center">
-							Enter the token provided by your mentor
+							Let's get you connected to a goal!
 						</AlertDialogDescription>
 					</AlertDialogHeader>
 
-					{!foundGoal ? (
+					{!goalValues?.goal_id ? (
 						<div className="space-y-3">
 							<div className="space-y-2">
 								<Label htmlFor="token" className="text-sm">
 									Goal Token
 								</Label>
-
 								<Input
 									id="token"
 									type="text"
-									placeholder="Enter token (e.g., 1234)"
+									placeholder="Enter goal token"
 									value={token}
 									onChange={(e) => setToken(e.target.value)}
 									onKeyPress={(e) => {
@@ -132,6 +132,7 @@ export function JoinGoalDialog() {
 										}
 									}}
 									className="flex-1"
+									disabled={isLoading}
 								/>
 							</div>
 						</div>
@@ -139,54 +140,74 @@ export function JoinGoalDialog() {
 						<div className="space-y-4">
 							<div className="p-4 rounded-lg bg-primary/5 border border-primary/20 space-y-1">
 								<p className="text-primary tracking-normal text-base font-semibold">
-									{foundGoal.title}
+									{goalValues?.title || "Goal Title"}
 								</p>
 								<p className="text-sm text-muted-foreground">
-									{foundGoal.hours} hours goal
+									{goalValues?.goal || 0} hours goal
 								</p>
 							</div>
 
 							{/* Company Field - Input */}
-							<div className="space-y-2">
-								<Label htmlFor="company" className="text-sm">
-									Company
-								</Label>
-								<Input
-									id="company"
-									type="text"
-									placeholder="Enter company name"
-									value={company}
-									onChange={(e) => setCompany(e.target.value)}
-								/>
-							</div>
+							{isStudent && (
+								<>
+									<div>
+										<Label htmlFor="company" className="text-sm mb-1.5">
+											Company
+										</Label>
+										<Input
+											id="company"
+											type="text"
+											placeholder="Enter company name"
+											value={goalValues?.company || ""}
+											onChange={(e) =>
+												getHandleValues(setGoalValues)(
+													"company",
+													e.target.value,
+												)
+											}
+										/>
+									</div>
 
-							<div className="space-y-2">
-								<Label htmlFor="section" className="text-sm">
-									School Section
-								</Label>
-								<Select
-									value={selectedSection}
-									onValueChange={setSelectedSection}
-								>
-									<SelectTrigger id="section" className="w-full">
-										<SelectValue placeholder="Select a section" />
-									</SelectTrigger>
-									<SelectContent>
-										{foundGoal.sections.map((section) => (
-											<SelectItem key={section} value={section}>
-												{section}
-											</SelectItem>
-										))}
-									</SelectContent>
-								</Select>
-							</div>
+									<div>
+										<Label htmlFor="section" className="text-sm mb-1.5">
+											School Section
+										</Label>
+										<Select
+											value={goalValues?.section || ""}
+											onValueChange={(value) =>
+												getHandleValues(setGoalValues)("section", value)
+											}
+										>
+											<SelectTrigger id="section" className="w-full">
+												<SelectValue placeholder="Select a section" />
+											</SelectTrigger>
+											<SelectContent>
+												{goalValues?.sections?.map((section) => (
+													<SelectItem key={section} value={section}>
+														{section}
+													</SelectItem>
+												))}
+											</SelectContent>
+										</Select>
+									</div>
+								</>
+							)}
 
 							<div className="flex gap-2 pt-4 justify-end">
-								<Button variant="outline" className="w-fit" size="sm">
+								<Button variant="outline" className="w-fit h-9" size="sm">
 									Back
 								</Button>
-								<Button onClick={handleJoinGoal} className="w-fit" size="sm">
-									Join Goal
+								<Button
+									onClick={handleJoinGoal}
+									className="w-fit h-9"
+									size="sm"
+									disabled={requiredValues}
+								>
+									<LoadingButtonText
+										isLoading={isLoading}
+										loadingTitle="Joining..."
+										title="Join Goal"
+									/>
 								</Button>
 							</div>
 						</div>

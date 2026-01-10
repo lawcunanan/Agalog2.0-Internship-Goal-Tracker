@@ -1,5 +1,5 @@
 import { SupabaseClient } from "@supabase/supabase-js";
-import { UserDetails, UserRole } from "@/lib/types";
+import { UserState, UserRole } from "@/lib/types";
 
 export const getUser = async (supabase: SupabaseClient) => {
 	try {
@@ -21,7 +21,7 @@ export const getUser = async (supabase: SupabaseClient) => {
 
 export const getAuthValues = async (
 	supabase: SupabaseClient,
-): Promise<{ data: UserDetails | null; error: string | null }> => {
+): Promise<{ data: UserState | null; error: string | null }> => {
 	try {
 		const {
 			data: { user },
@@ -33,7 +33,7 @@ export const getAuthValues = async (
 			return { data: null, error: "User not found" };
 		}
 
-		const userDetails: UserDetails = {
+		const userDetails: UserState = {
 			user_id: user.id,
 			full_name: user.user_metadata?.full_name,
 			email: user.email,

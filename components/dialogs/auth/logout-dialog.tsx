@@ -22,8 +22,8 @@ export function LogoutDialog({
 }: {
 	showAlert: (status: number, message: string) => void;
 }) {
-	const [isLoading, setIsLoading] = useState(false);
 	const [open, setOpen] = useState(false);
+	const [isLoading, setIsLoading] = useState(false);
 
 	const handleLogout = async (e: React.MouseEvent) => {
 		e.preventDefault();
@@ -50,9 +50,7 @@ export function LogoutDialog({
 					</AlertDialogDescription>
 				</AlertDialogHeader>
 				<AlertDialogFooter>
-					<AlertDialogCancel className="bo" disabled={isLoading}>
-						Cancel
-					</AlertDialogCancel>
+					<AlertDialogCancel disabled={isLoading}>Cancel</AlertDialogCancel>
 					<AlertDialogAction
 						onClick={handleLogout}
 						disabled={isLoading}
