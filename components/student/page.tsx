@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, use, useCallback } from "react";
+import { useState, useCallback } from "react";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { GoalActiveState, WeeklyLogState } from "@/lib/types";
@@ -9,8 +9,7 @@ import { useAuth } from "@/providers/auth-provider";
 import { LogProgress } from "@/components/logs/log-progress";
 import { WeeklyLog } from "@/components/logs/weekly-log";
 import { LogForm } from "@/components/logs/log-form";
-import { getLogs } from "@/services/ssr/logs/select-logs";
-import { supabaseBrowser } from "@/lib/supabase/client";
+import { refreshLogsHandler } from "@/services/csr/logs/refresh-logs";
 
 type StudentContentProps = {
 	initialGoal: GoalActiveState | null;
@@ -41,34 +40,15 @@ export function StudentContent({ initialGoal, logsData }: StudentContentProps) {
 
 	const refreshLogs = useCallback(
 		async (goal_id?: string) => {
-			if (user && (goalState.goal_id || goal_id)) {
-				const { data, error } = await getLogs(
-					user.user_id,
-					goal_id || goalState.goal_id,
-					supabaseBrowser,
-				);
-
-				if (error) {
-					showAlert(500, error);
-					return;
-				}
-
-				if (data) {
-					setLogState((prev) => ({
-						...prev,
-						logs: data.logs,
-						currentHours: data.currentHours,
-					}));
-				}
-			} else {
-				setLogState((prev) => ({
-					...prev,
-					logs: [],
-					currentHours: 0,
-				}));
-			}
+			await refreshLogsHandler({
+				goal_id,
+				user,
+				goalState,
+				showAlert,
+				setLogState,
+			});
 		},
-		[user, goalState.goal_id, showAlert],
+		[user, goalState, showAlert],
 	);
 
 	return (

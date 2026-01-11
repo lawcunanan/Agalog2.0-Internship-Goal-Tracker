@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, use } from "react";
+import { useState, useEffect, use, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import {
 	AlertDialog,
@@ -43,7 +43,6 @@ import { StatusDialog } from "./status-dialog";
 import { insertGoal } from "@/services/csr/goals/insert-goal";
 import { updateGoal } from "@/services/csr/goals/update-goal";
 import { getGoals } from "@/services/csr/goals/select-goals";
-import { on } from "events";
 
 type ManageGoalsDialogProps = {
 	user: UserState;
@@ -60,6 +59,7 @@ export function ManageGoalsDialog({
 	showAlert,
 	refreshLogs,
 }: ManageGoalsDialogProps) {
+	const [isOpen, setIsOpen] = useState(false);
 	const [tab, setTab] = useState<"create" | "manage">("create");
 	const [isLoading, setIsLoading] = useState(false);
 	const [goalValues, setGoalValues] = useState<GoalsState>({
@@ -79,7 +79,7 @@ export function ManageGoalsDialog({
 		!goalValues?.goal ||
 		(!isStudent && !goalValues?.sections?.length);
 
-	const fetchGoals = async () => {
+	const fetchGoals = useCallback(async () => {
 		if (!user) return;
 
 		await getGoals(
@@ -88,16 +88,17 @@ export function ManageGoalsDialog({
 			searchQuery,
 			filterStatus,
 			(data) => {
-				data.length === 0
-					? handleSetGoalState("", 0)
-					: !goalState.goal_id &&
-					  handleSetGoalState(String(data[0].goal_id), data[0].goal);
+				if (data.length === 0) {
+					handleSetGoalState("", 0);
+				} else if (!data.find((g) => g.goal_id == goalState.goal_id)) {
+					handleSetGoalState(String(data[0].goal_id), data[0].goal);
+				}
 
 				setGoals(data);
 			},
 			showAlert,
 		);
-	};
+	}, [user, searchQuery, filterStatus, goalState.goal_id, showAlert]);
 
 	const handleCreateGoal = async () => {
 		if (!user) return showAlert(500, "User not found.");
@@ -173,25 +174,20 @@ export function ManageGoalsDialog({
 	};
 
 	const handleSetGoalState = (goalId: string, goalHours?: number) => {
+		refreshLogs(goalId);
 		setGoalState({
 			...goalState,
 			goal_id: goalId,
 			goalHours: goalHours || goals.find((g) => g.goal_id == goalId)?.goal || 0,
 		});
-
-		refreshLogs(goalId);
 	};
 
 	useEffect(() => {
-		fetchGoals();
-	}, [searchQuery, filterStatus]);
+		if (isOpen) fetchGoals();
+	}, [isOpen, fetchGoals]);
 
 	return (
-		<AlertDialog
-			onOpenChange={(open) => {
-				if (open) fetchGoals();
-			}}
-		>
+		<AlertDialog open={isOpen} onOpenChange={(open) => setIsOpen(open)}>
 			<AlertDialogTrigger asChild>
 				<Button
 					variant="ghost"
@@ -395,7 +391,6 @@ export function ManageGoalsDialog({
 							<RadioGroup
 								value={goalState.goal_id}
 								onValueChange={(val) => handleSetGoalState(val)}
-								className="space-y-3"
 							>
 								{goals.map((goal) => {
 									const isActive = goal.status === "Active";
@@ -497,7 +492,7 @@ export function ManageGoalsDialog({
 																	) : (
 																		<CheckCircle2 className="h-4 w-4 mr-2" />
 																	)}
-																	{isActive ? "Deactivate" : "Activate"}
+																	{isActive ? "Delete" : "Activate"}
 																</DropdownMenuItem>
 															</StatusDialog>
 														</>
