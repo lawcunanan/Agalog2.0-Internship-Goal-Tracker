@@ -31,3 +31,41 @@ export interface GoalsState {
 	company?: string;
 	metaText?: string;
 }
+
+export interface GoalActiveState {
+	goal_id: string;
+	goalHours: number;
+}
+
+//Log details stored in redux state
+export interface LogValues {
+	log_id: string;
+	date: string;
+	fullDate?: string | Date;
+	timeIn: string;
+	timeOut: string;
+	breakOut?: string;
+	breakBack?: string;
+	breakDuration: string;
+	//
+	hoursWorked?: string;
+	rawHours?: number;
+	description: string;
+}
+
+export interface WeeklyLogState {
+	logs: WeeklyLogSelect[];
+	currentHours: number;
+	editLog?: LogValues | null;
+}
+
+export interface WeeklyLogSelect {
+	weekLabel: string;
+	startDate: string;
+	endDate: string;
+	previousHours: string;
+	thisPeriodHours: string;
+	totalHours: string;
+	rawTotalHours: number;
+	logs: LogValues[];
+}

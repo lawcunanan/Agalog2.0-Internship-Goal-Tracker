@@ -21,6 +21,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import {
 	Edit2,
 	Trash2,
@@ -34,8 +35,8 @@ import {
 	Settings,
 } from "lucide-react";
 import { LoadingButtonText } from "@/components/ui/loading-button-text";
-import { UserState, GoalsState, Status } from "@/lib/types";
-import { getHandleValues } from "@/lib/utils";
+import { UserState, GoalsState, Status, GoalActiveState } from "@/lib/types";
+import { handleFormChange } from "@/lib/utils";
 import { LeaveGoalDialog } from "../contributors/leave-dialog";
 import { StatusDialog } from "./status-dialog";
 
@@ -43,16 +44,27 @@ import { insertGoal } from "@/services/csr/goals/insert-goal";
 import { updateGoal } from "@/services/csr/goals/update-goal";
 import { getGoals } from "@/services/csr/goals/select-goals";
 
+interface ManageGoalsDialogProps {
+	user: UserState;
+	goalState: GoalActiveState;
+	setGoalState: (goalState: GoalActiveState) => void;
+	showAlert: (status: number, message: string) => void;
+}
+
 export function ManageGoalsDialog({
 	user,
+	goalState,
+	setGoalState,
 	showAlert,
-}: {
-	user: UserState;
-	showAlert: (status: number, message: string) => void;
-}) {
+}: ManageGoalsDialogProps) {
 	const [tab, setTab] = useState<"create" | "manage">("create");
 	const [isLoading, setIsLoading] = useState(false);
-	const [goalValues, setGoalValues] = useState<GoalsState | null>(null);
+	const [goalValues, setGoalValues] = useState<GoalsState>({
+		goal_id: "",
+		title: "",
+		goal: 0,
+		sections: [],
+	});
 	const [goals, setGoals] = useState<GoalsState[]>([]);
 
 	const [searchQuery, setSearchQuery] = useState("");
@@ -66,12 +78,19 @@ export function ManageGoalsDialog({
 
 	const fetchGoals = async () => {
 		if (!user) return;
+
 		await getGoals(
 			user.user_id,
 			user.role || "Student",
 			searchQuery,
 			filterStatus,
-			setGoals,
+			(data) => {
+				data.length === 0
+					? handleSetGoalState("0", 400)
+					: handleSetGoalState(String(data[0].goal_id), data[0].goal);
+
+				setGoals(data);
+			},
 			showAlert,
 		);
 	};
@@ -98,13 +117,11 @@ export function ManageGoalsDialog({
 			);
 		}
 		fetchGoals();
-		setGoalValues(null);
+		handleResetForm();
 	};
 
 	const handleSection = (type: "add" | "remove", value?: string) => {
 		setGoalValues((prev) => {
-			if (!prev) return null;
-
 			const currentSections = prev.sections || [];
 
 			if (type === "add") {
@@ -138,6 +155,26 @@ export function ManageGoalsDialog({
 	const handleCopy = async (text: string) => {
 		navigator.clipboard.writeText(text);
 		showAlert(200, "Token copied to clipboard.");
+	};
+
+	const handleResetForm = () => {
+		setGoalValues({
+			goal_id: "",
+			title: "",
+			goal: 0,
+			sections: [],
+		});
+
+		setTab("manage");
+	};
+
+	const handleSetGoalState = (goalId: string, goalHours?: number) => {
+		setGoalState({
+			...goalState,
+			goal_id: goalId,
+			goalHours:
+				goalHours || goals.find((g) => g.goal_id == goalId)?.goal || 400,
+		});
 	};
 
 	useEffect(() => {
@@ -199,7 +236,7 @@ export function ManageGoalsDialog({
 									placeholder="Enter goal title"
 									value={goalValues?.title || ""}
 									onChange={(e) =>
-										getHandleValues(setGoalValues)("title", e.target.value)
+										handleFormChange(setGoalValues, "title", e.target.value)
 									}
 								/>
 							</div>
@@ -214,7 +251,8 @@ export function ManageGoalsDialog({
 									max="1000"
 									value={goalValues?.goal || ""}
 									onChange={(e) =>
-										getHandleValues(setGoalValues)(
+										handleFormChange(
+											setGoalValues,
 											"goal",
 											parseInt(e.target.value) || 0,
 										)
@@ -234,7 +272,7 @@ export function ManageGoalsDialog({
 										placeholder="Add a section (e.g., ITE 222, ITE 223)"
 										value={goalValues?.section || ""}
 										onChange={(e) =>
-											getHandleValues(setGoalValues)("section", e.target.value)
+											handleFormChange(setGoalValues, "section", e.target.value)
 										}
 										onKeyDown={(e) => {
 											if (e.key === "Enter") {
@@ -283,7 +321,7 @@ export function ManageGoalsDialog({
 									variant="outline"
 									className="w-fit h-9"
 									size="sm"
-									onClick={() => setGoalValues(null)}
+									onClick={handleResetForm}
 								>
 									Cancel
 								</Button>
@@ -349,7 +387,11 @@ export function ManageGoalsDialog({
 								No goals found. Create a new goal to get started.
 							</p>
 						) : (
-							<div className="space-y-3">
+							<RadioGroup
+								value={goalState.goal_id}
+								onValueChange={(val) => handleSetGoalState(val)}
+								className="space-y-3"
+							>
 								{goals.map((goal) => {
 									const isActive = goal.status === "Active";
 									const isOwner = goal.created_by == user.user_id;
@@ -358,9 +400,8 @@ export function ManageGoalsDialog({
 											key={goal.goal_id}
 											className={`border rounded-lg p-4 space-y-3 transition-colors flex items-start justify-between gap-3 hover:bg-accent/50 `}
 										>
-											<input
-												type="radio"
-												name="goal-select"
+											<RadioGroupItem
+												value={String(goal.goal_id)}
 												className="h-4 w-4 shrink-0 mt-1.5"
 											/>
 											<div className="flex-1 mb-0">
@@ -476,7 +517,7 @@ export function ManageGoalsDialog({
 										</div>
 									);
 								})}
-							</div>
+							</RadioGroup>
 						)}
 					</TabsContent>
 				</Tabs>

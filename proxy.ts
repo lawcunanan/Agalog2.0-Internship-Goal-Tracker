@@ -1,5 +1,5 @@
 import { createMiddlewareClient } from "@/lib/supabase/middleware";
-import { getUser } from "@/services/csr/auth/get-user";
+import { getUser } from "@/services/ssr/auth/get-user";
 import { NextResponse, type NextRequest } from "next/server";
 
 export async function proxy(request: NextRequest) {

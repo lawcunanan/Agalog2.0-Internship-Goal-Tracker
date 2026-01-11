@@ -17,19 +17,13 @@ export const getInitials = (name?: string) => {
 		.slice(0, 2);
 };
 
-export const getHandleValues = (
-	setGoalValues: Dispatch<SetStateAction<GoalsState | null>>,
+export const handleFormChange = <T extends object>(
+	setState: React.Dispatch<React.SetStateAction<T>>,
+	key: keyof T,
+	value: T[keyof T],
 ) => {
-	return (field: keyof GoalsState, value: string | number | string[]) => {
-		setGoalValues((prev) => {
-			const current = prev || {
-				goal_id: "",
-				title: "",
-				goal: 0,
-				sections: [],
-				status: "Active",
-			};
-			return { ...current, [field]: value };
-		});
-	};
+	setState((prev) => ({
+		...prev,
+		[key]: value,
+	}));
 };

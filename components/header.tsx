@@ -12,7 +12,7 @@ import {
 	DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-
+import { GoalActiveState } from "@/lib/types";
 import { useAlert } from "@/providers/alert-provider";
 import { useAuth } from "@/providers/auth-provider";
 import { LogoutDialog } from "@/components/dialogs/auth/logout-dialog";
@@ -20,7 +20,11 @@ import { JoinGoalDialog } from "./dialogs/goals/join-dialog";
 import { ManageGoalsDialog } from "./dialogs/goals/manage-dialog";
 import { getInitials } from "@/lib/utils";
 
-export function Header() {
+interface HeaderProps {
+	goalState?: GoalActiveState;
+	setGoalState?: (goalState: GoalActiveState) => void;
+}
+export function Header({ goalState, setGoalState }: HeaderProps) {
 	const pathname = usePathname();
 	const { showAlert } = useAlert();
 	const { user } = useAuth();
@@ -97,7 +101,12 @@ export function Header() {
 									{(isStudent || isAdmin) && (
 										<>
 											<JoinGoalDialog user={user} showAlert={showAlert} />
-											<ManageGoalsDialog user={user} showAlert={showAlert} />
+											<ManageGoalsDialog
+												user={user}
+												goalState={goalState || ({} as any)}
+												setGoalState={setGoalState || (() => {})}
+												showAlert={showAlert}
+											/>
 											<Button
 												variant="ghost"
 												size={buttonSize}

@@ -1,14 +1,35 @@
 import { SupabaseClient } from "@supabase/supabase-js";
 import { UserState, UserRole } from "@/lib/types";
+import { supabaseServer } from "@/lib/supabase/server";
 
-export const getAuthValues = async (
-	supabase: SupabaseClient,
-): Promise<{ data: UserState | null; error: string | null }> => {
+export const getUser = async (supabase?: SupabaseClient) => {
+	const client = supabase ?? (await supabaseServer());
 	try {
 		const {
 			data: { user },
 			error,
-		} = await supabase.auth.getUser();
+		} = await client.auth.getUser();
+
+		if (error) {
+			return null;
+		}
+
+		return user;
+	} catch (error) {
+		console.error("Unexpected error fetching user:", error);
+		return null;
+	}
+};
+
+export const getAuthValues = async (
+	supabase?: SupabaseClient,
+): Promise<{ data: UserState | null; error: string | null }> => {
+	const client = supabase ?? (await supabaseServer());
+	try {
+		const {
+			data: { user },
+			error,
+		} = await client.auth.getUser();
 
 		if (error || !user) {
 			console.log("getAuthValues error:", error?.message || "User not found");

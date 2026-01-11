@@ -1,12 +1,9 @@
-import { Header } from "@/components/header";
+import { StudentContent } from "@/components/student/page";
+import { getUser } from "@/services/ssr/auth/get-user";
+import { getInitialGoal } from "@/services/ssr/goals/initial-goal";
 
-export default function StudentPage() {
-	return (
-		<div className="min-h-screen bg-background pb-10">
-			<Header />
-			<main className="pt-24 max-w-300 mx-auto px-4">
-				<h1 className="text-2xl font-bold mb-4">Student Page</h1>
-			</main>
-		</div>
-	);
+export default async function StudentPage() {
+	const user = await getUser();
+	const initialGoal = user ? await getInitialGoal(user.id) : null;
+	return <StudentContent initialGoal={initialGoal} />;
 }

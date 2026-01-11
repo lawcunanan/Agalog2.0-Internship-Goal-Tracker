@@ -15,7 +15,7 @@ import {
 	AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { LoadingButtonText } from "@/components/ui/loading-button-text";
-import { signOutUser } from "@/services/ssr/auth/logout";
+import { signOutUser } from "@/services/csr/auth/logout";
 
 export function LogoutDialog({
 	showAlert,

@@ -23,22 +23,27 @@ import {
 import { X, Shield, Target } from "lucide-react";
 import { LoadingButtonText } from "@/components/ui/loading-button-text";
 import { UserState, GoalsState } from "@/lib/types";
-import { getHandleValues } from "@/lib/utils";
-
+import { handleFormChange } from "@/lib/utils";
 import { checkToken } from "@/services/csr/contributors/check-token";
 import { upsertContributor } from "@/services/csr/contributors/upsert-contributor";
 
-export function JoinGoalDialog({
-	user,
-	showAlert,
-}: {
+interface JoinGoalDialogProps {
 	user: UserState;
 	showAlert: (status: number, message: string) => void;
-}) {
+}
+
+export function JoinGoalDialog({ user, showAlert }: JoinGoalDialogProps) {
 	const [open, setOpen] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
 	const [token, setToken] = useState("");
-	const [goalValues, setGoalValues] = useState<GoalsState | null>(null);
+	const [goalValues, setGoalValues] = useState<GoalsState>({
+		goal_id: "",
+		title: "",
+		goal: 0,
+		sections: [],
+		company: "",
+		section: "",
+	});
 
 	const isStudent = user?.role === "Student";
 	const requiredValues =
@@ -75,7 +80,12 @@ export function JoinGoalDialog({
 			setIsLoading,
 		);
 
-		setGoalValues(null);
+		setGoalValues({
+			goal_id: "",
+			title: "",
+			goal: 0,
+			sections: [],
+		});
 		setOpen(false);
 	};
 
@@ -160,7 +170,8 @@ export function JoinGoalDialog({
 											placeholder="Enter company name"
 											value={goalValues?.company || ""}
 											onChange={(e) =>
-												getHandleValues(setGoalValues)(
+												handleFormChange(
+													setGoalValues,
 													"company",
 													e.target.value,
 												)
@@ -175,7 +186,7 @@ export function JoinGoalDialog({
 										<Select
 											value={goalValues?.section || ""}
 											onValueChange={(value) =>
-												getHandleValues(setGoalValues)("section", value)
+												handleFormChange(setGoalValues, "section", value)
 											}
 										>
 											<SelectTrigger id="section" className="w-full">

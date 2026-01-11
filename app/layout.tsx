@@ -5,8 +5,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/providers/theme-provider";
 import { AlertProvider } from "@/providers/alert-provider";
 import { AuthProvider } from "@/providers/auth-provider";
-import { supabaseServer } from "@/lib/supabase/server";
-import { getAuthValues } from "@/services/csr/auth/get-user";
+import { getAuthValues } from "@/services/ssr/auth/get-user";
 
 const _geist = Geist({ subsets: ["latin"] });
 
@@ -29,8 +28,7 @@ export default async function RootLayout({
 }: {
 	children: ReactNode;
 }) {
-	const supabase = await supabaseServer();
-	const { data: userDetails } = await getAuthValues(supabase);
+	const { data: userDetails } = await getAuthValues();
 
 	return (
 		<html lang="en" suppressHydrationWarning>
