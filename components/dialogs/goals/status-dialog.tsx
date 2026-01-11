@@ -16,14 +16,14 @@ import { LoadingButtonText } from "@/components/ui/loading-button-text";
 import { Status } from "@/lib/types";
 import { updateGoalStatus } from "@/services/csr/goals/update-status";
 
-interface StatusDialogProps {
+type StatusDialogProps = {
 	user_id: string;
 	goal_id: string;
 	targetStatus: Status;
 	showAlert: (status: number, message: string) => void;
 	refreshGoals: () => void;
 	children: React.ReactNode;
-}
+};
 
 export function StatusDialog({
 	user_id,

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, use } from "react";
 import { Button } from "@/components/ui/button";
 import {
 	AlertDialog,
@@ -43,19 +43,22 @@ import { StatusDialog } from "./status-dialog";
 import { insertGoal } from "@/services/csr/goals/insert-goal";
 import { updateGoal } from "@/services/csr/goals/update-goal";
 import { getGoals } from "@/services/csr/goals/select-goals";
+import { on } from "events";
 
-interface ManageGoalsDialogProps {
+type ManageGoalsDialogProps = {
 	user: UserState;
 	goalState: GoalActiveState;
 	setGoalState: (goalState: GoalActiveState) => void;
 	showAlert: (status: number, message: string) => void;
-}
+	refreshLogs: (goalId?: string) => void;
+};
 
 export function ManageGoalsDialog({
 	user,
 	goalState,
 	setGoalState,
 	showAlert,
+	refreshLogs,
 }: ManageGoalsDialogProps) {
 	const [tab, setTab] = useState<"create" | "manage">("create");
 	const [isLoading, setIsLoading] = useState(false);
@@ -86,8 +89,9 @@ export function ManageGoalsDialog({
 			filterStatus,
 			(data) => {
 				data.length === 0
-					? handleSetGoalState("0", 400)
-					: handleSetGoalState(String(data[0].goal_id), data[0].goal);
+					? handleSetGoalState("", 0)
+					: !goalState.goal_id &&
+					  handleSetGoalState(String(data[0].goal_id), data[0].goal);
 
 				setGoals(data);
 			},
@@ -172,9 +176,10 @@ export function ManageGoalsDialog({
 		setGoalState({
 			...goalState,
 			goal_id: goalId,
-			goalHours:
-				goalHours || goals.find((g) => g.goal_id == goalId)?.goal || 400,
+			goalHours: goalHours || goals.find((g) => g.goal_id == goalId)?.goal || 0,
 		});
+
+		refreshLogs(goalId);
 	};
 
 	useEffect(() => {

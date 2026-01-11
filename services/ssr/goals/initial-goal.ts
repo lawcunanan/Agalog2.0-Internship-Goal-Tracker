@@ -1,17 +1,16 @@
-import { SupabaseClient } from "@supabase/supabase-js";
-import { GoalActiveState } from "@/lib/types";
+import type { GoalActiveState } from "@/lib/types";
 import { supabaseServer } from "@/lib/supabase/server";
 
 export async function getInitialGoal(
 	userId: string,
-	supabase?: SupabaseClient,
 ): Promise<GoalActiveState | null> {
-	const client = supabase ?? (await supabaseServer());
+	const supabase = await supabaseServer();
+
 	if (!userId) {
 		throw new Error("User ID is required");
 	}
 
-	const { data, error } = await client
+	const { data, error } = await supabase
 		.from("contributors")
 		.select(
 			`

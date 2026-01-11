@@ -47,10 +47,11 @@ export interface LogValues {
 	breakOut?: string;
 	breakBack?: string;
 	breakDuration: string;
+	description: string;
+
 	//
 	hoursWorked?: string;
 	rawHours?: number;
-	description: string;
 }
 
 export interface WeeklyLogState {

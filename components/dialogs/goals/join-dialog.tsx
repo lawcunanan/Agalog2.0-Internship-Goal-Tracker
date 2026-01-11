@@ -27,10 +27,10 @@ import { handleFormChange } from "@/lib/utils";
 import { checkToken } from "@/services/csr/contributors/check-token";
 import { upsertContributor } from "@/services/csr/contributors/upsert-contributor";
 
-interface JoinGoalDialogProps {
+type JoinGoalDialogProps = {
 	user: UserState;
 	showAlert: (status: number, message: string) => void;
-}
+};
 
 export function JoinGoalDialog({ user, showAlert }: JoinGoalDialogProps) {
 	const [open, setOpen] = useState(false);

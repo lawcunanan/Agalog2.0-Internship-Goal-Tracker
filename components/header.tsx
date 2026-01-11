@@ -23,9 +23,9 @@ import { getInitials } from "@/lib/utils";
 interface HeaderProps {
 	goalState?: GoalActiveState;
 	setGoalState?: (goalState: GoalActiveState) => void;
+	refreshLogs?: (goalId?: string) => void;
 }
-export function Header({ goalState, setGoalState }: HeaderProps) {
-	const pathname = usePathname();
+export function Header({ goalState, setGoalState, refreshLogs }: HeaderProps) {
 	const { showAlert } = useAlert();
 	const { user } = useAuth();
 
@@ -106,6 +106,7 @@ export function Header({ goalState, setGoalState }: HeaderProps) {
 												goalState={goalState || ({} as any)}
 												setGoalState={setGoalState || (() => {})}
 												showAlert={showAlert}
+												refreshLogs={refreshLogs || (() => {})}
 											/>
 											<Button
 												variant="ghost"

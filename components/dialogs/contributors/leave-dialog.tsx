@@ -16,14 +16,14 @@ import { LoadingButtonText } from "@/components/ui/loading-button-text";
 import { Status } from "@/lib/types";
 import { leaveGoalAsContributor } from "@/services/csr/contributors/leave-contributor";
 
-interface LeaveGoalDialogProps {
+type LeaveGoalDialogProps = {
 	user_id: string;
 	goal_id: string;
 	targetStatus: Status;
 	showAlert: (status: number, message: string) => void;
 	refreshGoals: () => void;
 	children: React.ReactNode;
-}
+};
 
 export function LeaveGoalDialog({
 	user_id,
