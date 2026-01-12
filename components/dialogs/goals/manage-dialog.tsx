@@ -69,7 +69,6 @@ export function ManageGoalsDialog({
 		sections: [],
 	});
 	const [goals, setGoals] = useState<GoalsState[]>([]);
-
 	const [searchQuery, setSearchQuery] = useState("");
 	const [filterStatus, setFilterStatus] = useState<Status>("Active");
 

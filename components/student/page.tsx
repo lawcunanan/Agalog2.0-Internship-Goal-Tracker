@@ -56,6 +56,8 @@ export function StudentContent({ initialGoal, logsData }: StudentContentProps) {
 			<Header
 				goalState={goalState}
 				setGoalState={setGoalState}
+				logState={logState}
+				goalHours={goalState.goalHours}
 				refreshLogs={refreshLogs}
 			/>
 			<main className="flex-1 w-full max-w-300 mx-auto px-6">

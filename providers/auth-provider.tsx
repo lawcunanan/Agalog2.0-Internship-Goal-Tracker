@@ -13,7 +13,7 @@ import {
 import { supabaseBrowser } from "@/lib/supabase/client";
 import { useAlert } from "./alert-provider";
 import { UserState } from "@/lib/types";
-import { getAuthValues } from "@/services/csr/auth/get-user";
+import { getAuthValues } from "@/services/ssr/auth/get-auth";
 
 interface AuthContextType {
 	user: UserState | null;
@@ -39,7 +39,7 @@ export function AuthProvider({
 		const {
 			data: { subscription },
 		} = supabaseBrowser.auth.onAuthStateChange(async (event, session) => {
-			if (event === "SIGNED_IN" || event === "TOKEN_REFRESHED") {
+			if (event === "TOKEN_REFRESHED") {
 				if (session?.user) {
 					if (!user || user.user_id !== session.user.id) {
 						const { data, error } = await getAuthValues(supabaseBrowser);

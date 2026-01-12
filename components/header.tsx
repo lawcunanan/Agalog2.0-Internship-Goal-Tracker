@@ -1,6 +1,5 @@
 "use client";
-
-import { usePathname } from "next/navigation";
+import { useState } from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
@@ -12,27 +11,49 @@ import {
 	DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { GoalActiveState } from "@/lib/types";
+import { GoalActiveState, WeeklyLogState } from "@/lib/types";
+import { LoadingButtonText } from "@/components/ui/loading-button-text";
 import { useAlert } from "@/providers/alert-provider";
 import { useAuth } from "@/providers/auth-provider";
 import { LogoutDialog } from "@/components/dialogs/auth/logout-dialog";
 import { JoinGoalDialog } from "./dialogs/goals/join-dialog";
 import { ManageGoalsDialog } from "./dialogs/goals/manage-dialog";
 import { getInitials } from "@/lib/utils";
+import { exportLog } from "@/lib/utils/export-log";
 
 interface HeaderProps {
 	goalState?: GoalActiveState;
 	setGoalState?: (goalState: GoalActiveState) => void;
+	logState?: WeeklyLogState;
+	goalHours?: number;
 	refreshLogs?: (goalId?: string) => void;
 }
-export function Header({ goalState, setGoalState, refreshLogs }: HeaderProps) {
+export function Header({
+	goalState,
+	setGoalState,
+	logState,
+	goalHours,
+	refreshLogs,
+}: HeaderProps) {
 	const { showAlert } = useAlert();
 	const { user } = useAuth();
 
+	const [isExporting, setIsExporting] = useState(false);
 	const buttonClass = "w-full justify-start cursor-pointer gap-2";
 	const buttonSize = "sm";
 	const isStudent = user?.role === "Student";
 	const isAdmin = user?.role === "Admin";
+
+	const handleExport = () => {
+		if (!user) return;
+		exportLog(
+			user.full_name || user.email || "Student",
+			logState || { logs: [], currentHours: 0 },
+			goalHours || 0,
+			showAlert,
+			setIsExporting,
+		);
+	};
 
 	return (
 		<header className="fixed top-0 left-0 right-0 w-full z-50 border-b border-border bg-background/60 backdrop-blur-sm">
@@ -108,14 +129,21 @@ export function Header({ goalState, setGoalState, refreshLogs }: HeaderProps) {
 												showAlert={showAlert}
 												refreshLogs={refreshLogs || (() => {})}
 											/>
-											<Button
-												variant="ghost"
-												size={buttonSize}
-												className={buttonClass}
-											>
-												<Download className="h-4 w-4" />
-												Download Report
-											</Button>
+											{logState?.logs.length! > 0 && (
+												<Button
+													variant="ghost"
+													size={buttonSize}
+													className={buttonClass}
+													onClick={handleExport}
+												>
+													<Download className="h-4 w-4" />
+													<LoadingButtonText
+														isLoading={isExporting}
+														loadingTitle="Exporting..."
+														title="Export Logs"
+													/>
+												</Button>
+											)}
 											{isAdmin && (
 												<Button
 													variant="ghost"
