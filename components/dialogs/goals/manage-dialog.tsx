@@ -90,7 +90,11 @@ export function ManageGoalsDialog({
 				if (data.length === 0) {
 					handleSetGoalState("", 0);
 				} else if (!data.find((g) => g.goal_id == goalState.goal_id)) {
-					handleSetGoalState(String(data[0].goal_id), data[0].goal);
+					handleSetGoalState(
+						String(data[0].goal_id),
+						data[0].goal,
+						data[0].sections,
+					);
 				}
 
 				setGoals(data);
@@ -172,12 +176,18 @@ export function ManageGoalsDialog({
 		setTab("manage");
 	};
 
-	const handleSetGoalState = (goalId: string, goalHours?: number) => {
+	const handleSetGoalState = (
+		goalId: string,
+		goalHours?: number,
+		sections?: string[],
+	) => {
 		refreshLogs(goalId);
+		const goal = goals.find((g) => g.goal_id == goalId);
 		setGoalState({
 			...goalState,
 			goal_id: goalId,
-			goalHours: goalHours || goals.find((g) => g.goal_id == goalId)?.goal || 0,
+			goalHours: goalHours || goal?.goal || 0,
+			sections: sections || goal?.sections || [],
 		});
 	};
 

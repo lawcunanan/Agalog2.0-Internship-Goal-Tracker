@@ -1,6 +1,6 @@
 import { Dispatch, SetStateAction } from "react";
 import { GoalActiveState, WeeklyLogState, UserState } from "@/lib/types";
-import { getLogs } from "@/services/ssr/logs/select-logs";
+import { getLogs } from "@/services/ssr/logs/initial-logs";
 import { supabaseBrowser } from "@/lib/supabase/client";
 
 interface RefreshLogsParams {

@@ -35,6 +35,7 @@ export interface GoalsState {
 export interface GoalActiveState {
 	goal_id: string;
 	goalHours: number;
+	sections?: string[];
 }
 
 //Log details stored in redux state
@@ -69,4 +70,43 @@ export interface WeeklyLogSelect {
 	totalHours: string;
 	rawTotalHours: number;
 	logs: LogValues[];
+}
+
+//Admin
+export interface UserDataSelect {
+	// Common user fields
+	user_id?: string;
+	picture?: string;
+	fullname?: string;
+	email?: string;
+	role?: string;
+	status?: string;
+	createdAt?: string;
+
+	// Profile / org
+	section?: string;
+	company?: string;
+
+	// Logs (TodayLogsSelect)
+	date?: string;
+	timeIn?: string;
+	timeOut?: string;
+	breakDuration?: string;
+	description?: string;
+	hoursWorked?: string;
+
+	// Goals / summary
+	goalId?: string;
+	goalTitle?: string;
+	goalHours?: number;
+	createdBy?: string;
+	totalHours?: string;
+	hoursLeft?: string;
+}
+
+export interface StatsticsSelect {
+	todayLogs: number;
+	completedGoals?: number;
+	totalUsers: number;
+	totalAdmins: number;
 }

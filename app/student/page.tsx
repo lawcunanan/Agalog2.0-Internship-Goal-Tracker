@@ -1,7 +1,7 @@
 import { StudentContent } from "@/components/student/page";
 import { getUser } from "@/services/ssr/auth/get-user";
 import { getInitialGoal } from "@/services/ssr/goals/initial-goal";
-import { getLogs } from "@/services/ssr/logs/select-logs";
+import { getLogs } from "@/services/ssr/logs/initial-logs";
 import { supabaseServer } from "@/lib/supabase/server";
 
 export default async function StudentPage() {

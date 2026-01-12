@@ -17,7 +17,8 @@ export async function getInitialGoal(
 			goals!inner (
 				goal_id,
 				goal,
-				status
+				status,
+				sections
 			)
 		`,
 		)
