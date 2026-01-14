@@ -1,6 +1,6 @@
 import { getUser } from "@/services/ssr/auth/get-user";
 import { supabaseServer } from "@/lib/supabase/server";
-import { AdminContent } from "@/components/admin/page";
+import { AdminContent } from "@/components/pages/admin/page";
 import { getInitialGoal } from "@/services/ssr/goals/initial-goal";
 
 import { StatsticsSelect, UserDataSelect } from "@/lib/types";

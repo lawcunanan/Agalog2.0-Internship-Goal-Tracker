@@ -1,18 +1,17 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState } from "react";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { StatsticsSelect, GoalActiveState, UserDataSelect } from "@/lib/types";
 import { useAlert } from "@/providers/alert-provider";
-import { useAuth } from "@/providers/auth-provider";
-import { StatCard } from "../statistics/page";
+import { StatCard } from "../../statistics/page";
 import { CheckCircle2, LogIn, Users } from "lucide-react";
-import { TitlePage } from "../title-page";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
-import { GoalAdminTab } from "../tables/admin-goal";
-import { UserSummaryTab } from "../tables/user-summary";
-import { TodayLogsTab } from "../tables/today-logs";
+import { TitlePage } from "../../title-page";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../ui/tabs";
+import { GoalAdminTab } from "../../tables/admin-goal";
+import { UserSummaryTab } from "../../tables/user-summary";
+import { TodayLogsTab } from "../../tables/today-logs";
 
 type AdminContentProps = {
 	initialGoal: GoalActiveState | null;
@@ -33,7 +32,6 @@ export function AdminContent({
 	initialSections,
 }: AdminContentProps) {
 	const { showAlert } = useAlert();
-	const { user } = useAuth();
 
 	const [goalState, setGoalState] = useState<GoalActiveState>(
 		initialGoal || {

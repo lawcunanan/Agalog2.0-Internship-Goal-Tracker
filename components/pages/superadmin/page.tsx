@@ -2,19 +2,19 @@
 
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
-import { statsticsSelect, UserDataSelect } from "@/lib/types";
+import { StatsticsSelect, UserDataSelect } from "@/lib/types";
 import { useAlert } from "@/providers/alert-provider";
 import { useAuth } from "@/providers/auth-provider";
-import { StatCard } from "../statistics/page";
+import { StatCard } from "@/components/statistics/page";
 import { LogIn, Users } from "lucide-react";
-import { TitlePage } from "../title-page";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
-import { TodayLogsTab } from "../tables/today-logs";
-import { GoalsTab } from "../tables/goals";
-import { UsersTab } from "../tables/users";
+import { TitlePage } from "@/components/title-page";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { TodayLogsTab } from "@/components/tables/today-logs";
+import { GoalsTab } from "@/components/tables/goals";
+import { UsersTab } from "@/components/tables/users";
 
 type SuperadminContentProps = {
-	initialStats: statsticsSelect;
+	initialStats: StatsticsSelect;
 	initialTodayLogs: UserDataSelect[];
 	initialRegisteredGoals: UserDataSelect[];
 	initialUsers: UserDataSelect[];
@@ -78,7 +78,6 @@ export function SuperadminContent({
 						<TodayLogsTab
 							role="Super Admin"
 							goal_id={null}
-							goalSection={initialSections}
 							showAlert={showAlert}
 							initialData={initialTodayLogs}
 							initialSections={initialSections}

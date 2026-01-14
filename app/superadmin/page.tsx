@@ -1,6 +1,6 @@
 import { getUser } from "@/services/ssr/auth/get-user";
 import { supabaseServer } from "@/lib/supabase/server";
-import { SuperadminContent } from "@/components/superadmin/page";
+import { SuperadminContent } from "@/components/pages/superadmin/page";
 
 import { StatsticsSelect, UserDataSelect } from "@/lib/types";
 import { getCountUsers } from "@/services/ssr/statistics/count-users";

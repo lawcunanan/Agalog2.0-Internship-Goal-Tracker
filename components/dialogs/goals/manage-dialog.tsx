@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, use, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import {
 	AlertDialog,
@@ -90,11 +90,7 @@ export function ManageGoalsDialog({
 				if (data.length === 0) {
 					handleSetGoalState("", 0);
 				} else if (!data.find((g) => g.goal_id == goalState.goal_id)) {
-					handleSetGoalState(
-						String(data[0].goal_id),
-						data[0].goal,
-						data[0].sections,
-					);
+					handleSetGoalState(String(data[0].goal_id), data[0].goal);
 				}
 
 				setGoals(data);
@@ -176,18 +172,13 @@ export function ManageGoalsDialog({
 		setTab("manage");
 	};
 
-	const handleSetGoalState = (
-		goalId: string,
-		goalHours?: number,
-		sections?: string[],
-	) => {
+	const handleSetGoalState = (goalId: string, goalHours?: number) => {
 		refreshLogs(goalId);
 		const goal = goals.find((g) => g.goal_id == goalId);
 		setGoalState({
 			...goalState,
 			goal_id: goalId,
 			goalHours: goalHours || goal?.goal || 0,
-			sections: sections || goal?.sections || [],
 		});
 	};
 

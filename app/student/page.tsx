@@ -1,4 +1,4 @@
-import { StudentContent } from "@/components/student/page";
+import { StudentContent } from "@/components/pages/student/page";
 import { getUser } from "@/services/ssr/auth/get-user";
 import { getInitialGoal } from "@/services/ssr/goals/initial-goal";
 import { getLogs } from "@/services/ssr/logs/initial-logs";
@@ -7,17 +7,35 @@ import { supabaseServer } from "@/lib/supabase/server";
 export default async function StudentPage() {
 	const user = await getUser();
 	const supabase = await supabaseServer();
-	const initialGoal = user ? await getInitialGoal(user.id) : null;
-	let logsData: { logs: any; currentHours: number } | null = null;
 
-	if (user && initialGoal) {
-		const result = await getLogs(user.id, initialGoal.goal_id, supabase);
-		if (result.data) {
-			logsData = {
-				logs: result.data.logs ?? [],
-				currentHours: result.data.currentHours ?? 0,
-			};
-		}
+	if (!user) return;
+
+	const initialGoal = await getInitialGoal(user.id);
+	if (!initialGoal) return <div>No goal found</div>;
+
+	let logsData: {
+		logs: any[];
+		currentHours: number;
+	} = {
+		logs: [],
+		currentHours: 0,
+	};
+
+	const results = await Promise.allSettled([
+		getLogs(user.id, initialGoal.goal_id, supabase),
+	]);
+
+	//  Helper to safely extract data
+	const safeData = (result: PromiseSettledResult<any>) =>
+		result.status === "fulfilled" ? result.value : { data: null };
+
+	const logsResult = safeData(results[0]);
+
+	if (logsResult?.data) {
+		logsData = {
+			logs: logsResult.data.logs ?? [],
+			currentHours: logsResult.data.currentHours ?? 0,
+		};
 	}
 
 	return <StudentContent initialGoal={initialGoal} logsData={logsData} />;
