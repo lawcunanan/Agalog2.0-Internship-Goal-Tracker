@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect, useRef } from "react";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { StatsticsSelect, UserDataSelect } from "@/lib/types";
@@ -29,7 +30,6 @@ export function SuperadminContent({
 	initialSections,
 }: SuperadminContentProps) {
 	const { showAlert } = useAlert();
-	const { user } = useAuth();
 
 	return (
 		<div className="min-h-screen flex flex-col relative md:overflow-hidden">

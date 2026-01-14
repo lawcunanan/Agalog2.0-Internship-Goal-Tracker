@@ -35,7 +35,6 @@ export interface GoalsState {
 export interface GoalActiveState {
 	goal_id: string;
 	goalHours: number;
-	sections?: string[];
 }
 
 //Log details stored in redux state

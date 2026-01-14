@@ -19,9 +19,11 @@ import {
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { FadeIn } from "@/components/ui/fade-in";
 import {
 	Edit2,
 	Trash2,
@@ -174,11 +176,11 @@ export function ManageGoalsDialog({
 
 	const handleSetGoalState = (goalId: string, goalHours?: number) => {
 		refreshLogs(goalId);
-		const goal = goals.find((g) => g.goal_id == goalId);
+
 		setGoalState({
 			...goalState,
 			goal_id: goalId,
-			goalHours: goalHours || goal?.goal || 0,
+			goalHours: goals.find((g) => g.goal_id == goalId)?.goal || 0,
 		});
 	};
 
@@ -227,10 +229,8 @@ export function ManageGoalsDialog({
 					<TabsContent value="create" className="space-y-3">
 						{/* Title and Hours */}
 						<div className="grid grid-cols-2 gap-3">
-							<div>
-								<Label htmlFor="create-title" className="text-sm mb-1.5">
-									Title
-								</Label>
+							<div className="space-y-2">
+								<Label htmlFor="create-title">Title</Label>
 								<Input
 									id="create-title"
 									type="text"
@@ -241,10 +241,8 @@ export function ManageGoalsDialog({
 									}
 								/>
 							</div>
-							<div>
-								<Label htmlFor="create-goal" className="text-sm mb-1.5">
-									Goal (Hours)
-								</Label>
+							<div className="space-y-2">
+								<Label htmlFor="create-goal">Goal (Hours)</Label>
 								<Input
 									id="create-goal"
 									type="number"
@@ -263,9 +261,7 @@ export function ManageGoalsDialog({
 						</div>
 						{!isStudent && (
 							<div className="space-y-2">
-								<Label htmlFor="create-section" className="text-sm mb-1.5">
-									Sections
-								</Label>
+								<Label htmlFor="create-section">Sections</Label>
 								<div className="flex gap-2">
 									<Input
 										id="create-section"
@@ -299,7 +295,7 @@ export function ManageGoalsDialog({
 										{goalValues?.sections.map((section) => (
 											<div
 												key={section}
-												className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-muted text-sm"
+												className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-600 text-white text-sm"
 											>
 												<span>{section}</span>
 												<button
@@ -374,7 +370,7 @@ export function ManageGoalsDialog({
 										<DropdownMenuItem
 											key={status}
 											onClick={() => setFilterStatus(status as Status)}
-											className={filterStatus === status ? "bg-muted/30" : ""}
+											className={filterStatus === status ? "bg-muted" : ""}
 										>
 											{status.charAt(0).toUpperCase() + status.slice(1)}
 										</DropdownMenuItem>
@@ -396,7 +392,7 @@ export function ManageGoalsDialog({
 									const isActive = goal.status === "Active";
 									const isOwner = goal.created_by == user.user_id;
 									return (
-										<div
+										<FadeIn
 											key={goal.goal_id}
 											className={`border rounded-lg p-4 space-y-3 transition-colors flex items-start justify-between gap-3 hover:bg-accent/50 `}
 										>
@@ -416,7 +412,7 @@ export function ManageGoalsDialog({
 															{goal.sections.map((section) => (
 																<span
 																	key={section}
-																	className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary/10 text-primary"
+																	className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-600 text-white"
 																>
 																	{section}
 																</span>
@@ -514,7 +510,7 @@ export function ManageGoalsDialog({
 													)}
 												</DropdownMenuContent>
 											</DropdownMenu>
-										</div>
+										</FadeIn>
 									);
 								})}
 							</RadioGroup>

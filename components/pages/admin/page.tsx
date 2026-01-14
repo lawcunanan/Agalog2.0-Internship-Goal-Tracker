@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { StatsticsSelect, GoalActiveState, UserDataSelect } from "@/lib/types";
@@ -12,6 +12,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../ui/tabs";
 import { GoalAdminTab } from "../../tables/admin-goal";
 import { UserSummaryTab } from "../../tables/user-summary";
 import { TodayLogsTab } from "../../tables/today-logs";
+import { refreshStatistics } from "@/services/csr/statistics/refresh-statistics";
+import { refreshFilters } from "@/services/csr/filters/refresh-filters";
 
 type AdminContentProps = {
 	initialGoal: GoalActiveState | null;
@@ -37,9 +39,39 @@ export function AdminContent({
 		initialGoal || {
 			goal_id: "",
 			goalHours: 400,
-			sections: [],
 		},
 	);
+	const [stats, setStats] = useState<StatsticsSelect>(initialStats);
+	const [companies, setCompanies] = useState<string[]>(initialCompanies);
+	const [sections, setSections] = useState<string[]>(initialSections);
+	const isFirstLoadRef = useRef(true);
+
+	useEffect(() => {
+		if (isFirstLoadRef.current) {
+			isFirstLoadRef.current = false;
+			return;
+		}
+
+		const fetchStats = async () => {
+			await refreshStatistics({
+				goal_id: goalState.goal_id,
+				setStats,
+				showAlert,
+			});
+		};
+
+		const fetchFilters = async () => {
+			await refreshFilters({
+				goal_id: goalState.goal_id,
+				setCompanies,
+				setSections,
+				showAlert,
+			});
+		};
+
+		fetchStats();
+		fetchFilters();
+	}, [goalState.goal_id, showAlert]);
 
 	return (
 		<div className="min-h-screen flex flex-col relative md:overflow-hidden">
@@ -54,27 +86,27 @@ export function AdminContent({
 				<div className="flex gap-4  overflow-x-auto">
 					<StatCard
 						title="New Logs Today"
-						value={initialStats.todayLogs}
+						value={stats.todayLogs}
 						color="bg-green-800"
 						icon={<LogIn className="w-4 h-4 text-white" />}
 					/>
 
 					<StatCard
 						title="Completed Goals"
-						value={initialStats.completedGoals!}
+						value={stats.completedGoals!}
 						color="bg-blue-800"
 						icon={<CheckCircle2 className="w-4 h-4 text-white" />}
 					/>
 
 					<StatCard
 						title="Total Users"
-						value={initialStats.totalUsers}
+						value={stats.totalUsers}
 						color="bg-yellow-600"
 						icon={<Users className="w-4 h-4 text-white" />}
 					/>
 					<StatCard
 						title="Total Admin"
-						value={initialStats.totalAdmins}
+						value={stats.totalAdmins}
 						color="bg-purple-700"
 						icon={<Users className="w-4 h-4 text-white" />}
 					/>
@@ -93,27 +125,27 @@ export function AdminContent({
 						</TabsTrigger>
 					</TabsList>
 
-					<TabsContent value="today-logs">
+					<TabsContent value="today-logs" forceMount={true}>
 						<TodayLogsTab
 							role="Admin"
 							goal_id={goalState.goal_id}
 							showAlert={showAlert}
 							initialData={initialTodayLogs}
-							initialSections={initialSections}
+							initialSections={sections}
 						/>
 					</TabsContent>
 
-					<TabsContent value="user-summary">
+					<TabsContent value="user-summary" forceMount={true}>
 						<UserSummaryTab
 							goal_id={goalState.goal_id}
 							showAlert={showAlert}
 							initialData={initialUserSummary}
-							initialCompanies={initialCompanies}
-							initialSections={initialSections}
+							initialCompanies={companies}
+							initialSections={sections}
 						/>
 					</TabsContent>
 
-					<TabsContent value="goal-admin">
+					<TabsContent value="goal-admin" forceMount={true}>
 						<GoalAdminTab
 							goal_id={goalState.goal_id}
 							showAlert={showAlert}

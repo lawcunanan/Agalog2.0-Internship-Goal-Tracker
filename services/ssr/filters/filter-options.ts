@@ -13,7 +13,6 @@ export const getFilterOptions = async (
 	try {
 		let companies: string[] | null = null;
 
-		// ✅ Only fetch companies if goal_id is provided
 		if (goal_id) {
 			let companyQuery = supabase
 				.from("distinct_companies")
@@ -41,7 +40,6 @@ export const getFilterOptions = async (
 			if (companies.length) companies.unshift("All Companies");
 		}
 
-		// ✅ Sections are always fetched
 		let sectionQuery = supabase.from("distinct_sections").select("section");
 		if (goal_id) sectionQuery = sectionQuery.eq("goal_id", goal_id);
 

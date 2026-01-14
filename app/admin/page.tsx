@@ -21,7 +21,7 @@ export default async function AdminPage() {
 
 	//  Get initial goal
 	const initialGoal = await getInitialGoal(user.id);
-	if (!initialGoal) return <div>No goal found</div>;
+	if (!initialGoal) return;
 
 	//  Default values
 	let initialStats: StatsticsSelect = {

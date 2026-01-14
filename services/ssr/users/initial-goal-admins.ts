@@ -62,7 +62,6 @@ export const getGoalAdmin = async (
 
 		const totalPages = Math.ceil((count || 0) / itemsPerPage);
 
-		console.log("getGoalAdmin mapped data:", mappedData);
 		return { data: mappedData, totalPages, error: null };
 	} catch (error: any) {
 		console.error(

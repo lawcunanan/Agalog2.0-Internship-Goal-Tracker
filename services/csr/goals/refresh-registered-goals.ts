@@ -3,7 +3,7 @@ import { UserDataSelect } from "@/lib/types";
 import { getRegisteredGoals } from "@/services/ssr/goals/initial-registered-goals";
 import { supabaseBrowser } from "@/lib/supabase/client";
 
-interface RefreshRegisteredGoalsParams {
+type RefreshRegisteredGoalsParams = {
 	searchQuery: string;
 	statusFilter: string;
 	itemsPerPage: number;
@@ -11,7 +11,7 @@ interface RefreshRegisteredGoalsParams {
 	showAlert: (status: number, message: string) => void;
 	setGoalsData: Dispatch<SetStateAction<UserDataSelect[]>>;
 	setTotalPages: Dispatch<SetStateAction<number>>;
-}
+};
 
 export const refreshRegisteredGoals = async ({
 	searchQuery,

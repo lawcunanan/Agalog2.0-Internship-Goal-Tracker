@@ -105,19 +105,19 @@ export function GoalsTab({ showAlert, initialData }: GoalsTabProps) {
 									className="border-b border-border hover:bg-muted/50 transition-colors"
 								>
 									<td className="py-4 px-4 text-sm text-foreground min-w-30">
-										{goal.goalTitle}
+										{goal.goalTitle || "N/A"}
 									</td>
 									<td className="py-4 px-4 text-sm text-foreground min-w-30">
-										{goal.status}
+										{goal.status || "N/A"}
 									</td>
 									<td className="py-4 px-4 text-sm text-foreground min-w-30">
 										{goal.goalHours} hrs
 									</td>
 									<td className="py-4 px-4 text-sm text-foreground min-w-30">
-										{goal.createdBy}
+										{goal.createdBy || "N/A"}
 									</td>
 									<td className="py-4 px-4 text-sm text-foreground min-w-30">
-										{goal.createdAt}
+										{goal.createdAt || "N/A"}
 									</td>
 								</tr>
 							))

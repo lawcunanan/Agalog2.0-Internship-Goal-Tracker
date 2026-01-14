@@ -3,8 +3,9 @@ import { UserDataSelect } from "@/lib/types";
 import { getTodayLogs } from "@/services/ssr/logs/initial-today-logs";
 import { supabaseBrowser } from "@/lib/supabase/client";
 
-interface RefreshTodayLogsParams {
+type RefreshTodayLogsParams = {
 	goal_id: string | null;
+	role: "Admin" | "Super Admin";
 	searchQuery: string;
 	sectionFilter: string;
 	itemsPerPage: number;
@@ -12,10 +13,11 @@ interface RefreshTodayLogsParams {
 	showAlert: (status: number, message: string) => void;
 	setTodayLogsData: Dispatch<SetStateAction<UserDataSelect[]>>;
 	setTotalPages: Dispatch<SetStateAction<number>>;
-}
+};
 
 export const refreshTodayLogs = async ({
 	goal_id,
+	role,
 	searchQuery,
 	sectionFilter,
 	itemsPerPage,
@@ -24,6 +26,12 @@ export const refreshTodayLogs = async ({
 	setTodayLogsData,
 	setTotalPages,
 }: RefreshTodayLogsParams) => {
+	if (!goal_id && role === "Admin") {
+		setTodayLogsData([]);
+		setTotalPages(1);
+		return;
+	}
+
 	const { data, totalPages, error } = await getTodayLogs(
 		supabaseBrowser,
 		goal_id,

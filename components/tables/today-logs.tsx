@@ -49,10 +49,10 @@ export function TodayLogsTab({
 			isFirstLoadRef.current = false;
 			return;
 		}
-
 		const fetchLogs = async () => {
 			await refreshTodayLogs({
 				goal_id,
+				role,
 				searchQuery,
 				sectionFilter,
 				itemsPerPage,
@@ -78,20 +78,22 @@ export function TodayLogsTab({
 						onChange={(e) => setSearchQuery(e.target.value)}
 					/>
 				</div>
-				<div className="md:w-48">
-					<Select value={sectionFilter} onValueChange={setSectionFilter}>
-						<SelectTrigger className="w-full">
-							<SelectValue placeholder="Filter by section" />
-						</SelectTrigger>
-						<SelectContent>
-							{initialSections?.map((section) => (
-								<SelectItem key={section} value={section}>
-									{section}
-								</SelectItem>
-							))}
-						</SelectContent>
-					</Select>
-				</div>
+				{initialSections.length > 0 && (
+					<div className="md:w-48">
+						<Select value={sectionFilter} onValueChange={setSectionFilter}>
+							<SelectTrigger className="w-full">
+								<SelectValue placeholder="Filter by section" />
+							</SelectTrigger>
+							<SelectContent>
+								{initialSections?.map((section) => (
+									<SelectItem key={section} value={section}>
+										{section}
+									</SelectItem>
+								))}
+							</SelectContent>
+						</Select>
+					</div>
+				)}
 			</div>
 			<div className="overflow-x-auto border border-border rounded-lg">
 				<table className="w-full border-collapse">
@@ -137,28 +139,28 @@ export function TodayLogsTab({
 										</Avatar>
 									</td>
 									<td className="py-4 px-4 text-sm text-foreground min-w-50">
-										{log.fullname}
+										{log.fullname || "N/A"}
 									</td>
 									<td className="py-4 px-4 text-sm text-foreground min-w-30">
-										{log.section}
+										{log.section || "N/A"}
 									</td>
 									<td className="py-4 px-4 text-sm text-foreground min-w-30">
-										{log.date}
+										{log.date || "N/A"}
 									</td>
 									<td className="py-4 px-4 text-sm text-foreground min-w-30">
-										{log.timeIn}
+										{log.timeIn || "N/A"}
 									</td>
 									<td className="py-4 px-4 text-sm text-foreground min-w-30">
-										{log.timeOut}
+										{log.timeOut || "N/A"}
 									</td>
 									<td className="py-4 px-4 text-sm text-foreground min-w-35">
-										{log.breakDuration}
+										{log.breakDuration || "N/A"}
 									</td>
 									<td className="py-4 px-4 text-sm text-muted-foreground min-w-50">
 										<DescriptionCell description={log.description || ""} />
 									</td>
 									<td className="py-4 px-4 text-sm text-foreground font-medium min-w-30">
-										{log.hoursWorked}
+										{log.hoursWorked || "N/A"}
 									</td>
 									<td className="py-4 px-4 text-sm text-foreground min-w-52.5">
 										{log.createdAt}

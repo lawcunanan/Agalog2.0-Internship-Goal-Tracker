@@ -82,34 +82,39 @@ export function UserSummaryTab({
 					/>
 				</div>
 				<div className="flex gap-3">
-					<div className="w-full md:w-48">
-						<Select value={sectionFilter} onValueChange={setSectionFilter}>
-							<SelectTrigger className="w-full">
-								<SelectValue placeholder="Filter by section" />
-							</SelectTrigger>
-							<SelectContent>
-								{initialSections.map((section) => (
-									<SelectItem key={section} value={section}>
-										{section}
-									</SelectItem>
-								))}
-							</SelectContent>
-						</Select>
-					</div>
-					<div className="w-full md:w-48">
-						<Select value={companyFilter} onValueChange={setCompanyFilter}>
-							<SelectTrigger className="w-full">
-								<SelectValue placeholder="Filter by company" />
-							</SelectTrigger>
-							<SelectContent>
-								{initialCompanies.map((company) => (
-									<SelectItem key={company} value={company}>
-										{company}
-									</SelectItem>
-								))}
-							</SelectContent>
-						</Select>
-					</div>
+					{initialSections.length > 0 && (
+						<div className="w-full md:w-48">
+							<Select value={sectionFilter} onValueChange={setSectionFilter}>
+								<SelectTrigger className="w-full">
+									<SelectValue placeholder="Filter by section" />
+								</SelectTrigger>
+								<SelectContent>
+									{initialSections.map((section) => (
+										<SelectItem key={section} value={section}>
+											{section}
+										</SelectItem>
+									))}
+								</SelectContent>
+							</Select>
+						</div>
+					)}
+
+					{initialCompanies.length > 0 && (
+						<div className="w-full md:w-48">
+							<Select value={companyFilter} onValueChange={setCompanyFilter}>
+								<SelectTrigger className="w-full">
+									<SelectValue placeholder="Filter by company" />
+								</SelectTrigger>
+								<SelectContent>
+									{initialCompanies.map((company) => (
+										<SelectItem key={company} value={company}>
+											{company}
+										</SelectItem>
+									))}
+								</SelectContent>
+							</Select>
+						</div>
+					)}
 				</div>
 			</div>
 			<div className="overflow-x-auto border border-border rounded-lg">
@@ -154,25 +159,25 @@ export function UserSummaryTab({
 										</Avatar>
 									</td>
 									<td className="py-4 px-4 text-sm text-foreground min-w-50">
-										{user.fullname}
+										{user.fullname || "N/A"}
 									</td>
 									<td className="py-4 px-4 text-sm text-foreground min-w-30">
-										{user.section}
+										{user.section || "N/A"}
 									</td>
 									<td className="py-4 px-4 text-sm text-foreground min-w-25">
-										{user.company}
+										{user.company || "N/A"}
 									</td>
 									<td className="py-4 px-4 text-sm text-foreground min-w-30">
-										{user.goalTitle}
+										{user.goalTitle || "N/A"}
 									</td>
 									<td className="py-4 px-4 text-sm text-foreground min-w-30">
 										{user.goalHours + "hrs"}
 									</td>
 									<td className="py-4 px-4 text-sm font-medium text-foreground min-w-30">
-										{user.totalHours}
+										{user.totalHours || "N/A"}
 									</td>
 									<td className="py-4 px-4 text-sm font-medium text-foreground min-w-30">
-										{user.hoursLeft}
+										{user.hoursLeft || "N/A"}
 									</td>
 								</tr>
 							))

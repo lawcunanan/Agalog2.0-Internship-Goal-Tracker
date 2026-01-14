@@ -3,7 +3,7 @@ import { UserDataSelect } from "@/lib/types";
 import { getUsers } from "@/services/ssr/users/initial-users";
 import { supabaseBrowser } from "@/lib/supabase/client";
 
-interface RefreshUsersParams {
+type RefreshUsersParams = {
 	searchQuery: string;
 	statusFilter: string;
 	roleFilter: string;
@@ -12,7 +12,7 @@ interface RefreshUsersParams {
 	showAlert: (status: number, message: string) => void;
 	setUsersData: Dispatch<SetStateAction<UserDataSelect[]>>;
 	setTotalPages: Dispatch<SetStateAction<number>>;
-}
+};
 
 export const refreshUsers = async ({
 	searchQuery,

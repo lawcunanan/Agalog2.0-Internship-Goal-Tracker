@@ -109,8 +109,8 @@ export function JoinGoalDialog({ user, showAlert }: JoinGoalDialogProps) {
 				<div className="text-center space-y-5 py-4 pb-0">
 					{/* Icon */}
 					<div className="flex justify-center">
-						<div className="rounded-full bg-primary/10 p-4">
-							<Shield className="h-8 w-8 text-primary" />
+						<div className="rounded-full bg-green-900 p-4">
+							<Shield className="h-8 w-8 text-green-100" />
 						</div>
 					</div>
 
@@ -127,9 +127,7 @@ export function JoinGoalDialog({ user, showAlert }: JoinGoalDialogProps) {
 					{!goalValues?.goal_id ? (
 						<div className="space-y-3">
 							<div className="space-y-2">
-								<Label htmlFor="token" className="text-sm">
-									Goal Token
-								</Label>
+								<Label htmlFor="token">Goal Token</Label>
 								<Input
 									id="token"
 									type="text"

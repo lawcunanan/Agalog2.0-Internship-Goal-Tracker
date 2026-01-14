@@ -141,19 +141,19 @@ export function UsersTab({
 										</Avatar>
 									</td>
 									<td className="py-4 px-4 text-sm text-foreground min-w-30">
-										{user.fullname}
+										{user.fullname || "N/A"}
 									</td>
 									<td className="py-4 px-4 text-sm text-foreground min-w-30">
-										{user.status}
+										{user.status || "N/A"}
 									</td>
 									<td className="py-4 px-4 text-sm text-foreground min-w-30">
-										{user.role}
+										{user.role || "N/A"}
 									</td>
 									<td className="py-4 px-4 text-sm text-foreground min-w-50">
-										{user.email}
+										{user.email || "N/A"}
 									</td>
 									<td className="py-4 px-4 text-sm text-foreground min-w-30">
-										{user.createdAt}
+										{user.createdAt || "N/A"}
 									</td>
 								</tr>
 							))

@@ -117,16 +117,16 @@ export function GoalAdminTab({
 										</Avatar>
 									</td>
 									<td className="py-4 px-4 text-sm text-foreground min-w-30">
-										{admin.fullname}
+										{admin.fullname || "N/A"}
 									</td>
 									<td className="py-4 px-4 text-sm text-foreground min-w-30">
-										{admin.email}
+										{admin.email || "N/A"}
 									</td>
 									<td className="py-4 px-4 text-sm text-foreground min-w-30">
-										{admin.role}
+										{admin.role || "N/A"}
 									</td>
 									<td className="py-4 px-4 text-sm text-foreground min-w-30">
-										{admin.status}
+										{admin.status || "N/A"}
 									</td>
 
 									<td className="py-4 px-4 text-sm text-foreground min-w-30">

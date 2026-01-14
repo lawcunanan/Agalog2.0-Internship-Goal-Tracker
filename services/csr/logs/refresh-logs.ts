@@ -3,13 +3,13 @@ import { GoalActiveState, WeeklyLogState, UserState } from "@/lib/types";
 import { getLogs } from "@/services/ssr/logs/initial-logs";
 import { supabaseBrowser } from "@/lib/supabase/client";
 
-interface RefreshLogsParams {
+type RefreshLogsParams = {
 	user: UserState | null;
 	goalState: GoalActiveState;
 	showAlert: (status: number, message: string) => void;
 	setLogState: Dispatch<SetStateAction<WeeklyLogState>>;
 	goal_id?: string;
-}
+};
 
 export const refreshLogsHandler = async ({
 	goal_id,

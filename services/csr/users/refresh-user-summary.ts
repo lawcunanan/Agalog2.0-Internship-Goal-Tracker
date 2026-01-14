@@ -2,8 +2,9 @@ import { Dispatch, SetStateAction } from "react";
 import { UserDataSelect } from "@/lib/types";
 import { getUserSummary } from "@/services/ssr/users/initial-user-summary";
 import { supabaseBrowser } from "@/lib/supabase/client";
+import { set } from "date-fns";
 
-interface RefreshUserSummaryParams {
+type RefreshUserSummaryParams = {
 	goal_id: string | null;
 	searchQuery: string;
 	sectionFilter: string;
@@ -13,7 +14,7 @@ interface RefreshUserSummaryParams {
 	showAlert: (status: number, message: string) => void;
 	setSummaryData: Dispatch<SetStateAction<UserDataSelect[]>>;
 	setTotalPages: Dispatch<SetStateAction<number>>;
-}
+};
 
 export const refreshUserSummary = async ({
 	goal_id,
@@ -26,6 +27,12 @@ export const refreshUserSummary = async ({
 	setSummaryData,
 	setTotalPages,
 }: RefreshUserSummaryParams) => {
+	if (!goal_id) {
+		setSummaryData([]);
+		setTotalPages(1);
+		return;
+	}
+
 	const { data, totalPages, error } = await getUserSummary(
 		supabaseBrowser,
 		goal_id,

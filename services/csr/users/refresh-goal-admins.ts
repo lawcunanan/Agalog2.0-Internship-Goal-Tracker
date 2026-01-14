@@ -3,7 +3,7 @@ import { UserDataSelect } from "@/lib/types";
 import { getGoalAdmin } from "@/services/ssr/users/initial-goal-admins";
 import { supabaseBrowser } from "@/lib/supabase/client";
 
-interface RefreshGoalAdminsParams {
+type RefreshGoalAdminsParams = {
 	goal_id: string | null;
 	searchQuery: string;
 	statusFilter: string;
@@ -12,7 +12,7 @@ interface RefreshGoalAdminsParams {
 	showAlert: (status: number, message: string) => void;
 	setAdminsData: Dispatch<SetStateAction<UserDataSelect[]>>;
 	setTotalPages: Dispatch<SetStateAction<number>>;
-}
+};
 
 export const refreshGoalAdmins = async ({
 	goal_id,
@@ -24,6 +24,12 @@ export const refreshGoalAdmins = async ({
 	setAdminsData,
 	setTotalPages,
 }: RefreshGoalAdminsParams) => {
+	if (!goal_id) {
+		setAdminsData([]);
+		setTotalPages(1);
+		return;
+	}
+
 	const { data, totalPages, error } = await getGoalAdmin(
 		supabaseBrowser,
 		goal_id,
