@@ -18,7 +18,7 @@ export const refreshLogsHandler = async ({
 	showAlert,
 	setLogState,
 }: RefreshLogsParams) => {
-	if (user && (goalState.goal_id || goal_id)) {
+	if (user && goal_id) {
 		const { data, error } = await getLogs(
 			user.user_id,
 			goal_id || goalState.goal_id,

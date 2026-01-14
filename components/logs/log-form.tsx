@@ -16,7 +16,7 @@ type LogFormProps = {
 	onEdit: (log: LogValues | null) => void;
 	user: any;
 	showAlert: (status: number, message: string) => void;
-	refreshLogs: () => void;
+	refreshLogs: (goal_id: string) => void;
 };
 
 export function LogForm({
@@ -123,7 +123,7 @@ export function LogForm({
 	const handleReset = (e?: React.MouseEvent) => {
 		e?.preventDefault?.();
 		setLogData(defaults());
-		refreshLogs();
+		refreshLogs(goal_id);
 		onEdit(null);
 	};
 
@@ -145,6 +145,7 @@ export function LogForm({
 						value={logData.date}
 						onChange={handleChange}
 						max={new Date().toISOString().split("T")[0]}
+						disabled={!goal_id}
 						required
 					/>
 				</div>
@@ -160,6 +161,7 @@ export function LogForm({
 							className="shadow-none"
 							value={logData.timeIn}
 							onChange={handleChange}
+							disabled={!goal_id}
 							required
 						/>
 					</div>
@@ -217,6 +219,7 @@ export function LogForm({
 						className="min-h-25 resize-none shadow-none"
 						value={logData.description}
 						onChange={handleChange}
+						disabled={!goal_id}
 					/>
 				</div>
 

@@ -180,7 +180,8 @@ export function ManageGoalsDialog({
 		setGoalState({
 			...goalState,
 			goal_id: goalId,
-			goalHours: goals.find((g) => g.goal_id == goalId)?.goal || 0,
+			goalHours:
+				goalHours || goals.find((g) => String(g.goal_id) === goalId)?.goal || 0,
 		});
 	};
 

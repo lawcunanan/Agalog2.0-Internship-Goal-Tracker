@@ -26,7 +26,15 @@ export async function getLogs(
 
 		const { data: logsData, error } = await supabase
 			.from("logs")
-			.select("*")
+			.select(
+				`log_id,
+				 log_date,
+				 timeIn,
+				 timeOut,
+				 breakOut,
+				 breakBack,
+				 description`,
+			)
 			.eq("goal_id", goal_id)
 			.eq("user_id", user_id)
 			.order("log_date", { ascending: true });
