@@ -120,43 +120,58 @@ export function UsersTab({
 					</thead>
 					<tbody>
 						{usersData.length > 0 ? (
-							usersData.map((user, idx) => (
-								<tr
-									key={idx}
-									className={`border-b border-border hover:bg-muted/50 transition-colors ${
-										user.role === "Student" ? "cursor-pointer" : ""
-									}`}
-									onClick={() => {
-										if (user.role === "Student") {
-											router.push(`/student/null/${user.user_id}`);
+							usersData.map((user, idx) => {
+								const recordUrl = `/record/null/${user.user_id}`;
+								return (
+									<tr
+										key={idx}
+										className={`border-b border-border hover:bg-muted/50 transition-colors ${
+											user.role === "Student" ? "cursor-pointer" : ""
+										}`}
+										onMouseEnter={
+											user.role === "Student"
+												? () => {
+														router.prefetch(recordUrl);
+													}
+												: undefined
 										}
-									}}
-								>
-									<td className="py-4 px-4 min-w-20">
-										<Avatar className="w-9 h-9">
-											<AvatarImage src={user.avatar_url} alt={user.fullname} />
-											<AvatarFallback className="bg-muted text-sm font-semibold text-muted-foreground">
-												{user?.fullname?.charAt(0) || "U"}
-											</AvatarFallback>
-										</Avatar>
-									</td>
-									<td className="py-4 px-4 text-sm text-foreground min-w-30">
-										{user.fullname || "N/A"}
-									</td>
-									<td className="py-4 px-4 text-sm text-foreground min-w-30">
-										{user.status || "N/A"}
-									</td>
-									<td className="py-4 px-4 text-sm text-foreground min-w-30">
-										{user.role || "N/A"}
-									</td>
-									<td className="py-4 px-4 text-sm text-foreground min-w-50">
-										{user.email || "N/A"}
-									</td>
-									<td className="py-4 px-4 text-sm text-foreground min-w-30">
-										{user.createdAt || "N/A"}
-									</td>
-								</tr>
-							))
+										onClick={
+											user.role === "Student"
+												? () => {
+														router.push(recordUrl);
+													}
+												: undefined
+										}
+									>
+										<td className="py-4 px-4 min-w-20">
+											<Avatar className="w-9 h-9">
+												<AvatarImage
+													src={user.avatar_url}
+													alt={user.fullname}
+												/>
+												<AvatarFallback className="bg-muted text-sm font-semibold text-muted-foreground">
+													{user?.fullname?.charAt(0) || "U"}
+												</AvatarFallback>
+											</Avatar>
+										</td>
+										<td className="py-4 px-4 text-sm text-foreground min-w-30">
+											{user.fullname || "N/A"}
+										</td>
+										<td className="py-4 px-4 text-sm text-foreground min-w-30">
+											{user.status || "N/A"}
+										</td>
+										<td className="py-4 px-4 text-sm text-foreground min-w-30">
+											{user.role || "N/A"}
+										</td>
+										<td className="py-4 px-4 text-sm text-foreground min-w-50">
+											{user.email || "N/A"}
+										</td>
+										<td className="py-4 px-4 text-sm text-foreground min-w-30">
+											{user.createdAt || "N/A"}
+										</td>
+									</tr>
+								);
+							})
 						) : (
 							<tr>
 								<td colSpan={6} className="py-12">

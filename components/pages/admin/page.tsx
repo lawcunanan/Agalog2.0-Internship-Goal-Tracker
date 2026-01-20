@@ -19,7 +19,7 @@ import { GoalAdminTab } from "../../tables/admin-goal";
 import { UserSummaryTab } from "../../tables/user-summary";
 import { TodayLogsTab } from "../../tables/today-logs";
 import { refreshStatistics } from "@/services/csr/statistics/refresh-statistics";
-import { refreshFilters } from "@/services/csr/filters/refresh-filters";
+import { refreshFilters } from "@/services/csr/filters/refresh-filter";
 
 type AdminContentProps = {
 	initialGoal: GoalActiveState | null;

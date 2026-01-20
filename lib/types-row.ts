@@ -8,7 +8,7 @@ export type UserRow = {
 	email: string;
 	status: string | null;
 	role: string | null;
-	created_at: string;
+	created_at: string | Date | null;
 };
 
 export type GoalAdminRow = {

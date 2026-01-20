@@ -20,7 +20,7 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
-import { X, Shield, Target } from "lucide-react";
+import { X, Target, Key } from "lucide-react";
 import { LoadingButtonText } from "@/components/ui/loading-button-text";
 import { UserSelect, GoalsState } from "@/lib/types";
 import { handleFormChange } from "@/lib/utils";
@@ -109,11 +109,15 @@ export function JoinGoalDialog({ user, showAlert }: JoinGoalDialogProps) {
 				<div className="text-center space-y-5 py-4 pb-0">
 					{/* Icon */}
 					<div className="flex justify-center">
-						<div className="rounded-full bg-green-900 p-4">
-							<Shield className="h-8 w-8 text-green-100" />
+						<div
+							className="rounded-full bg-green-900 p-4 
+							border border-white 
+							ring-1 ring-gray-300/10
+							shadow-lg shadow-green-900/30"
+						>
+							<Key className="h-8 w-8 text-green-100" />
 						</div>
 					</div>
-
 					{/* Title */}
 					<AlertDialogHeader>
 						<AlertDialogTitle className="text-center">

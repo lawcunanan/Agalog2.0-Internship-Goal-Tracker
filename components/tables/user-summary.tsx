@@ -142,45 +142,54 @@ export function UserSummaryTab({
 					</thead>
 					<tbody>
 						{userSummaryData?.length > 0 ? (
-							userSummaryData.map((user, idx) => (
-								<tr
-									key={idx}
-									className="border-b border-border hover:bg-muted/50 transition-colors cursor-pointer"
-									onClick={() =>
-										router.push(`/student/${goal_id || "null"}/${user.user_id}`)
-									}
-								>
-									<td className="py-4 px-4 min-w-20">
-										<Avatar className="w-9 h-9">
-											<AvatarImage src={user.avatar_url} alt={user.fullname} />
-											<AvatarFallback className="bg-muted text-sm font-semibold text-muted-foreground">
-												{user?.fullname?.charAt(0) || "U"}
-											</AvatarFallback>
-										</Avatar>
-									</td>
-									<td className="py-4 px-4 text-sm text-foreground min-w-50">
-										{user.fullname || "N/A"}
-									</td>
-									<td className="py-4 px-4 text-sm text-foreground min-w-30">
-										{user.section || "N/A"}
-									</td>
-									<td className="py-4 px-4 text-sm text-foreground min-w-25">
-										{user.company || "N/A"}
-									</td>
-									<td className="py-4 px-4 text-sm text-foreground min-w-30">
-										{user.goalTitle || "N/A"}
-									</td>
-									<td className="py-4 px-4 text-sm text-foreground min-w-30">
-										{user.goalHours + "hrs"}
-									</td>
-									<td className="py-4 px-4 text-sm font-medium text-foreground min-w-30">
-										{user.totalHours || "N/A"}
-									</td>
-									<td className="py-4 px-4 text-sm font-medium text-foreground min-w-30">
-										{user.hoursLeft || "N/A"}
-									</td>
-								</tr>
-							))
+							userSummaryData.map((user, idx) => {
+								const recordUrl = `/record/${goal_id ?? "null"}/${user.user_id}`;
+								return (
+									<tr
+										key={idx}
+										className="border-b border-border hover:bg-muted/50 transition-colors cursor-pointer"
+										onMouseEnter={() => {
+											router.prefetch(recordUrl);
+										}}
+										onClick={() => {
+											router.push(recordUrl);
+										}}
+									>
+										<td className="py-4 px-4 min-w-20">
+											<Avatar className="w-9 h-9">
+												<AvatarImage
+													src={user.avatar_url}
+													alt={user.fullname}
+												/>
+												<AvatarFallback className="bg-muted text-sm font-semibold text-muted-foreground">
+													{user?.fullname?.charAt(0) || "U"}
+												</AvatarFallback>
+											</Avatar>
+										</td>
+										<td className="py-4 px-4 text-sm text-foreground min-w-50">
+											{user.fullname || "N/A"}
+										</td>
+										<td className="py-4 px-4 text-sm text-foreground min-w-30">
+											{user.section || "N/A"}
+										</td>
+										<td className="py-4 px-4 text-sm text-foreground min-w-25">
+											{user.company || "N/A"}
+										</td>
+										<td className="py-4 px-4 text-sm text-foreground min-w-30">
+											{user.goalTitle || "N/A"}
+										</td>
+										<td className="py-4 px-4 text-sm text-foreground min-w-30">
+											{user.goalHours + "hrs"}
+										</td>
+										<td className="py-4 px-4 text-sm font-medium text-foreground min-w-30">
+											{user.totalHours || "N/A"}
+										</td>
+										<td className="py-4 px-4 text-sm font-medium text-foreground min-w-30">
+											{user.hoursLeft || "N/A"}
+										</td>
+									</tr>
+								);
+							})
 						) : (
 							<tr>
 								<td colSpan={8} className="py-12">

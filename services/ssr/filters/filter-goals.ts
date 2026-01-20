@@ -1,27 +1,26 @@
 import { SupabaseClient } from "@supabase/supabase-js";
-import { GoalsState } from "@/lib/types";
+import { FilterGoalSelect } from "@/lib/types";
 import { FilterGoalRow } from "@/lib/types-row";
 
-type GoalsStudentResponse = {
-	data: GoalsState[] | null;
+type GoalsResponse = {
+	data: FilterGoalSelect[] | null;
 	error: string | null;
 };
 
-export const getGoalsStudent = async (
+export const getFilterGoals = async (
 	supabase: SupabaseClient,
 	auth_id: string,
 	student_id: string,
-): Promise<GoalsStudentResponse> => {
+): Promise<GoalsResponse> => {
 	try {
 		// 1. Get active goals of the authenticated user
 		const { data: authGoals, error: authError } = await supabase
 			.from("contributors")
 			.select("goal_id")
-			.eq("user_id", auth_id)
-			.eq("status", "Active");
+			.eq("user_id", auth_id);
 
 		if (authError) {
-			console.error("getGoalsStudent auth goals error:", authError.message);
+			console.log("getGoalsStudent auth goals error:", authError.message);
 			return { data: null, error: authError.message };
 		}
 
@@ -47,27 +46,26 @@ export const getGoalsStudent = async (
 			)
 			.eq("user_id", student_id)
 			.in("goal_id", goalIds)
-			.eq("status", "Active")
 			.order("created_at", { ascending: false })
 			.overrideTypes<FilterGoalRow[], { merge: false }>();
 
 		if (error) {
-			console.error("getGoalsStudent goals error:", error.message);
+			console.log("getGoalsStudent goals error:", error.message);
 			return { data: null, error: error.message };
 		}
 
-		const mapped: GoalsState[] =
+		const mapped: FilterGoalSelect[] =
 			data?.map((item) => ({
 				goal_id: String(item.goal_id),
 				title: item.goals?.title || "Unknown Goal",
-				goal: item.goals?.goal || 0,
-				section: item.section ?? undefined,
-				company: item.company ?? undefined,
+				goalHours: item.goals?.goal || 0,
+				section: item.section,
+				company: item.company,
 			})) || [];
 
 		return { data: mapped, error: null };
 	} catch (error: any) {
-		console.error(
+		console.log(
 			"getGoalsStudent unexpected error:",
 			error.message || "Unexpected error",
 		);

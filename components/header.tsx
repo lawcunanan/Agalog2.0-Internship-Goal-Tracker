@@ -20,6 +20,7 @@ import { JoinGoalDialog } from "./dialogs/goals/join-dialog";
 import { ManageGoalsDialog } from "./dialogs/goals/manage-dialog";
 import { getInitials } from "@/lib/utils";
 import { exportLog } from "@/lib/utils/export-log";
+import { TempInsertDialog } from "@/components/dialogs/goals/temp-insert-dialog";
 
 interface HeaderProps {
 	goalState?: GoalActiveState;
@@ -145,14 +146,16 @@ export function Header({
 												</Button>
 											)}
 											{isAdmin && (
-												<Button
-													variant="ghost"
-													size={buttonSize}
-													className={buttonClass}
-												>
-													<ArrowLeftRight className="h-4 w-4" />
-													Data Transfer
-												</Button>
+												<TempInsertDialog>
+													<Button
+														variant="ghost"
+														size={buttonSize}
+														className={buttonClass}
+													>
+														<ArrowLeftRight className="h-4 w-4" />
+														Data Transfer
+													</Button>
+												</TempInsertDialog>
 											)}
 										</>
 									)}

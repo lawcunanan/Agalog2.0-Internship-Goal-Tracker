@@ -40,9 +40,10 @@ export function StudentContent({ initialGoal, logsData }: StudentContentProps) {
 
 	const refreshLogs = useCallback(
 		async (goal_id?: string) => {
+			if (!user) return;
 			await refreshLogsHandler({
 				goal_id,
-				user,
+				user_id: user.user_id,
 				goalState,
 				showAlert,
 				setLogState,
@@ -74,7 +75,7 @@ export function StudentContent({ initialGoal, logsData }: StudentContentProps) {
 							refreshLogs={refreshLogs}
 						/>
 					</div>
-					<div className="md:overflow-y-auto no-scrollbar pt-0 md:pt-42 space-y-16">
+					<div className="md:overflow-y-auto no-scrollbar pt-0 md:pt-42 space-y-12 md:space-y-16">
 						<LogProgress
 							completed={logState.currentHours}
 							required={goalState.goalHours}

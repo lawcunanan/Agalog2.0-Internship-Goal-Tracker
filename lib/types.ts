@@ -11,6 +11,9 @@ export interface UserSelect {
 	status: Status;
 	email: string;
 	createdAt: string;
+
+	section?: string;
+	company?: string;
 }
 
 export interface GoalAdminSelect {
@@ -67,6 +70,14 @@ export interface RegisteredGoalSelect {
 	createdBy: string;
 	createdAt: string;
 	status: string;
+}
+
+export interface FilterGoalSelect {
+	goal_id: string;
+	title: string;
+	section: string | null;
+	company: string | null;
+	goalHours: number | null;
 }
 
 // [LOG TABLE TYPES]

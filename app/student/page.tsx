@@ -3,6 +3,7 @@ import { getUser } from "@/services/ssr/auth/get-user";
 import { getInitialGoal } from "@/services/ssr/goals/initial-goal";
 import { getLogs } from "@/services/ssr/logs/initial-logs";
 import { supabaseServer } from "@/lib/supabase/server";
+import { WeeklyLogState } from "@/lib/types";
 
 export default async function StudentPage() {
 	const user = await getUser();
@@ -11,12 +12,9 @@ export default async function StudentPage() {
 	if (!user) return;
 
 	const initialGoal = await getInitialGoal(user.id);
-	if (!initialGoal) return <div>No goal found</div>;
+	if (!initialGoal) return;
 
-	let logsData: {
-		logs: any[];
-		currentHours: number;
-	} = {
+	let logsData: WeeklyLogState = {
 		logs: [],
 		currentHours: 0,
 	};

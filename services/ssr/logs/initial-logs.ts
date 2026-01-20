@@ -131,7 +131,7 @@ export async function getLogs(
 	} catch (err: unknown) {
 		const message = err instanceof Error ? err.message : "Failed to fetch logs";
 
-		console.error("[getLogs]", message);
+		console.log("[getLogs]", message);
 
 		return {
 			data: null,

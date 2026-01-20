@@ -129,7 +129,7 @@ export function LogForm({
 
 	return (
 		<FadeIn className="space-y-8">
-			<h2 className="text-3xl sm:text-4xl font-bold tracking-tight">
+			<h2 className="text-4xl sm:text-5xl font-bold tracking-tight">
 				Log & Go!
 			</h2>
 
@@ -234,8 +234,8 @@ export function LogForm({
 							? "Updating Log"
 							: "Adding Log"
 						: editLog
-						? "Update Log"
-						: "Log Today"}
+							? "Update Log"
+							: "Log Today"}
 				</Button>
 
 				{editLog && (

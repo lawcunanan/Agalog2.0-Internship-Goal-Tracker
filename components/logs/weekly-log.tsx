@@ -35,7 +35,7 @@ export function WeeklyLog({
 	}
 
 	return (
-		<FadeIn delay={0.2} className="space-y-12 mb-8">
+		<FadeIn delay={0.2} className="space-y-8 md:space-y-16 mb-8">
 			{data.map((week, index) => (
 				<div key={`${week.weekLabel}-${index}`} className="space-y-6">
 					<h3 className="text-xl font-semibold">{week.weekLabel}</h3>

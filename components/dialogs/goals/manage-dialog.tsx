@@ -413,7 +413,7 @@ export function ManageGoalsDialog({
 															{goal.sections.map((section) => (
 																<span
 																	key={section}
-																	className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-600 text-white text-sm"
+																	className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-800 text-white text-xs"
 																>
 																	{section}
 																</span>

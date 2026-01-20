@@ -10,35 +10,37 @@ import {
 	SelectValue,
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { Download } from "lucide-react";
-import { GoalActiveState, GoalsState } from "@/lib/types";
+import { Download, Loader2 } from "lucide-react";
+import { GoalActiveState, GoalsState, FilterGoalSelect } from "@/lib/types";
 
 type LogProgressProps = {
 	completed: number;
 	required: number;
 	description?: string;
-	goals?: GoalsState[];
+	filterGoals?: FilterGoalSelect[];
 	goalState?: GoalActiveState;
 	setGoalState?: (goalState: GoalActiveState) => void;
 	onExport?: () => void;
+	exporting?: boolean;
 };
 
 export function LogProgress({
 	completed,
 	required,
 	description = "Total hours completed vs required internship goal.",
-	goals,
+	filterGoals,
 	goalState,
 	setGoalState,
 	onExport,
+	exporting,
 }: LogProgressProps) {
 	const percentage =
 		required > 0 ? Math.min(100, (completed / required) * 100) : 0;
 
 	return (
 		<FadeIn className=" space-y-4">
-			<div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
-				<div className="flex items-baseline gap-3 text-3xl sm:text-5xl font-light text-muted-foreground">
+			<div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
+				<div className="flex items-baseline gap-3 text-4xl sm:text-5xl font-light text-muted-foreground">
 					<span className="text-foreground font-medium">
 						{completed.toFixed(2)}
 					</span>
@@ -47,27 +49,42 @@ export function LogProgress({
 					<span className="text-base sm:text-2xl font-normal">Hours</span>
 				</div>
 
-				{goals && goals.length > 0 && goalState && setGoalState && (
+				{filterGoals && filterGoals.length > 0 && goalState && setGoalState && (
 					<div className="flex items-center gap-2">
 						<Select
 							value={goalState.goal_id}
 							onValueChange={(goal_id) =>
-								setGoalState({ ...goalState, goal_id })
+								setGoalState({
+									...goalState,
+									goal_id,
+									goalHours:
+										filterGoals.find((g) => g.goal_id === goal_id)?.goalHours ||
+										0,
+								})
 							}
 						>
 							<SelectTrigger className="w-50">
 								<SelectValue placeholder="Select Goal" />
 							</SelectTrigger>
 							<SelectContent>
-								{goals.map((goal) => (
+								{filterGoals.map((goal) => (
 									<SelectItem key={goal.goal_id} value={goal.goal_id}>
 										{goal.title}
 									</SelectItem>
 								))}
 							</SelectContent>
 						</Select>
-						<Button variant="outline" size="icon" onClick={onExport}>
-							<Download className="h-4 w-4" />
+						<Button
+							variant="outline"
+							size="icon"
+							onClick={onExport}
+							disabled={exporting}
+						>
+							{exporting ? (
+								<Loader2 className="mr-2 h-4 w-4 animate-spin" />
+							) : (
+								<Download className="h-4 w-4" />
+							)}
 						</Button>
 					</div>
 				)}
@@ -75,9 +92,7 @@ export function LogProgress({
 
 			<Progress value={percentage} className="h-3" />
 
-			<p className="text-md sm:text-base text-muted-foreground">
-				{description}
-			</p>
+			<p className="text-base text-muted-foreground">{description}</p>
 		</FadeIn>
 	);
 }

@@ -3,32 +3,9 @@
 import { Button } from "@/components/ui/button";
 import { ShieldAlert } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useAlert } from "@/providers/alert-provider";
-import { signOutUser } from "@/services/csr/auth/logout";
-import { supabaseBrowser } from "@/lib/supabase/client";
-import { useState } from "react";
 
 export default function UnauthorizedPage() {
 	const router = useRouter();
-	const { showAlert } = useAlert();
-	const [isLoading, setIsLoading] = useState(false);
-
-	const handleGoHome = async () => {
-		setIsLoading(true);
-		try {
-			const {
-				data: { user },
-			} = await supabaseBrowser.auth.getUser();
-			if (user) {
-				await signOutUser(showAlert, setIsLoading);
-			} else {
-				router.push("/");
-			}
-		} catch (error) {
-			console.error("Error checking auth status:", error);
-			router.push("/");
-		}
-	};
 
 	return (
 		<div className="flex h-screen w-full flex-col items-center justify-center gap-4 text-center p-4">
@@ -45,8 +22,8 @@ export default function UnauthorizedPage() {
 				</p>
 			</div>
 			<div className="flex gap-2">
-				<Button variant="default" onClick={handleGoHome} disabled={isLoading}>
-					{isLoading ? "Signing out..." : "Go Home"}
+				<Button variant="default" onClick={() => router.push("/")}>
+					Go Home
 				</Button>
 			</div>
 		</div>

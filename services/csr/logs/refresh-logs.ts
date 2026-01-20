@@ -4,7 +4,7 @@ import { getLogs } from "@/services/ssr/logs/initial-logs";
 import { supabaseBrowser } from "@/lib/supabase/client";
 
 type RefreshLogsParams = {
-	user: UserSelect | null;
+	user_id: string;
 	goalState: GoalActiveState;
 	showAlert: (status: number, message: string) => void;
 	setLogState: Dispatch<SetStateAction<WeeklyLogState>>;
@@ -13,14 +13,14 @@ type RefreshLogsParams = {
 
 export const refreshLogsHandler = async ({
 	goal_id,
-	user,
+	user_id,
 	goalState,
 	showAlert,
 	setLogState,
 }: RefreshLogsParams) => {
-	if (user && goal_id) {
+	if (user_id && goal_id) {
 		const { data, error } = await getLogs(
-			user.user_id,
+			user_id,
 			goal_id || goalState.goal_id,
 			supabaseBrowser,
 		);
