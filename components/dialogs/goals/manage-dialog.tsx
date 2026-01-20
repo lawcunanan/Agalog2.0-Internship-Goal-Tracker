@@ -402,18 +402,18 @@ export function ManageGoalsDialog({
 												className="h-4 w-4 shrink-0 mt-1.5"
 											/>
 											<div className="flex-1 mb-0">
-												<p className="font-medium text-sm">{goal.title}</p>
-												<p className="text-xs text-muted-foreground mt-1">
+												<p className="font-medium text-base">{goal.title}</p>
+												<p className="text-sm text-muted-foreground">
 													{goal.metaText}
 												</p>
 												{!isStudent &&
 													goal.sections &&
 													goal.sections.length > 0 && (
-														<div className="mt-1.5 space-x-2">
+														<div className="flex flex-wrap gap-2 mt-3">
 															{goal.sections.map((section) => (
 																<span
 																	key={section}
-																	className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-600 text-white"
+																	className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-600 text-white text-sm"
 																>
 																	{section}
 																</span>

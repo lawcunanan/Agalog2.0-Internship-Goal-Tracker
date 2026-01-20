@@ -15,7 +15,7 @@ import { getRegisteredGoals } from "@/services/ssr/goals/initial-registered-goal
 import { getUsers } from "@/services/ssr/users/initial-users";
 import { getFilterOptions } from "@/services/ssr/filters/filter-options";
 
-export default async function AdminPage() {
+export default async function SuperAdminPage() {
 	//  Get logged-in user
 	const user = await getUser();
 	const supabase = await supabaseServer();

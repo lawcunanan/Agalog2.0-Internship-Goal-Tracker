@@ -31,7 +31,7 @@ export function GoalAdminTab({
 	const [searchQuery, setSearchQuery] = useState<string>("");
 	const [adminsData, setAdminsData] = useState<GoalAdminSelect[]>(initialData);
 
-	//Pagination states\
+	//Pagination states
 	const itemsPerPage = 10;
 	const [currentPage, setCurrentPage] = useState<number>(1);
 	const [totalPages, setTotalPages] = useState<number>(5);

@@ -122,51 +122,66 @@ export function TodayLogsTab({
 					</thead>
 					<tbody>
 						{todayLogs?.length > 0 ? (
-							todayLogs.map((log, idx) => (
-								<tr
-									key={idx}
-									className="border-b border-border hover:bg-muted/50 transition-colors cursor-pointer"
-									onClick={() =>
-										router.push(`/student/${goal_id || "null"}/${log.user_id}`)
-									}
-								>
-									<td className="py-4 px-4 min-w-20">
-										<Avatar className="w-9 h-9">
-											<AvatarImage src={log.avatar_url} alt={log.fullname} />
-											<AvatarFallback className="bg-muted text-sm font-semibold text-muted-foreground">
-												{log?.fullname?.charAt(0) || "U"}
-											</AvatarFallback>
-										</Avatar>
-									</td>
-									<td className="py-4 px-4 text-sm text-foreground min-w-50">
-										{log.fullname || "N/A"}
-									</td>
-									<td className="py-4 px-4 text-sm text-foreground min-w-30">
-										{log.section || "N/A"}
-									</td>
-									<td className="py-4 px-4 text-sm text-foreground min-w-30">
-										{log.date || "N/A"}
-									</td>
-									<td className="py-4 px-4 text-sm text-foreground min-w-30">
-										{log.timeIn || "N/A"}
-									</td>
-									<td className="py-4 px-4 text-sm text-foreground min-w-30">
-										{log.timeOut || "N/A"}
-									</td>
-									<td className="py-4 px-4 text-sm text-foreground min-w-35">
-										{log.breakDuration || "N/A"}
-									</td>
-									<td className="py-4 px-4 text-sm text-muted-foreground min-w-50">
-										<DescriptionCell description={log.description || ""} />
-									</td>
-									<td className="py-4 px-4 text-sm text-foreground font-medium min-w-30">
-										{log.hoursWorked || "N/A"}
-									</td>
-									<td className="py-4 px-4 text-sm text-foreground min-w-52.5">
-										{log.createdAt}
-									</td>
-								</tr>
-							))
+							todayLogs.map((log, idx) => {
+								const recordUrl = `/record/${goal_id ?? "null"}/${log.user_id}`;
+								return (
+									<tr
+										key={idx}
+										className="border-b border-border hover:bg-muted/50 transition-colors cursor-pointer"
+										onMouseEnter={() => {
+											router.prefetch(recordUrl);
+										}}
+										onClick={() => {
+											router.push(recordUrl);
+										}}
+									>
+										<td className="py-4 px-4 min-w-20">
+											<Avatar className="w-9 h-9">
+												<AvatarImage src={log.avatar_url} alt={log.fullname} />
+												<AvatarFallback className="bg-muted text-sm font-semibold text-muted-foreground">
+													{log?.fullname?.charAt(0) || "U"}
+												</AvatarFallback>
+											</Avatar>
+										</td>
+
+										<td className="py-4 px-4 text-sm text-foreground min-w-50">
+											{log.fullname || "N/A"}
+										</td>
+
+										<td className="py-4 px-4 text-sm text-foreground min-w-30">
+											{log.section || "N/A"}
+										</td>
+
+										<td className="py-4 px-4 text-sm text-foreground min-w-30">
+											{log.date || "N/A"}
+										</td>
+
+										<td className="py-4 px-4 text-sm text-foreground min-w-30">
+											{log.timeIn || "N/A"}
+										</td>
+
+										<td className="py-4 px-4 text-sm text-foreground min-w-30">
+											{log.timeOut || "N/A"}
+										</td>
+
+										<td className="py-4 px-4 text-sm text-foreground min-w-35">
+											{log.breakDuration || "N/A"}
+										</td>
+
+										<td className="py-4 px-4 text-sm text-muted-foreground min-w-50">
+											<DescriptionCell description={log.description || ""} />
+										</td>
+
+										<td className="py-4 px-4 text-sm text-foreground font-medium min-w-30">
+											{log.hoursWorked || "N/A"}
+										</td>
+
+										<td className="py-4 px-4 text-sm text-foreground min-w-52.5">
+											{log.createdAt}
+										</td>
+									</tr>
+								);
+							})
 						) : (
 							<tr>
 								<td colSpan={10} className="py-12">

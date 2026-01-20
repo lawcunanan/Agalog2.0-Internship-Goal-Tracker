@@ -1,7 +1,7 @@
 // lib/types.ts
-
 export type UserRole = "Student" | "Admin" | "Owner" | "Super Admin";
 export type Status = "Active" | "Inactive";
+
 // [USER TABLE TYPES]
 export interface UserSelect {
 	user_id: string;

@@ -15,7 +15,7 @@ export async function proxy(request: NextRequest) {
 		return NextResponse.redirect(callbackUrl);
 	}
 
-	const user = await getUser(supabase);
+	const user = await getUser();
 	const path = request.nextUrl.pathname;
 
 	// Define protected routes and allowed roles
@@ -24,6 +24,7 @@ export async function proxy(request: NextRequest) {
 		{ path: "/logs", roles: ["Student"] },
 		{ path: "/admin", roles: ["Admin"] },
 		{ path: "/superadmin", roles: ["Super Admin", "Admin"] },
+		{ path: "/record/", roles: ["Super Admin", "Admin"] },
 	];
 
 	// Public routes that don't require authentication
