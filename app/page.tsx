@@ -18,8 +18,8 @@ function HomeContent() {
 		<main className="min-h-screen flex flex-col">
 			<Header />
 
-			<div className="flex-1 flex items-center justify-center p-4">
-				<div className="max-w-200 w-full text-center space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-1000">
+			<div className="flex-1 flex items-center justify-center p-6">
+				<div className="max-w-200 w-full text-center space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-1000 mt-14">
 					<h2 className="text-xs sm:text-sm font-medium tracking-[0.2em] text-muted-foreground uppercase">
 						Agalog: Internship Goal Tracker
 					</h2>

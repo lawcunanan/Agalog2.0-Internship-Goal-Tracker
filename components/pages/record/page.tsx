@@ -97,7 +97,7 @@ export function RecordContent({
 	return (
 		<div className="min-h-screen flex flex-col relative md:overflow-hidden">
 			<Header goalState={goalState || undefined} setGoalState={setGoalState} />
-			<main className="flex-1 w-full max-w-300 mx-auto p-6 pt-28 ">
+			<main className="flex-1 w-full max-w-300 mx-auto px-2 sm:px-4 md:px-6 pt-28 ">
 				{/* Back Button */}
 				<button
 					onClick={() => router.back()}

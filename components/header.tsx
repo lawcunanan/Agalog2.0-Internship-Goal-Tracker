@@ -58,7 +58,7 @@ export function Header({
 
 	return (
 		<header className="fixed top-0 left-0 right-0 w-full z-50 border-b border-border bg-background/60 backdrop-blur-sm">
-			<div className="max-w-300 mx-auto h-20 flex items-center justify-between px-6 ">
+			<div className="max-w-300 mx-auto h-20 flex items-center justify-between px-2 sm:px-4 md:px-6">
 				<div className="relative w-10 h-10">
 					<div className="absolute inset-0 dark:hidden">
 						<Image

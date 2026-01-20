@@ -10,7 +10,7 @@ export function StudentProfileHeader({
 	student: UserSelect | null;
 }) {
 	return (
-		<FadeIn className="border-b border-border p-6 flex gap-6 items-start px-0 py-6">
+		<FadeIn className="border-b border-border flex gap-6 items-start px-0 py-6">
 			<Avatar className="h-36 w-36 shrink-0 rounded-lg sm:block hidden border-4 border-border">
 				<AvatarImage
 					src={student?.avatar_url}

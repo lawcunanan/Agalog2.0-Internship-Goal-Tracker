@@ -61,7 +61,7 @@ export function StudentContent({ initialGoal, logsData }: StudentContentProps) {
 				goalHours={goalState.goalHours}
 				refreshLogs={refreshLogs}
 			/>
-			<main className="flex-1 w-full max-w-300 mx-auto px-6">
+			<main className="flex-1 w-full max-w-300 mx-auto px-2 sm:px-4 md:px-6">
 				<div className="grid md:grid-cols-2 gap-20 h-screen ">
 					<div className="flex flex-col pt-28 md:pt-42 w-full lg:max-w-md">
 						<LogForm

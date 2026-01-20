@@ -217,7 +217,7 @@ export function ManageGoalsDialog({
 				<Tabs
 					value={tab}
 					onValueChange={(value) => setTab(value as "create" | "manage")}
-					className="w-full mt-4"
+					className="w-full"
 				>
 					<TabsList className="grid w-full grid-cols-2 mb-2">
 						<TabsTrigger value="create">Create Goal</TabsTrigger>
@@ -403,7 +403,7 @@ export function ManageGoalsDialog({
 											/>
 											<div className="flex-1 mb-0">
 												<p className="font-medium text-base">{goal.title}</p>
-												<p className="text-sm text-muted-foreground">
+												<p className="text-xs text-muted-foreground">
 													{goal.metaText}
 												</p>
 												{!isStudent &&
