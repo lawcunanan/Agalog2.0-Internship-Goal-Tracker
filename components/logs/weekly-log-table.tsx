@@ -24,7 +24,7 @@ export function WeeklyLogTable({ data }: WeeklyLogTableProps) {
 					<h3 className="text-xl font-semibold">{week.weekLabel}</h3>
 
 					{/* Summary Grid */}
-					<div className="grid grid-cols-3 text-sm text-muted-foreground pb-4 border-b gap-8">
+					<div className="grid grid-cols-3 text-sm text-muted-foreground pb-4 border-b gap-3 sm:gap-8">
 						<div className="space-y-1">
 							<span className="block text-xs uppercase tracking-wider opacity-70">
 								Previous

@@ -40,7 +40,7 @@ export function WeeklyLog({
 				<div key={`${week.weekLabel}-${index}`} className="space-y-6">
 					<h3 className="text-xl font-semibold">{week.weekLabel}</h3>
 
-					<div className="grid grid-cols-3 gap-8 text-sm text-muted-foreground pb-4 border-b">
+					<div className="grid grid-cols-3  gap-3 sm:gap-8 text-sm text-muted-foreground pb-4 border-b">
 						<div className="space-y-1">
 							<span className="block text-xs uppercase tracking-wider opacity-70">
 								Previous
@@ -124,7 +124,7 @@ export function WeeklyLog({
 								</AccordionTrigger>
 
 								<AccordionContent className="px-3 pb-4 pt-2 text-muted-foreground text-sm pl-4">
-									<div className="flex justify-between items-start gap-6">
+									<div className="flex justify-between items-start gap-3 sm:gap-6">
 										<div className="flex-1">
 											{log.description || "No description"}
 										</div>

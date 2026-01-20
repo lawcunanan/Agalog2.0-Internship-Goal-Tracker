@@ -23,7 +23,7 @@ export function StudentProfileHeader({
 
 			<div className="flex-1 space-y-6">
 				<div>
-					<h1 className="text-4xl md:text-5xl font-bold tracking-tight text-foreground uppercase">
+					<h1 className="text-4xl  font-bold tracking-tight text-foreground uppercase">
 						{student?.fullname || "Student"}
 					</h1>
 					<p className="text-muted-foreground text-base">

@@ -129,9 +129,7 @@ export function LogForm({
 
 	return (
 		<FadeIn className="space-y-8">
-			<h2 className="text-4xl sm:text-5xl font-bold tracking-tight">
-				Log & Go!
-			</h2>
+			<h2 className="text-4xl font-bold tracking-tight">Log & Go!</h2>
 
 			<form onSubmit={handleSubmit} className="space-y-6 ">
 				<div className="space-y-2 ">
@@ -216,7 +214,7 @@ export function LogForm({
 					<Textarea
 						id="description"
 						placeholder="Briefly describe your tasks for the day..."
-						className="min-h-25 resize-none shadow-none"
+						className="min-h-25 resize-none shadow-none text-sm"
 						value={logData.description}
 						onChange={handleChange}
 						disabled={!goal_id}

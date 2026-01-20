@@ -363,7 +363,7 @@ export function ManageGoalsDialog({
 										variant="outline"
 										className="h-9 w-9 bg-transparent shrink-0"
 									>
-										<Filter className="h-4 w-6" />
+										<Filter className="h-4 w-6 text-red-500" />
 									</Button>
 								</DropdownMenuTrigger>
 								<DropdownMenuContent align="end">
