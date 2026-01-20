@@ -18,7 +18,7 @@ export function WeeklyLogTable({ data }: WeeklyLogTableProps) {
 	}
 
 	return (
-		<FadeIn delay={0.2} className="space-y-12 mb-8">
+		<FadeIn delay={0.2} className="space-y-12 md:space-y-16 mb-8">
 			{data.map((week, weekIndex) => (
 				<div key={`${week.weekLabel}-${weekIndex}`} className="space-y-6">
 					<h3 className="text-xl font-semibold">{week.weekLabel}</h3>
@@ -29,7 +29,7 @@ export function WeeklyLogTable({ data }: WeeklyLogTableProps) {
 							<span className="block text-xs uppercase tracking-wider opacity-70">
 								Previous
 							</span>
-							<span className="block font-medium text-foreground text-md sm:text-lg">
+							<span className="block font-medium text-foreground text-base sm:text-lg">
 								{week.previousHours}
 							</span>
 						</div>
@@ -37,7 +37,7 @@ export function WeeklyLogTable({ data }: WeeklyLogTableProps) {
 							<span className="block text-xs uppercase tracking-wider opacity-70">
 								This Period
 							</span>
-							<span className="block font-medium text-foreground text-md sm:text-lg">
+							<span className="block font-medium text-foreground text-base sm:text-lg">
 								{week.thisPeriodHours}
 							</span>
 						</div>
@@ -45,7 +45,7 @@ export function WeeklyLogTable({ data }: WeeklyLogTableProps) {
 							<span className="block text-xs uppercase tracking-wider opacity-70">
 								Total
 							</span>
-							<span className="block font-medium text-foreground text-md sm:text-lg">
+							<span className="block font-medium text-foreground text-base sm:text-lg">
 								{week.totalHours}
 							</span>
 						</div>
@@ -65,7 +65,7 @@ export function WeeklyLogTable({ data }: WeeklyLogTableProps) {
 									].map((header) => (
 										<th
 											key={header}
-											className="text-left py-3 px-4 font-medium text-foreground text-xs sm:text-sm"
+											className="text-left py-3 px-4 font-medium text-foreground text-sm"
 										>
 											{header}
 										</th>
@@ -80,22 +80,22 @@ export function WeeklyLogTable({ data }: WeeklyLogTableProps) {
 											expandedLogId === log.log_id ? "bg-muted/30" : ""
 										}`}
 									>
-										<td className="py-4 px-4 text-xs sm:text-sm font-medium text-foreground min-w-30">
+										<td className="py-4 px-4 text-sm font-medium text-foreground min-w-30">
 											{log.date}
 										</td>
-										<td className="py-4 px-4 text-xs sm:text-sm text-muted-foreground min-w-30">
+										<td className="py-4 px-4 text-sm text-muted-foreground min-w-30">
 											{log.timeIn}
 										</td>
-										<td className="py-4 px-4 text-xs sm:text-sm text-muted-foreground min-w-30">
+										<td className="py-4 px-4 text-sm text-muted-foreground min-w-30">
 											{log.timeOut}
 										</td>
-										<td className="py-4 px-4 text-xs sm:text-sm text-muted-foreground min-w-30">
+										<td className="py-4 px-4 text-sm text-muted-foreground min-w-30">
 											{log.breakDuration}
 										</td>
-										<td className="py-4 px-4 text-xs sm:text-sm font-medium text-blue-700 min-w-30">
+										<td className="py-4 px-4 text-sm font-medium text-blue-700 min-w-30">
 											{log.hoursWorked}
 										</td>
-										<td className="py-4 px-4 text-xs sm:text-sm text-muted-foreground min-w-100">
+										<td className="py-4 px-4 text-sm text-muted-foreground min-w-100">
 											<DescriptionCell description={log.description} />
 										</td>
 									</tr>

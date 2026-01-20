@@ -1,119 +1,77 @@
-"use client";
+import { getUser } from "@/services/ssr/auth/get-user";
+import { supabaseServer } from "@/lib/supabase/server";
+import { SuperadminContent } from "@/components/pages/superadmin/page";
 
-import { useState, useEffect, use } from "react";
-import { Users, LogIn, ShieldCheck } from "lucide-react";
-import { Header } from "@/components/header";
-import { Footer } from "@/components/footer";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { TodayLogsTab } from "@/components/admin/TodayLogsTab";
-import { UsersTab } from "@/components/admin/UsersTab";
-import { GoalsTab } from "@/components/admin/GoalsTab";
-import { StatCard } from "@/components/admin/StatCard";
-import { useAlert } from "@/providers/alert-provider";
-import { getCountTodayLogs } from "@/services/stats/count-today-logs";
-import { getCountUsers } from "@/services/stats/count-users";
+import {
+	StatsticsSelect,
+	TodayLogSelect,
+	RegisteredGoalSelect,
+	UserSelect,
+} from "@/lib/types";
+import { getCountUsers } from "@/services/ssr/statistics/count-users";
+import { getCountTodayLogs } from "@/services/ssr/statistics/count-today-logs";
+import { getTodayLogs } from "@/services/ssr/logs/initial-today-logs";
+import { getRegisteredGoals } from "@/services/ssr/goals/initial-registered-goals";
+import { getUsers } from "@/services/ssr/users/initial-users";
+import { getFilterOptions } from "@/services/ssr/filters/filter-options";
 
-export default function SuperAdminPage() {
-	const { showAlert } = useAlert();
-	const [countStats, setCountStats] = useState<{
-		todayLogs: number;
-		totalUsers: number;
-		totalAdmins: number;
-	}>({
-		todayLogs: 0,
+export default async function SuperAdminPage() {
+	//  Get logged-in user
+	const user = await getUser();
+	const supabase = await supabaseServer();
+	if (!user) return <div>Please login to view this page</div>;
+
+	//  Default values
+	let initialStats: StatsticsSelect = {
 		totalUsers: 0,
 		totalAdmins: 0,
-	});
+		todayLogs: 0,
+	};
+	let initialTodayLogs: TodayLogSelect[] = [];
+	let initialRegisteredGoals: RegisteredGoalSelect[] = [];
+	let initialUsers: UserSelect[] = [];
+	let initialSections: string[] = [];
 
-	useEffect(() => {
-		getCountTodayLogs(
-			null,
-			(count) => setCountStats((prev) => ({ ...prev, todayLogs: count })),
-			showAlert,
-		);
+	//  Fetch all SSR data in parallel
+	const results = await Promise.allSettled([
+		getCountUsers(supabase, null, "Student", "users"),
+		getCountUsers(supabase, null, "Admin", "users"),
+		getCountTodayLogs(supabase, null),
 
-		getCountUsers(
-			null,
-			"Student",
-			"users",
-			(count) => setCountStats((prev) => ({ ...prev, totalUsers: count })),
-			showAlert,
-		);
-		getCountUsers(
-			null,
-			"Admin",
-			"users",
-			(count) => setCountStats((prev) => ({ ...prev, totalAdmins: count })),
-			showAlert,
-		);
-	}, [showAlert]);
+		getTodayLogs(supabase, null, "", "All Sections", 10, 1),
+		getRegisteredGoals(supabase, "", "All Status", 10, 1),
+		getUsers(supabase, "", "All Status", "All Roles", 10, 1),
+		getFilterOptions(supabase, null),
+	]);
 
+	//  Helper to safely extract data
+	const safeData = (result: PromiseSettledResult<any>) =>
+		result.status === "fulfilled"
+			? result.value
+			: { data: null, companies: null, sections: null };
+
+	//  Assign results
+	initialStats = {
+		totalUsers: safeData(results[0]).data ?? 0,
+		totalAdmins: safeData(results[1]).data ?? 0,
+		todayLogs: safeData(results[2]).data ?? 0,
+	};
+	initialTodayLogs = safeData(results[3]).data || [];
+	initialRegisteredGoals = safeData(results[4]).data || [];
+	initialUsers = safeData(results[5]).data || [];
+
+	//  Assign filter options
+	const filterOptions = safeData(results[6]);
+	initialSections = filterOptions.sections || [];
+
+	//  Render page with filters
 	return (
-		<div className="min-h-screen flex flex-col relative md:overflow-hidden">
-			<Header />
-			<main className="flex-1 w-full max-w-300 mx-auto p-6 pt-28 ">
-				<div className="mb-12">
-					<h1 className="text-3xl sm:text-4xl font-bold tracking-tight mb-2">
-						Super Admin Dashboard
-					</h1>
-					<p className="text-muted-foreground text-base">
-						Monitor and manage all student and admin records
-					</p>
-				</div>
-
-				<div className="flex gap-4 mb-14">
-					<StatCard
-						title="Today's Logs"
-						value={countStats.todayLogs}
-						color="bg-green-800"
-						icon={<LogIn className="w-4 h-4 text-white" />}
-					/>
-					<StatCard
-						title="Number of Students"
-						value={countStats.totalUsers}
-						color="bg-blue-800"
-						icon={<Users className="w-4 h-4 text-white" />}
-					/>
-					<StatCard
-						title="Number of Admin"
-						value={countStats.totalAdmins}
-						color="bg-purple-700"
-						icon={<ShieldCheck className="w-4 h-4 text-white" />}
-					/>
-				</div>
-
-				<Tabs defaultValue="today-logs" className="w-full">
-					<TabsList className="flex w-full">
-						<TabsTrigger value="today-logs" className="flex-1">
-							Today Logs
-						</TabsTrigger>
-						<TabsTrigger value="users" className="flex-1">
-							Users
-						</TabsTrigger>
-						<TabsTrigger value="goals" className="flex-1">
-							Goals
-						</TabsTrigger>
-					</TabsList>
-
-					<TabsContent value="today-logs">
-						<TodayLogsTab
-							role="Super Admin"
-							goalId={null}
-							showAlert={showAlert}
-						/>
-					</TabsContent>
-
-					<TabsContent value="users">
-						<UsersTab showAlert={showAlert} />
-					</TabsContent>
-
-					<TabsContent value="goals">
-						<GoalsTab showAlert={showAlert} />
-					</TabsContent>
-				</Tabs>
-
-				<Footer />
-			</main>
-		</div>
+		<SuperadminContent
+			initialStats={initialStats}
+			initialTodayLogs={initialTodayLogs}
+			initialRegisteredGoals={initialRegisteredGoals}
+			initialUsers={initialUsers}
+			initialSections={initialSections}
+		/>
 	);
 }

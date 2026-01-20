@@ -1,154 +1,96 @@
-"use client";
+import { getUser } from "@/services/ssr/auth/get-user";
+import { supabaseServer } from "@/lib/supabase/server";
+import { AdminContent } from "@/components/pages/admin/page";
+import { getInitialGoal } from "@/services/ssr/goals/initial-goal";
 
-import { useState, useEffect } from "react";
-import { Users, LogIn, CheckCircle2 } from "lucide-react";
-import { Header } from "@/components/header";
-import { Footer } from "@/components/footer";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { TodayLogsTab } from "@/components/admin/TodayLogsTab";
-import { UserSummaryTab } from "@/components/admin/UserSummaryTab";
-import { GoalAdminTab } from "@/components/admin/GoalAdminTab";
-import { useAuth } from "@/providers/auth-provider";
-import { useAlert } from "@/providers/alert-provider";
-import { GoalActiveState } from "@/lib/types";
-import { StatCard } from "@/components/admin/StatCard";
-import { getCountTodayLogs } from "@/services/stats/count-today-logs";
-import { getCountCompletedLogs } from "@/services/stats/count-completed-";
-import { getCountUsers } from "@/services/stats/count-users";
-import { getLatestGoal } from "@/services/goals/latest-goal";
+import {
+	StatsticsSelect,
+	TodayLogSelect,
+	UserSummarySelect,
+	GoalAdminSelect,
+} from "@/lib/types";
+import { getCountUsers } from "@/services/ssr/statistics/count-users";
+import { getCountTodayLogs } from "@/services/ssr/statistics/count-today-logs";
+import { getCountCompletedLogs } from "@/services/ssr/statistics/count-completed";
+import { getTodayLogs } from "@/services/ssr/logs/initial-today-logs";
+import { getUserSummary } from "@/services/ssr/users/initial-user-summary";
+import { getGoalAdmin } from "@/services/ssr/users/initial-goal-admins";
+import { getFilterOptions } from "@/services/ssr/filters/filter-options";
 
-export default function AdminPage() {
-	const { user } = useAuth();
-	const { showAlert } = useAlert();
-	const [countStats, setCountStats] = useState<{
-		todayLogs: number;
-		completedGoals: number;
-		totalUsers: number;
-		totalAdmins: number;
-	}>({
-		todayLogs: 0,
-		completedGoals: 0,
+export default async function AdminPage() {
+	//  Get logged-in user
+	const user = await getUser();
+	const supabase = await supabaseServer();
+
+	if (!user) return;
+
+	//  Get initial goal
+	const initialGoal = await getInitialGoal(user.id);
+	if (!initialGoal) return;
+
+	//  Default values
+	let initialStats: StatsticsSelect = {
 		totalUsers: 0,
 		totalAdmins: 0,
-	});
+		todayLogs: 0,
+		completedGoals: 0,
+	};
+	let initialTodayLogs: TodayLogSelect[] = [];
+	let initialUserSummary: UserSummarySelect[] = [];
+	let initialAdminGoals: GoalAdminSelect[] = [];
+	let initialCompanies: string[] = [];
+	let initialSections: string[] = [];
 
-	const [goalState, setGoalState] = useState<GoalActiveState>({
-		goal_id: "",
-		goalHours: 400,
-	});
+	//  Fetch all SSR data in parallel
+	const results = await Promise.allSettled([
+		getCountUsers(supabase, initialGoal.goal_id, "Student", "contributors"),
+		getCountUsers(supabase, initialGoal.goal_id, "Admin", "contributors"),
+		getCountTodayLogs(supabase, initialGoal.goal_id),
+		getCountCompletedLogs(supabase, initialGoal.goal_id),
+		getTodayLogs(supabase, initialGoal.goal_id, "", "All Sections", 10, 1),
+		getUserSummary(
+			supabase,
+			initialGoal.goal_id,
+			"",
+			"All Sections",
+			"All Companies",
+			10,
+			1,
+		),
+		getGoalAdmin(supabase, initialGoal.goal_id, "", "All Status", 10, 1),
+		getFilterOptions(supabase, initialGoal.goal_id),
+	]);
 
-	useEffect(() => {
-		if (user) {
-			getLatestGoal(user.id, setGoalState, showAlert);
-		}
-	}, [user]);
+	//  Helper to safely extract data
+	const safeData = (result: PromiseSettledResult<any>) =>
+		result.status === "fulfilled" ? result.value : { data: null };
 
-	useEffect(() => {
-		if (!user || !goalState.goal_id) return;
+	//  Assign results
+	initialStats = {
+		totalUsers: safeData(results[0]).data ?? 0,
+		totalAdmins: safeData(results[1]).data ?? 0,
+		todayLogs: safeData(results[2]).data ?? 0,
+		completedGoals: safeData(results[3]).data ?? 0,
+	};
+	initialTodayLogs = safeData(results[4]).data || [];
+	initialUserSummary = safeData(results[5]).data || [];
+	initialAdminGoals = safeData(results[6]).data || [];
 
-		getCountTodayLogs(
-			goalState.goal_id,
-			(count) => setCountStats((prev) => ({ ...prev, todayLogs: count })),
-			showAlert,
-		);
+	//  Assign filter options
+	const filterOptions = safeData(results[7]);
+	initialCompanies = filterOptions.companies || [];
+	initialSections = filterOptions.sections || [];
 
-		getCountCompletedLogs(
-			goalState.goal_id,
-			(count) => setCountStats((prev) => ({ ...prev, completedGoals: count })),
-			showAlert,
-		);
-
-		getCountUsers(
-			goalState.goal_id,
-			"Student",
-			"contributors",
-			(count) => setCountStats((prev) => ({ ...prev, totalUsers: count })),
-			showAlert,
-		);
-
-		getCountUsers(
-			goalState.goal_id,
-			"Admin",
-			"contributors",
-			(count) => setCountStats((prev) => ({ ...prev, totalAdmins: count })),
-			showAlert,
-		);
-	}, [user, goalState.goal_id, showAlert]);
-
+	//  Render page with filters
 	return (
-		<div className="min-h-screen flex flex-col relative md:overflow-hidden">
-			<Header goalState={goalState} setGoalState={setGoalState} />
-			<main className="flex-1 w-full max-w-300 mx-auto p-6 pt-28 ">
-				<div className="mb-12">
-					<h1 className="text-3xl sm:text-4xl font-bold tracking-tight mb-2">
-						Admin Dashboard
-					</h1>
-					<p className="text-muted-foreground text-base">
-						Monitor and manage student attendance records
-					</p>
-				</div>
-
-				<div className="flex gap-4 mb-14 overflow-x-auto">
-					<StatCard
-						title="New Logs Today"
-						value={countStats.todayLogs}
-						color="bg-green-800"
-						icon={<LogIn className="w-4 h-4 text-white" />}
-					/>
-
-					<StatCard
-						title="Completed Goals"
-						value={countStats.completedGoals}
-						color="bg-blue-800"
-						icon={<CheckCircle2 className="w-4 h-4 text-white" />}
-					/>
-
-					<StatCard
-						title="Total Users"
-						value={countStats.totalUsers}
-						color="bg-yellow-600"
-						icon={<Users className="w-4 h-4 text-white" />}
-					/>
-					<StatCard
-						title="Total Admin"
-						value={countStats.totalAdmins}
-						color="bg-purple-700"
-						icon={<Users className="w-4 h-4 text-white" />}
-					/>
-				</div>
-
-				<Tabs defaultValue="today-logs" className="w-full">
-					<TabsList className="flex w-full">
-						<TabsTrigger value="today-logs" className="flex-1">
-							Today Logs
-						</TabsTrigger>
-						<TabsTrigger value="user-summary" className="flex-1">
-							Student Summary
-						</TabsTrigger>
-						<TabsTrigger value="goal-admin" className="flex-1">
-							Goal Admin
-						</TabsTrigger>
-					</TabsList>
-
-					<TabsContent value="today-logs">
-						<TodayLogsTab
-							role="Admin"
-							goalId={goalState.goal_id}
-							showAlert={showAlert}
-						/>
-					</TabsContent>
-
-					<TabsContent value="user-summary">
-						<UserSummaryTab goalId={goalState.goal_id} showAlert={showAlert} />
-					</TabsContent>
-
-					<TabsContent value="goal-admin">
-						<GoalAdminTab goalId={goalState.goal_id} showAlert={showAlert} />
-					</TabsContent>
-				</Tabs>
-
-				<Footer />
-			</main>
-		</div>
+		<AdminContent
+			initialGoal={initialGoal}
+			initialStats={initialStats}
+			initialTodayLogs={initialTodayLogs}
+			initialUserSummary={initialUserSummary}
+			initialAdminGoals={initialAdminGoals}
+			initialCompanies={initialCompanies}
+			initialSections={initialSections}
+		/>
 	);
 }

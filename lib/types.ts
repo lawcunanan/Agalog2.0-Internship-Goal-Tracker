@@ -1,29 +1,61 @@
-//User details stored in redux state
-export interface UserDetails {
-	user_id: string;
-	role?: "Student" | "Admin" | "Super Admin";
-	email?: string;
-	section?: string;
-	full_name?: string;
-	avatar_url?: string;
-	status?: string;
-	created_at?: string;
-}
+// lib/types.ts
+export type UserRole = "Student" | "Admin" | "Owner" | "Super Admin";
+export type Status = "Active" | "Inactive";
 
-export interface StudentProfileSelect {
-	user_id?: string;
-	name: string;
-	email?: string;
+// [USER TABLE TYPES]
+export interface UserSelect {
+	user_id: string;
+	role: UserRole;
+	avatar_url: string;
+	fullname: string;
+	status: Status;
+	email: string;
+	createdAt: string;
+
 	section?: string;
 	company?: string;
-	picture?: string;
 }
 
-// Goal details stored in redux state
-export interface GoalValues {
-	goal_id?: string;
-	title?: string;
-	goal?: number;
+export interface GoalAdminSelect {
+	user_id: string;
+	goalId: number;
+	fullname: string;
+	email: string;
+	avatar_url: string;
+	role: UserRole;
+	status: Status;
+	createdAt: string;
+}
+
+export interface UserSummarySelect {
+	user_id: string;
+	avatar_url: string;
+	fullname: string;
+	section: string;
+	company: string;
+	goalTitle: string;
+	goalHours: number;
+	totalHours: string;
+	hoursLeft: string;
+}
+
+// [GOAL TABLE TYPES]
+export interface GoalsState {
+	goal_id: string;
+	user_id?: string;
+	status?: Status;
+	title: string;
+	goal: number;
+	pubToken?: string;
+	priToken?: string;
+	sections?: string[];
+	created_by?: string;
+	createdAt?: string;
+
+	// For creating contributions
+	section?: string;
+	company?: string;
+	metaText?: string;
 }
 
 export interface GoalActiveState {
@@ -31,34 +63,24 @@ export interface GoalActiveState {
 	goalHours: number;
 }
 
-export interface GoalSelect {
+export interface RegisteredGoalSelect {
+	goal_id: string;
+	goalTitle: string;
+	goalHours: number;
+	createdBy: string;
+	createdAt: string;
+	status: string;
+}
+
+export interface FilterGoalSelect {
 	goal_id: string;
 	title: string;
-	status: "Active" | "Inactive";
-	goal: number;
-	metaText: string;
-	pubToken?: string | null;
-	priToken?: string | null;
-	created_by: string;
-	created_at: string;
+	section: string | null;
+	company: string | null;
+	goalHours: number | null;
 }
 
-export interface GoalStudentSelect {
-	goal_id: string;
-	title?: string;
-	goal: number;
-	section?: string;
-	company?: string;
-}
-
-// Contributor details stored in redux state
-export interface ContributorValues {
-	token: string;
-	section?: string;
-	company?: string;
-}
-
-//Log details stored in redux state
+// [LOG TABLE TYPES]
 export interface LogValues {
 	log_id: string;
 	date: string;
@@ -68,10 +90,9 @@ export interface LogValues {
 	breakOut?: string;
 	breakBack?: string;
 	breakDuration: string;
-	//
+	description: string;
 	hoursWorked?: string;
 	rawHours?: number;
-	description: string;
 }
 
 export interface WeeklyLogState {
@@ -91,59 +112,24 @@ export interface WeeklyLogSelect {
 	logs: LogValues[];
 }
 
-//Admin section details stored in redux state
-
-export interface TodayLogsSelect {
+export interface TodayLogSelect {
 	user_id: string;
-	picture: string;
+	avatar_url: string;
 	fullname: string;
 	section: string;
 	date: string;
 	timeIn: string;
 	timeOut: string;
 	breakDuration: string;
-	description: string;
 	hoursWorked: string;
+	description: string;
 	createdAt: string;
 }
 
-export interface UserSummarySelect {
-	user_id: string;
-	picture: string;
-	fullname: string;
-	section: string;
-	company: string;
-	goalTitle: string;
-	goalHours: number;
-	totalHours: string;
-	hoursLeft: string;
-}
-
-export interface GoalAdminSelect {
-	user_id?: string;
-	picture?: string;
-	fullname: string;
-	email?: string;
-	role?: string;
-	status?: string;
-	createdAt?: string;
-}
-
-export interface UsersSelect {
-	user_id: string;
-	picture: string;
-	fullname: string;
-	email: string;
-	status: string;
-	role: string;
-	createdAt: string;
-}
-
-export interface GoalsSelect {
-	goal_id: string;
-	title: string;
-	goalHours: number;
-	createdBy: string;
-	createdDate: string;
-	status: string;
+// [STATISTICS TYPES]
+export interface StatsticsSelect {
+	todayLogs: number;
+	completedGoals?: number;
+	totalUsers: number;
+	totalAdmins: number;
 }

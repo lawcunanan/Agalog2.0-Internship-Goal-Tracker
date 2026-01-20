@@ -1,90 +1,71 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import Lottie from "lottie-react";
 import authAnimation from "@/public/lottie/authLoading.json";
 import {
 	createContext,
 	useContext,
-	useEffect,
 	useState,
+	useEffect,
 	type ReactNode,
 } from "react";
-import { supabase } from "@/lib/supabase";
-import type { User as SupabaseUser } from "@supabase/supabase-js";
-import { useAlert } from "@/providers/alert-provider";
-import { UserDetails } from "@/lib/types";
+import { supabaseBrowser } from "@/lib/supabase/client";
+import { useAlert } from "./alert-provider";
+import { UserSelect } from "@/lib/types";
+import { getAuthValues } from "@/services/ssr/auth/get-auth";
 
 interface AuthContextType {
-	user: SupabaseUser | null;
-	userDetails: UserDetails | null;
-	loading: boolean;
+	user: UserSelect | null;
+	isLoading: boolean;
+	setUser: (user: UserSelect | null) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export function AuthProvider({ children }: { children: ReactNode }) {
+export function AuthProvider({
+	children,
+	userDetails,
+}: {
+	children: ReactNode;
+	userDetails: UserSelect | null;
+}) {
+	const router = useRouter();
+	const [user, setUser] = useState<UserSelect | null>(userDetails);
+	const [isLoading, setIsLoading] = useState(true);
 	const { showAlert } = useAlert();
 
-	const [user, setUser] = useState<SupabaseUser | null>(null);
-	const [userDetails, setUserDetails] = useState<UserDetails | null>(null);
-	const [loading, setLoading] = useState(true);
-
 	useEffect(() => {
-		let mounted = true;
-
-		const fetchUserDetails = async (userId: string) => {
-			const { data, error } = await supabase
-				.from("users")
-				.select("*")
-				.eq("user_id", userId)
-				.maybeSingle();
-
-			if (error) {
-				console.error("Supabase fetch error:", error.message);
-				showAlert(500, "Error fetching user details");
-				return;
+		const {
+			data: { subscription },
+		} = supabaseBrowser.auth.onAuthStateChange(async (event, session) => {
+			if (event === "TOKEN_REFRESHED") {
+				if (session?.user) {
+					if (!user || user.user_id !== session.user.id) {
+						const { data, error } = await getAuthValues(supabaseBrowser);
+						if (error) {
+							showAlert(500, error);
+							setUser(null);
+						} else {
+							setUser(data);
+							router.refresh();
+						}
+					}
+				}
+			} else if (event === "SIGNED_OUT") {
+				setUser(null);
+				router.refresh();
 			}
 
-			if (mounted) {
-				setUserDetails(data);
-			}
-		};
-
-		// Initial session check
-		supabase.auth.getSession().then(({ data }) => {
-			const sessionUser = data.session?.user ?? null;
-			setUser(sessionUser);
-
-			if (sessionUser) {
-				fetchUserDetails(sessionUser.id);
-			}
-
-			setLoading(false);
+			isLoading && setIsLoading(false);
 		});
 
-		// Listen to auth changes
-		const { data: authListener } = supabase.auth.onAuthStateChange(
-			(_event, session) => {
-				const sessionUser = session?.user ?? null;
-				setUser(sessionUser);
-
-				if (sessionUser) {
-					fetchUserDetails(sessionUser.id);
-				} else {
-					setUserDetails(null);
-				}
-
-				setLoading(false);
-			},
-		);
-
 		return () => {
-			mounted = false;
-			authListener.subscription.unsubscribe();
+			subscription.unsubscribe();
 		};
-	}, [showAlert]);
+	}, [user, showAlert, router]);
 
-	if (loading) {
+	if (isLoading) {
 		return (
 			<div className="flex items-center justify-center h-screen w-full bg-background">
 				<div className="w-72 h-72">
@@ -95,7 +76,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 	}
 
 	return (
-		<AuthContext.Provider value={{ user, userDetails, loading }}>
+		<AuthContext.Provider value={{ user, isLoading, setUser }}>
 			{children}
 		</AuthContext.Provider>
 	);
@@ -104,7 +85,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 export function useAuth() {
 	const context = useContext(AuthContext);
 	if (!context) {
-		throw new Error("useAuth must be used within AuthProvider");
+		throw new Error("Auth must be used within AuthProvider");
 	}
 	return context;
 }

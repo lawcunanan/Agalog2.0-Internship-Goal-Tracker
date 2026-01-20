@@ -1,17 +1,18 @@
 "use client";
 
+import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { TypewriterText } from "@/components/ui/typewriter-text";
-import { signInWithGoogle } from "@/services/auth/login";
+import { signInWithGoogle } from "@/services/csr/auth/login";
 import { useAlert } from "@/providers/alert-provider";
 import { cn } from "@/lib/utils";
 
-export default function Home() {
+function HomeContent() {
 	const searchParams = useSearchParams();
-	const { showAlert } = useAlert();
 	const userRole = searchParams.get("role");
+	const { showAlert } = useAlert();
 
 	return (
 		<main className="min-h-screen flex flex-col">
@@ -48,7 +49,7 @@ export default function Home() {
 							className={cn(
 								"h-12 px-8 min-w-50 rounded-md bg-primary text-primary-foreground hover:bg-primary/90 transition-colors flex items-center gap-2 justify-center border border-transparent font-medium cursor-pointer",
 								userRole?.toLowerCase() === "admin" &&
-									"relative overflow-hidden shadow-[0_0_20px_rgba(239,68,68,0.3)] after:absolute after:bottom-0 after:left-0 after:h-1 after:w-full after:bg-gradient-to-r after:from-red-500 after:via-orange-500 after:to-red-500",
+									"relative overflow-hidden shadow-[0_0_20px_rgba(239,68,68,0.3)] after:absolute after:bottom-0 after:left-0 after:h-1 after:w-full after:bg-linear-to-r after:from-red-500 after:via-orange-500 after:to-red-500",
 							)}
 						>
 							<svg className="w-5 h-5" viewBox="0 0 24 24">
@@ -77,5 +78,13 @@ export default function Home() {
 
 			<Footer />
 		</main>
+	);
+}
+
+export default function Home() {
+	return (
+		<Suspense fallback={null}>
+			<HomeContent />
+		</Suspense>
 	);
 }

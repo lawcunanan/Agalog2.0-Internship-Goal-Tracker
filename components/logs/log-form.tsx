@@ -8,8 +8,16 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { LogValues } from "@/lib/types";
 import { toISODate, convert12To24 } from "@/lib/utils/dateTimeUtils";
-import { upsertLog } from "@/services/logs/upsert-log";
-import { set } from "date-fns";
+import { upsertLog } from "@/services/csr/logs/upsert-log";
+
+type LogFormProps = {
+	goal_id: string;
+	editLog?: LogValues | null;
+	onEdit: (log: LogValues | null) => void;
+	user: any;
+	showAlert: (status: number, message: string) => void;
+	refreshLogs: (goal_id: string) => void;
+};
 
 export function LogForm({
 	goal_id,
@@ -18,14 +26,7 @@ export function LogForm({
 	user,
 	showAlert,
 	refreshLogs,
-}: {
-	goal_id: string;
-	editLog?: LogValues | null;
-	onEdit: (log: LogValues | null) => void;
-	user: any;
-	showAlert: (status: number, message: string) => void;
-	refreshLogs: () => void;
-}) {
+}: LogFormProps) {
 	const defaults = (): LogValues => ({
 		log_id: "",
 		date: toISODate(new Date()),
@@ -122,13 +123,13 @@ export function LogForm({
 	const handleReset = (e?: React.MouseEvent) => {
 		e?.preventDefault?.();
 		setLogData(defaults());
-		refreshLogs();
+		refreshLogs(goal_id);
 		onEdit(null);
 	};
 
 	return (
 		<FadeIn className="space-y-8">
-			<h2 className="text-3xl sm:text-4xl font-bold tracking-tight">
+			<h2 className="text-4xl sm:text-5xl font-bold tracking-tight">
 				Log & Go!
 			</h2>
 
@@ -144,6 +145,7 @@ export function LogForm({
 						value={logData.date}
 						onChange={handleChange}
 						max={new Date().toISOString().split("T")[0]}
+						disabled={!goal_id}
 						required
 					/>
 				</div>
@@ -159,6 +161,7 @@ export function LogForm({
 							className="shadow-none"
 							value={logData.timeIn}
 							onChange={handleChange}
+							disabled={!goal_id}
 							required
 						/>
 					</div>
@@ -216,6 +219,7 @@ export function LogForm({
 						className="min-h-25 resize-none shadow-none"
 						value={logData.description}
 						onChange={handleChange}
+						disabled={!goal_id}
 					/>
 				</div>
 
@@ -230,8 +234,8 @@ export function LogForm({
 							? "Updating Log"
 							: "Adding Log"
 						: editLog
-						? "Update Log"
-						: "Log Today"}
+							? "Update Log"
+							: "Log Today"}
 				</Button>
 
 				{editLog && (

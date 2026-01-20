@@ -14,15 +14,15 @@ import {
 } from "@/components/ui/tooltip";
 import { Edit } from "lucide-react";
 import { WeeklyLogSelect, LogValues } from "@/lib/types";
-import { DeleteLogDialog } from "../dialogs/delete-log-dialog";
+import { DeleteLogDialog } from "@/components/dialogs/logs/delete-log-dialog";
 import { EmptyLogs } from "@/components/empty-state/empty-logs";
 
-interface WeeklyLogProps {
+type WeeklyLogProps = {
 	data: WeeklyLogSelect[];
 	onEdit: (log: LogValues) => void;
 	showAlert: (status: number, message: string) => void;
 	refreshLogs: () => void;
-}
+};
 
 export function WeeklyLog({
 	data,
@@ -35,7 +35,7 @@ export function WeeklyLog({
 	}
 
 	return (
-		<FadeIn delay={0.2} className="space-y-12 mb-8">
+		<FadeIn delay={0.2} className="space-y-8 md:space-y-16 mb-8">
 			{data.map((week, index) => (
 				<div key={`${week.weekLabel}-${index}`} className="space-y-6">
 					<h3 className="text-xl font-semibold">{week.weekLabel}</h3>
@@ -45,7 +45,7 @@ export function WeeklyLog({
 							<span className="block text-xs uppercase tracking-wider opacity-70">
 								Previous
 							</span>
-							<span className="block font-medium text-foreground text-md sm:text-lg">
+							<span className="block font-medium text-foreground text-base sm:text-lg">
 								{week.previousHours}
 							</span>
 						</div>
@@ -54,7 +54,7 @@ export function WeeklyLog({
 							<span className="block text-xs uppercase tracking-wider opacity-70">
 								This Period
 							</span>
-							<span className="block font-medium text-foreground text-md sm:text-lg">
+							<span className="block font-medium text-foreground text-base sm:text-lg">
 								{week.thisPeriodHours}
 							</span>
 						</div>
@@ -63,7 +63,7 @@ export function WeeklyLog({
 							<span className="block text-xs uppercase tracking-wider opacity-70">
 								Total
 							</span>
-							<span className="block font-medium text-foreground text-md sm:text-lg">
+							<span className="block font-medium text-foreground text-base sm:text-lg">
 								{week.totalHours}
 							</span>
 						</div>
@@ -77,7 +77,7 @@ export function WeeklyLog({
 								className="border-b-0"
 							>
 								<AccordionTrigger className="cursor-pointer hover:no-underline py-4 pr-3 pl-0 hover:pl-4 data-[state=open]:pl-4 hover:bg-muted/50 rounded-r-md transition-all duration-300 ease-out data-[state=open]:bg-muted/50 data-[state=open]:border-l-4 data-[state=open]:border-blue-700">
-									<div className="grid grid-cols-5 gap-4 w-full text-left text-xs sm:text-sm">
+									<div className="grid grid-cols-5 gap-4 w-full text-left text-sm">
 										<Tooltip>
 											<TooltipTrigger asChild>
 												<span className="font-medium">{log.date}</span>
@@ -123,9 +123,11 @@ export function WeeklyLog({
 									</div>
 								</AccordionTrigger>
 
-								<AccordionContent className="px-3 pb-4 pt-2 text-muted-foreground text-xs sm:text-sm pl-4">
+								<AccordionContent className="px-3 pb-4 pt-2 text-muted-foreground text-sm pl-4">
 									<div className="flex justify-between items-start gap-6">
-										<div className="flex-1">{log.description}</div>
+										<div className="flex-1">
+											{log.description || "No description"}
+										</div>
 
 										<div className="flex items-center gap-1">
 											<button
