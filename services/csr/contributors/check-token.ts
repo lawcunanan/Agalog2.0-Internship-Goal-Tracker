@@ -1,5 +1,6 @@
 import { supabaseBrowser } from "@/lib/supabase/client";
 import { GoalsState, UserRole } from "@/lib/types";
+import { GoalTokenRow } from "@/lib/types-row";
 
 export const checkToken = async (
 	user_id: string,
@@ -16,11 +17,12 @@ export const checkToken = async (
 
 		const { data: goalData, error: goalError } = await supabaseBrowser
 			.from("goals")
-			.select("goal_id, title, goal, sections, created_by")
+			.select(`goal_id, title, goal, sections, created_by`)
 			.eq(tokenColumn, token)
 			.eq("status", "Active")
 			.neq("created_by", user_id)
-			.single();
+			.single()
+			.overrideTypes<GoalTokenRow, { merge: false }>();
 
 		if (goalError || !goalData) {
 			throw new Error("Invalid Token or Goal not found");

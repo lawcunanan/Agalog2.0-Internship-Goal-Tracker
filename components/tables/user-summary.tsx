@@ -13,14 +13,14 @@ import {
 } from "@/components/ui/select";
 import { Search } from "lucide-react";
 import { PaginationControls } from "@/components/pagination";
-import { UserDataSelect } from "@/lib/types";
+import { UserSummarySelect } from "@/lib/types";
 import { EmptyAdminTable } from "@/components/empty-state/empty-admin-table";
 import { refreshUserSummary } from "@/services/csr/users/refresh-user-summary";
 
 type UserSummaryTabProps = {
 	goal_id: string | null;
 	showAlert: (status: number, message: string) => void;
-	initialData: UserDataSelect[];
+	initialData: UserSummarySelect[];
 	initialCompanies: string[];
 	initialSections: string[];
 };
@@ -36,7 +36,7 @@ export function UserSummaryTab({
 	const [companyFilter, setCompanyFilter] = useState<string>("All Companies");
 	const [searchQuery, setSearchQuery] = useState<string>("");
 	const [userSummaryData, setUserSummaryData] =
-		useState<UserDataSelect[]>(initialData);
+		useState<UserSummarySelect[]>(initialData);
 	const router = useRouter();
 
 	//Pagination states
@@ -152,7 +152,7 @@ export function UserSummaryTab({
 								>
 									<td className="py-4 px-4 min-w-20">
 										<Avatar className="w-9 h-9">
-											<AvatarImage src={user.picture} alt={user.fullname} />
+											<AvatarImage src={user.avatar_url} alt={user.fullname} />
 											<AvatarFallback className="bg-muted text-sm font-semibold text-muted-foreground">
 												{user?.fullname?.charAt(0) || "U"}
 											</AvatarFallback>

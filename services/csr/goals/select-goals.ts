@@ -1,5 +1,6 @@
 import { supabaseBrowser } from "@/lib/supabase/client";
 import { GoalsState, Status } from "@/lib/types";
+import { UserGoalViewRow } from "@/lib/types-row";
 
 export const getGoals = async (
 	userId: string,
@@ -12,8 +13,9 @@ export const getGoals = async (
 	try {
 		if (!userId) throw new Error("User ID is required");
 
-		const isAdmin = ["Super Admin", "Admin"].includes(role);
+		const isAdmin = role === "Super Admin" || role === "Admin";
 
+		// Build query
 		let query = supabaseBrowser
 			.from("user_goals_view")
 			.select(
@@ -27,42 +29,41 @@ export const getGoals = async (
 				created_by,
 				sections,
 				meta_text
-				${isAdmin ? ', "pubToken", "priToken"' : ""}
+				${isAdmin ? ", pubToken, priToken" : ""}
 				`,
 			)
 			.eq("user_id", userId)
 			.eq("contributor_status", statusFilter);
 
-		// 🔍 Search ONLY by title
 		if (search?.trim()) {
-			const keyword = `%${search.trim()}%`;
-			query = query.ilike("title", keyword);
+			query = query.ilike("title", `%${search.trim()}%`);
 		}
 
-		const { data, error } = await query.order("created_at", {
-			ascending: false,
-		});
+		const { data, error } = await query
+			.order("created_at", {
+				ascending: false,
+			})
+			.overrideTypes<UserGoalViewRow[], { merge: false }>();
 
 		if (error) throw error;
 
-		const goals: GoalsState[] = (data || []).map((row: any) => ({
+		// Map to frontend-friendly GoalsState
+		const goals: GoalsState[] = data.map((row) => ({
 			goal_id: row.goal_id,
 			title: row.title,
 			goal: row.goal,
 			status: row.contributor_status,
-			sections: row.sections,
+			sections: row.sections ?? [],
 			created_at: row.created_at,
-			created_by: row.created_by,
-
-			// admin-only fields
-			pubToken: row.pubToken,
-			priToken: row.priToken,
-
-			metaText: row.meta_text,
+			created_by: row.created_by ?? undefined,
+			pubToken: isAdmin ? (row.pubToken ?? undefined) : undefined,
+			priToken: isAdmin ? (row.priToken ?? undefined) : undefined,
+			metaText: row.meta_text ?? "",
 		}));
-
 		setGoals(goals);
-	} catch (error: any) {
-		showAlert(500, error.message || "Failed to fetch goals");
+	} catch (error: unknown) {
+		const message =
+			error instanceof Error ? error.message : "Failed to fetch goals";
+		showAlert(500, message);
 	}
 };

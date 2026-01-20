@@ -3,7 +3,13 @@
 import { useState, useEffect, useRef } from "react";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
-import { StatsticsSelect, GoalActiveState, UserDataSelect } from "@/lib/types";
+import {
+	StatsticsSelect,
+	GoalActiveState,
+	TodayLogSelect,
+	UserSummarySelect,
+	GoalAdminSelect,
+} from "@/lib/types";
 import { useAlert } from "@/providers/alert-provider";
 import { StatCard } from "../../statistics/page";
 import { CheckCircle2, LogIn, Users } from "lucide-react";
@@ -18,9 +24,9 @@ import { refreshFilters } from "@/services/csr/filters/refresh-filters";
 type AdminContentProps = {
 	initialGoal: GoalActiveState | null;
 	initialStats: StatsticsSelect;
-	initialTodayLogs: UserDataSelect[];
-	initialUserSummary: UserDataSelect[];
-	initialAdminGoals: UserDataSelect[];
+	initialTodayLogs: TodayLogSelect[];
+	initialUserSummary: UserSummarySelect[];
+	initialAdminGoals: GoalAdminSelect[];
 	initialCompanies: string[];
 	initialSections: string[];
 };

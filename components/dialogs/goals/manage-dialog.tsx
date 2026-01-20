@@ -37,7 +37,7 @@ import {
 	Settings,
 } from "lucide-react";
 import { LoadingButtonText } from "@/components/ui/loading-button-text";
-import { UserState, GoalsState, Status, GoalActiveState } from "@/lib/types";
+import { UserSelect, GoalsState, Status, GoalActiveState } from "@/lib/types";
 import { handleFormChange } from "@/lib/utils";
 import { LeaveGoalDialog } from "../contributors/leave-dialog";
 import { StatusDialog } from "./status-dialog";
@@ -47,7 +47,7 @@ import { updateGoal } from "@/services/csr/goals/update-goal";
 import { getGoals } from "@/services/csr/goals/select-goals";
 
 type ManageGoalsDialogProps = {
-	user: UserState;
+	user: UserSelect;
 	goalState: GoalActiveState;
 	setGoalState: (goalState: GoalActiveState) => void;
 	showAlert: (status: number, message: string) => void;

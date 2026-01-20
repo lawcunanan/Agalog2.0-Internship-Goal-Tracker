@@ -1,9 +1,10 @@
 import { SupabaseClient } from "@supabase/supabase-js";
-import { UserDataSelect } from "@/lib/types";
+import { RegisteredGoalSelect } from "@/lib/types";
 import { format } from "date-fns";
+import { RegisteredGoalRow } from "@/lib/types-row";
 
 type RegisteredGoalsResponse = {
-	data: UserDataSelect[] | null;
+	data: RegisteredGoalSelect[] | null;
 	totalPages: number;
 	error: string | null;
 };
@@ -23,7 +24,12 @@ export const getRegisteredGoals = async (
 			.from("goals")
 			.select(
 				`
-				*,
+				goal_id,
+				title,
+				goal,
+				created_at,
+				status,
+				created_by,
 				users!goals_created_by_fkey (full_name)
 			`,
 				{ count: "exact" },
@@ -41,15 +47,18 @@ export const getRegisteredGoals = async (
 			query = query.ilike("title", `%${searchQuery}%`);
 		}
 
-		const { data, error, count } = await query;
+		const { data, error, count } = await query.overrideTypes<
+			RegisteredGoalRow[],
+			{ merge: false }
+		>();
 
 		if (error) {
 			console.error("getGoals query error:", error.message);
 			return { data: null, totalPages: 0, error: error.message };
 		}
 
-		const mappedData: UserDataSelect[] =
-			(data || []).map((item: any) => ({
+		const mappedData: RegisteredGoalSelect[] =
+			(data || []).map((item) => ({
 				goal_id: item.goal_id,
 				goalTitle: item.title,
 				goalHours: item.goal || 0,

@@ -2,18 +2,41 @@
 
 export type UserRole = "Student" | "Admin" | "Owner" | "Super Admin";
 export type Status = "Active" | "Inactive";
-
-export interface UserState {
+// [USER TABLE TYPES]
+export interface UserSelect {
 	user_id: string;
-	role?: UserRole;
-	email?: string;
-	section?: string;
-	full_name?: string;
-	avatar_url?: string;
-	status?: Status;
-	created_at?: string;
+	role: UserRole;
+	avatar_url: string;
+	fullname: string;
+	status: Status;
+	email: string;
+	createdAt: string;
 }
 
+export interface GoalAdminSelect {
+	user_id: string;
+	goalId: number;
+	fullname: string;
+	email: string;
+	avatar_url: string;
+	role: UserRole;
+	status: Status;
+	createdAt: string;
+}
+
+export interface UserSummarySelect {
+	user_id: string;
+	avatar_url: string;
+	fullname: string;
+	section: string;
+	company: string;
+	goalTitle: string;
+	goalHours: number;
+	totalHours: string;
+	hoursLeft: string;
+}
+
+// [GOAL TABLE TYPES]
 export interface GoalsState {
 	goal_id: string;
 	user_id?: string;
@@ -24,7 +47,7 @@ export interface GoalsState {
 	priToken?: string;
 	sections?: string[];
 	created_by?: string;
-	created_at?: string;
+	createdAt?: string;
 
 	// For creating contributions
 	section?: string;
@@ -37,7 +60,16 @@ export interface GoalActiveState {
 	goalHours: number;
 }
 
-//Log details stored in redux state
+export interface RegisteredGoalSelect {
+	goal_id: string;
+	goalTitle: string;
+	goalHours: number;
+	createdBy: string;
+	createdAt: string;
+	status: string;
+}
+
+// [LOG TABLE TYPES]
 export interface LogValues {
 	log_id: string;
 	date: string;
@@ -48,8 +80,6 @@ export interface LogValues {
 	breakBack?: string;
 	breakDuration: string;
 	description: string;
-
-	//
 	hoursWorked?: string;
 	rawHours?: number;
 }
@@ -71,38 +101,21 @@ export interface WeeklyLogSelect {
 	logs: LogValues[];
 }
 
-//Admin
-export interface UserDataSelect {
-	// Common user fields
-	user_id?: string;
-	picture?: string;
-	fullname?: string;
-	email?: string;
-	role?: string;
-	status?: string;
-	createdAt?: string;
-
-	// Profile / org
-	section?: string;
-	company?: string;
-
-	// Logs (TodayLogsSelect)
-	date?: string;
-	timeIn?: string;
-	timeOut?: string;
-	breakDuration?: string;
-	description?: string;
-	hoursWorked?: string;
-
-	// Goals / summary
-	goalId?: string;
-	goalTitle?: string;
-	goalHours?: number;
-	createdBy?: string;
-	totalHours?: string;
-	hoursLeft?: string;
+export interface TodayLogSelect {
+	user_id: string;
+	avatar_url: string;
+	fullname: string;
+	section: string;
+	date: string;
+	timeIn: string;
+	timeOut: string;
+	breakDuration: string;
+	hoursWorked: string;
+	description: string;
+	createdAt: string;
 }
 
+// [STATISTICS TYPES]
 export interface StatsticsSelect {
 	todayLogs: number;
 	completedGoals?: number;

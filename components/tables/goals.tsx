@@ -11,18 +11,19 @@ import {
 } from "@/components/ui/select";
 import { Search } from "lucide-react";
 import { PaginationControls } from "@/components/pagination";
-import { UserDataSelect } from "@/lib/types";
+import { RegisteredGoalSelect } from "@/lib/types";
 import { EmptyAdminTable } from "@/components/empty-state/empty-admin-table";
 import { refreshRegisteredGoals } from "@/services/csr/goals/refresh-registered-goals";
 
 type GoalsTabProps = {
 	showAlert: (status: number, message: string) => void;
-	initialData: UserDataSelect[];
+	initialData: RegisteredGoalSelect[];
 };
 export function GoalsTab({ showAlert, initialData }: GoalsTabProps) {
 	const [statusFilter, setStatusFilter] = useState<string>("All Status");
 	const [searchQuery, setSearchQuery] = useState<string>("");
-	const [goalsData, setGoalsData] = useState<UserDataSelect[]>(initialData);
+	const [goalsData, setGoalsData] =
+		useState<RegisteredGoalSelect[]>(initialData);
 
 	//Pagination states\
 	const itemsPerPage = 10;

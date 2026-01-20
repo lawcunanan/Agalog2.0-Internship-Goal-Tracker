@@ -3,7 +3,12 @@ import { supabaseServer } from "@/lib/supabase/server";
 import { AdminContent } from "@/components/pages/admin/page";
 import { getInitialGoal } from "@/services/ssr/goals/initial-goal";
 
-import { StatsticsSelect, UserDataSelect } from "@/lib/types";
+import {
+	StatsticsSelect,
+	TodayLogSelect,
+	UserSummarySelect,
+	GoalAdminSelect,
+} from "@/lib/types";
 import { getCountUsers } from "@/services/ssr/statistics/count-users";
 import { getCountTodayLogs } from "@/services/ssr/statistics/count-today-logs";
 import { getCountCompletedLogs } from "@/services/ssr/statistics/count-completed";
@@ -30,9 +35,9 @@ export default async function AdminPage() {
 		todayLogs: 0,
 		completedGoals: 0,
 	};
-	let initialTodayLogs: UserDataSelect[] = [];
-	let initialUserSummary: UserDataSelect[] = [];
-	let initialAdminGoals: UserDataSelect[] = [];
+	let initialTodayLogs: TodayLogSelect[] = [];
+	let initialUserSummary: UserSummarySelect[] = [];
+	let initialAdminGoals: GoalAdminSelect[] = [];
 	let initialCompanies: string[] = [];
 	let initialSections: string[] = [];
 

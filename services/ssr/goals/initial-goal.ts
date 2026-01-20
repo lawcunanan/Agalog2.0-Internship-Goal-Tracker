@@ -1,5 +1,6 @@
 import type { GoalActiveState } from "@/lib/types";
 import { supabaseServer } from "@/lib/supabase/server";
+import { GoalRow } from "@/lib/types-row";
 
 export async function getInitialGoal(
 	userId: string,
@@ -27,7 +28,8 @@ export async function getInitialGoal(
 		.eq("goals.status", "Active")
 		.order("created_at", { ascending: false })
 		.limit(1)
-		.single();
+		.single()
+		.overrideTypes<GoalRow, { merge: false }>();
 
 	if (error || !data?.goals) {
 		return null;

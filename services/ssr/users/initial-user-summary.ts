@@ -1,9 +1,10 @@
 import { SupabaseClient } from "@supabase/supabase-js";
-import { UserDataSelect } from "@/lib/types";
+import { UserSummarySelect } from "@/lib/types";
 import { formatDuration } from "@/lib/utils/dateTimeUtils";
+import { UserSummaryRow } from "@/lib/types-row";
 
 type UserSummaryResponse = {
-	data: UserDataSelect[] | null;
+	data: UserSummarySelect[] | null;
 	totalPages: number;
 	error: string | null;
 };
@@ -57,18 +58,21 @@ export const getUserSummary = async (
 			query = query.ilike("full_name", `%${searchQuery}%`);
 		}
 
-		const { data, error, count } = await query;
+		const { data, error, count } = await query.overrideTypes<
+			UserSummaryRow[],
+			{ merge: false }
+		>();
 
 		if (error) {
 			console.error("getUserSummary query error:", error.message);
 			return { data: null, totalPages: 0, error: error.message };
 		}
 
-		const mappedData: UserDataSelect[] =
-			(data || []).map((item: any) => ({
+		const mappedData: UserSummarySelect[] =
+			(data || []).map((item) => ({
 				user_id: item.user_id,
-				picture: item.avatar_url,
-				fullname: item.full_name,
+				avatar_url: item.avatar_url ?? "",
+				fullname: item.full_name ?? "",
 				section: item.section || "N/A",
 				company: item.company || "N/A",
 				goalTitle: item.title || "N/A",

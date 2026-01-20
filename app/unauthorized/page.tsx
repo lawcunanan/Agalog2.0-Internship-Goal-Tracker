@@ -20,7 +20,7 @@ export default function UnauthorizedPage() {
 				data: { user },
 			} = await supabaseBrowser.auth.getUser();
 			if (user) {
-				await signOutUser(showAlert, router, setIsLoading);
+				await signOutUser(showAlert, setIsLoading);
 			} else {
 				router.push("/");
 			}

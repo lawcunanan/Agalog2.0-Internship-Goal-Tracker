@@ -1,9 +1,10 @@
 import { SupabaseClient } from "@supabase/supabase-js";
-import { UserDataSelect } from "@/lib/types";
+import { UserRole, UserSelect, Status } from "@/lib/types";
 import { format } from "date-fns";
+import { UserRow } from "@/lib/types-row";
 
 type UserResponse = {
-	data: UserDataSelect[] | null;
+	data: UserSelect[] | null;
 	totalPages: number;
 	error: string | null;
 };
@@ -43,21 +44,24 @@ export const getUsers = async (
 			query = query.eq("role", roleFilter);
 		}
 
-		const { data, error, count } = await query;
+		const { data, error, count } = await query.overrideTypes<
+			UserRow[],
+			{ merge: false }
+		>();
 
 		if (error) {
 			console.error("getUsers query error:", error.message);
 			return { data: null, totalPages: 0, error: error.message };
 		}
 
-		const mappedData: UserDataSelect[] =
-			(data || []).map((item: any) => ({
+		const mappedData: UserSelect[] =
+			(data || []).map((item) => ({
 				user_id: item.user_id,
-				picture: item.avatar_url,
-				fullname: item.full_name,
+				avatar_url: item.avatar_url ?? "",
+				fullname: item.full_name ?? "",
 				email: item.email,
-				status: item.status,
-				role: item.role,
+				status: item.status as Status,
+				role: item.role as UserRole,
 				createdAt: item.created_at
 					? format(new Date(item.created_at), "MMM d, yyyy h:mm a")
 					: "--:--",

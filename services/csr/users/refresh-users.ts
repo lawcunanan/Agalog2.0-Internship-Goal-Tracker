@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction } from "react";
-import { UserDataSelect } from "@/lib/types";
+import { UserSelect } from "@/lib/types";
 import { getUsers } from "@/services/ssr/users/initial-users";
 import { supabaseBrowser } from "@/lib/supabase/client";
 
@@ -10,7 +10,7 @@ type RefreshUsersParams = {
 	itemsPerPage: number;
 	currentPage: number;
 	showAlert: (status: number, message: string) => void;
-	setUsersData: Dispatch<SetStateAction<UserDataSelect[]>>;
+	setUsersData: Dispatch<SetStateAction<UserSelect[]>>;
 	setTotalPages: Dispatch<SetStateAction<number>>;
 };
 

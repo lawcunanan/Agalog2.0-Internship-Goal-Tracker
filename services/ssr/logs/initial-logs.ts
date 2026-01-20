@@ -2,6 +2,7 @@ import { SupabaseClient } from "@supabase/supabase-js";
 import { LogValues, WeeklyLogSelect } from "@/lib/types";
 import { format, startOfWeek, endOfWeek, differenceInMinutes } from "date-fns";
 import { formatDuration } from "@/lib/utils/dateTimeUtils";
+import { LogRow } from "@/lib/types-row";
 
 type GetLogsResult = {
 	data: {
@@ -37,15 +38,15 @@ export async function getLogs(
 			)
 			.eq("goal_id", goal_id)
 			.eq("user_id", user_id)
-			.order("log_date", { ascending: true });
+			.order("log_date", { ascending: true })
+			.overrideTypes<LogRow[], { merge: false }>();
 
 		if (error) throw error;
-		if (!logsData) {
-			return { data: null, error: null };
+		if (!logsData?.length) {
+			return { data: { logs: [], currentHours: 0 }, error: null };
 		}
 
 		/* ---------------- transform logs ---------------- */
-
 		const logs: LogValues[] = logsData.map((l) => {
 			const timeIn = l.timeIn ? new Date(l.timeIn) : null;
 			const timeOut = l.timeOut ? new Date(l.timeOut) : null;
@@ -64,7 +65,7 @@ export async function getLogs(
 			}
 
 			return {
-				log_id: l.log_id.toString(),
+				log_id: l.log_id,
 				date: l.log_date ? format(new Date(l.log_date), "MMM d") : "",
 				fullDate: l.log_date,
 				timeIn: timeIn ? format(timeIn, "hh:mm a") : "--:--",
@@ -74,16 +75,17 @@ export async function getLogs(
 				breakDuration: formatDuration(breakMinutes / 60),
 				hoursWorked: formatDuration(rawHours),
 				rawHours,
-				description: l.description || "",
+				description: l.description ?? "",
 			};
 		});
 
 		/* ---------------- group by week ---------------- */
-
 		const groupedWeeks: Record<string, LogValues[]> = {};
 
 		logs.forEach((log) => {
-			const fullDate = new Date(log.fullDate || "");
+			if (!log.fullDate) return;
+
+			const fullDate = new Date(log.fullDate);
 			const weekStart = startOfWeek(fullDate, { weekStartsOn: 1 });
 			const weekKey = format(weekStart, "yyyy-MM-dd");
 
@@ -126,12 +128,14 @@ export async function getLogs(
 			},
 			error: null,
 		};
-	} catch (err: any) {
-		console.error("[getLogs]", err);
+	} catch (err: unknown) {
+		const message = err instanceof Error ? err.message : "Failed to fetch logs";
+
+		console.error("[getLogs]", message);
 
 		return {
 			data: null,
-			error: err?.message ?? "Failed to fetch logs",
+			error: message,
 		};
 	}
 }

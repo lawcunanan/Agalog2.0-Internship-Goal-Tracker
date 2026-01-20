@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/select";
 import { Search } from "lucide-react";
 import { PaginationControls } from "@/components/pagination";
-import { UserDataSelect } from "@/lib/types";
+import { UserSelect } from "@/lib/types";
 import { EmptyAdminTable } from "@/components/empty-state/empty-admin-table";
 import { refreshUsers } from "@/services/csr/users/refresh-users";
 
@@ -22,12 +22,12 @@ export function UsersTab({
 	initialData,
 }: {
 	showAlert: (status: number, message: string) => void;
-	initialData: UserDataSelect[];
+	initialData: UserSelect[];
 }) {
 	const [statusFilter, setStatusFilter] = useState<string>("All Status");
 	const [roleFilter, setRoleFilter] = useState<string>("All Roles");
 	const [searchQuery, setSearchQuery] = useState<string>("");
-	const [usersData, setUsersData] = useState<UserDataSelect[]>(initialData);
+	const [usersData, setUsersData] = useState<UserSelect[]>(initialData);
 	const router = useRouter();
 
 	//Pagination states
@@ -134,7 +134,7 @@ export function UsersTab({
 								>
 									<td className="py-4 px-4 min-w-20">
 										<Avatar className="w-9 h-9">
-											<AvatarImage src={user.picture} alt={user.fullname} />
+											<AvatarImage src={user.avatar_url} alt={user.fullname} />
 											<AvatarFallback className="bg-muted text-sm font-semibold text-muted-foreground">
 												{user?.fullname?.charAt(0) || "U"}
 											</AvatarFallback>

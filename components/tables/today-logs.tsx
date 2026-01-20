@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/select";
 import { Search } from "lucide-react";
 import { PaginationControls } from "@/components/pagination";
-import { UserDataSelect } from "@/lib/types";
+import { TodayLogSelect } from "@/lib/types";
 import { DescriptionCell } from "@/components/ui/description-cell";
 import { EmptyAdminTable } from "@/components/empty-state/empty-admin-table";
 import { refreshTodayLogs } from "@/services/csr/logs/refresh-today-logs";
@@ -22,7 +22,7 @@ type TodayLogsTabProps = {
 	role: "Admin" | "Super Admin";
 	goal_id: string | null;
 	showAlert: (status: number, message: string) => void;
-	initialData: UserDataSelect[];
+	initialData: TodayLogSelect[];
 	initialSections: string[];
 };
 export function TodayLogsTab({
@@ -34,7 +34,7 @@ export function TodayLogsTab({
 }: TodayLogsTabProps) {
 	const [sectionFilter, setSectionFilter] = useState<string>("All Sections");
 	const [searchQuery, setSearchQuery] = useState<string>("");
-	const [todayLogs, setTodayLogs] = useState<UserDataSelect[]>(initialData);
+	const [todayLogs, setTodayLogs] = useState<TodayLogSelect[]>(initialData);
 	const router = useRouter();
 
 	//Pagination states
@@ -132,7 +132,7 @@ export function TodayLogsTab({
 								>
 									<td className="py-4 px-4 min-w-20">
 										<Avatar className="w-9 h-9">
-											<AvatarImage src={log.picture} alt={log.fullname} />
+											<AvatarImage src={log.avatar_url} alt={log.fullname} />
 											<AvatarFallback className="bg-muted text-sm font-semibold text-muted-foreground">
 												{log?.fullname?.charAt(0) || "U"}
 											</AvatarFallback>

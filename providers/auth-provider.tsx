@@ -12,13 +12,13 @@ import {
 } from "react";
 import { supabaseBrowser } from "@/lib/supabase/client";
 import { useAlert } from "./alert-provider";
-import { UserState } from "@/lib/types";
+import { UserSelect } from "@/lib/types";
 import { getAuthValues } from "@/services/ssr/auth/get-auth";
 
 interface AuthContextType {
-	user: UserState | null;
+	user: UserSelect | null;
 	isLoading: boolean;
-	setUser: (user: UserState | null) => void;
+	setUser: (user: UserSelect | null) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -28,10 +28,10 @@ export function AuthProvider({
 	userDetails,
 }: {
 	children: ReactNode;
-	userDetails: UserState | null;
+	userDetails: UserSelect | null;
 }) {
 	const router = useRouter();
-	const [user, setUser] = useState<UserState | null>(userDetails);
+	const [user, setUser] = useState<UserSelect | null>(userDetails);
 	const [isLoading, setIsLoading] = useState(true);
 	const { showAlert } = useAlert();
 

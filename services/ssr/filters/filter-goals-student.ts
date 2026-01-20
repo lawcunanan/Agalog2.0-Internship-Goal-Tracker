@@ -1,5 +1,6 @@
 import { SupabaseClient } from "@supabase/supabase-js";
 import { GoalsState } from "@/lib/types";
+import { FilterGoalRow } from "@/lib/types-row";
 
 type GoalsStudentResponse = {
 	data: GoalsState[] | null;
@@ -47,7 +48,8 @@ export const getGoalsStudent = async (
 			.eq("user_id", student_id)
 			.in("goal_id", goalIds)
 			.eq("status", "Active")
-			.order("created_at", { ascending: false });
+			.order("created_at", { ascending: false })
+			.overrideTypes<FilterGoalRow[], { merge: false }>();
 
 		if (error) {
 			console.error("getGoalsStudent goals error:", error.message);
@@ -55,12 +57,12 @@ export const getGoalsStudent = async (
 		}
 
 		const mapped: GoalsState[] =
-			data?.map((item: any) => ({
+			data?.map((item) => ({
 				goal_id: String(item.goal_id),
-				title: item.goals?.title,
-				goal: item.goals?.goal,
-				section: item.section,
-				company: item.company,
+				title: item.goals?.title || "Unknown Goal",
+				goal: item.goals?.goal || 0,
+				section: item.section ?? undefined,
+				company: item.company ?? undefined,
 			})) || [];
 
 		return { data: mapped, error: null };

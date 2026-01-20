@@ -1,10 +1,10 @@
 import { Dispatch, SetStateAction } from "react";
-import { GoalActiveState, WeeklyLogState, UserState } from "@/lib/types";
+import { GoalActiveState, WeeklyLogState, UserSelect } from "@/lib/types";
 import { getLogs } from "@/services/ssr/logs/initial-logs";
 import { supabaseBrowser } from "@/lib/supabase/client";
 
 type RefreshLogsParams = {
-	user: UserState | null;
+	user: UserSelect | null;
 	goalState: GoalActiveState;
 	showAlert: (status: number, message: string) => void;
 	setLogState: Dispatch<SetStateAction<WeeklyLogState>>;

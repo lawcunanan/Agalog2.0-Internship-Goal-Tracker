@@ -1,9 +1,9 @@
 import { SupabaseClient } from "@supabase/supabase-js";
-import { UserState, UserRole } from "@/lib/types";
+import { UserSelect, UserRole, Status } from "@/lib/types";
 
 export const getAuthValues = async (
 	supabase: SupabaseClient,
-): Promise<{ data: UserState | null; error: string | null }> => {
+): Promise<{ data: UserSelect | null; error: string | null }> => {
 	try {
 		const {
 			data: { user },
@@ -15,12 +15,14 @@ export const getAuthValues = async (
 			return { data: null, error: "User not found" };
 		}
 
-		const userDetails: UserState = {
+		const userDetails: UserSelect = {
 			user_id: user.id,
-			full_name: user.user_metadata?.full_name,
-			email: user.email,
+			fullname: user.user_metadata?.full_name,
+			status: user.user_metadata?.status as Status,
+			email: user.email || "",
 			role: user.user_metadata?.role as UserRole,
 			avatar_url: user.user_metadata?.avatar_url,
+			createdAt: user.created_at,
 		};
 
 		return { data: userDetails, error: null };

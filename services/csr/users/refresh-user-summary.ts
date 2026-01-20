@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction } from "react";
-import { UserDataSelect } from "@/lib/types";
+import { UserSummarySelect } from "@/lib/types";
 import { getUserSummary } from "@/services/ssr/users/initial-user-summary";
 import { supabaseBrowser } from "@/lib/supabase/client";
 import { set } from "date-fns";
@@ -12,7 +12,7 @@ type RefreshUserSummaryParams = {
 	itemsPerPage: number;
 	currentPage: number;
 	showAlert: (status: number, message: string) => void;
-	setSummaryData: Dispatch<SetStateAction<UserDataSelect[]>>;
+	setSummaryData: Dispatch<SetStateAction<UserSummarySelect[]>>;
 	setTotalPages: Dispatch<SetStateAction<number>>;
 };
 

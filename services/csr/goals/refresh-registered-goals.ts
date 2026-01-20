@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction } from "react";
-import { UserDataSelect } from "@/lib/types";
+import { RegisteredGoalSelect } from "@/lib/types";
 import { getRegisteredGoals } from "@/services/ssr/goals/initial-registered-goals";
 import { supabaseBrowser } from "@/lib/supabase/client";
 
@@ -9,7 +9,7 @@ type RefreshRegisteredGoalsParams = {
 	itemsPerPage: number;
 	currentPage: number;
 	showAlert: (status: number, message: string) => void;
-	setGoalsData: Dispatch<SetStateAction<UserDataSelect[]>>;
+	setGoalsData: Dispatch<SetStateAction<RegisteredGoalSelect[]>>;
 	setTotalPages: Dispatch<SetStateAction<number>>;
 };
 

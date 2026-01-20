@@ -22,13 +22,13 @@ import {
 } from "@/components/ui/select";
 import { X, Shield, Target } from "lucide-react";
 import { LoadingButtonText } from "@/components/ui/loading-button-text";
-import { UserState, GoalsState } from "@/lib/types";
+import { UserSelect, GoalsState } from "@/lib/types";
 import { handleFormChange } from "@/lib/utils";
 import { checkToken } from "@/services/csr/contributors/check-token";
 import { upsertContributor } from "@/services/csr/contributors/upsert-contributor";
 
 type JoinGoalDialogProps = {
-	user: UserState;
+	user: UserSelect;
 	showAlert: (status: number, message: string) => void;
 };
 

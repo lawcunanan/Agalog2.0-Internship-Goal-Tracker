@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction } from "react";
-import { UserDataSelect } from "@/lib/types";
+import { TodayLogSelect } from "@/lib/types";
 import { getTodayLogs } from "@/services/ssr/logs/initial-today-logs";
 import { supabaseBrowser } from "@/lib/supabase/client";
 
@@ -11,7 +11,7 @@ type RefreshTodayLogsParams = {
 	itemsPerPage: number;
 	currentPage: number;
 	showAlert: (status: number, message: string) => void;
-	setTodayLogsData: Dispatch<SetStateAction<UserDataSelect[]>>;
+	setTodayLogsData: Dispatch<SetStateAction<TodayLogSelect[]>>;
 	setTotalPages: Dispatch<SetStateAction<number>>;
 };
 

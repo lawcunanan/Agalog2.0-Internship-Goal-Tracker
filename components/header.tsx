@@ -47,7 +47,7 @@ export function Header({
 	const handleExport = () => {
 		if (!user) return;
 		exportLog(
-			user.full_name || user.email || "Student",
+			user.fullname || user.email || "Student",
 			logState || { logs: [], currentHours: 0 },
 			goalHours || 0,
 			showAlert,
@@ -103,12 +103,12 @@ export function Header({
 												referrerPolicy="no-referrer"
 											/>
 											<AvatarFallback>
-												{getInitials(user.full_name || user.email)}
+												{getInitials(user.fullname || user.email)}
 											</AvatarFallback>
 										</Avatar>
 										<div className="flex flex-col items-center">
 											<p className="text-sm font-medium">
-												{user.full_name || "User"}
+												{user.fullname || "User"}
 											</p>
 											<p className="text-xs text-muted-foreground">
 												{user.email}

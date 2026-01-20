@@ -13,14 +13,14 @@ import {
 import { Search } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { PaginationControls } from "@/components/pagination";
-import { UserDataSelect } from "@/lib/types";
+import { GoalAdminSelect } from "@/lib/types";
 import { EmptyAdminTable } from "@/components/empty-state/empty-admin-table";
 import { refreshGoalAdmins } from "@/services/csr/users/refresh-goal-admins";
 
 type GoalAdminTabProps = {
 	goal_id: string | null;
 	showAlert: (status: number, message: string) => void;
-	initialData: UserDataSelect[];
+	initialData: GoalAdminSelect[];
 };
 export function GoalAdminTab({
 	goal_id,
@@ -29,7 +29,7 @@ export function GoalAdminTab({
 }: GoalAdminTabProps) {
 	const [statusFilter, setStatusFilter] = useState<string>("All Status");
 	const [searchQuery, setSearchQuery] = useState<string>("");
-	const [adminsData, setAdminsData] = useState<UserDataSelect[]>(initialData);
+	const [adminsData, setAdminsData] = useState<GoalAdminSelect[]>(initialData);
 
 	//Pagination states\
 	const itemsPerPage = 10;
@@ -110,7 +110,10 @@ export function GoalAdminTab({
 								>
 									<td className="py-4 px-4 min-w-20">
 										<Avatar className="w-9 h-9">
-											<AvatarImage src={admin.picture} alt={admin.fullname} />
+											<AvatarImage
+												src={admin.avatar_url}
+												alt={admin.fullname}
+											/>
 											<AvatarFallback className="bg-muted text-sm font-semibold text-muted-foreground">
 												{admin?.fullname?.charAt(0) || "A"}
 											</AvatarFallback>

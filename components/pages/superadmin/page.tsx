@@ -3,7 +3,12 @@
 import { useState, useEffect, useRef } from "react";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
-import { StatsticsSelect, UserDataSelect } from "@/lib/types";
+import {
+	StatsticsSelect,
+	TodayLogSelect,
+	RegisteredGoalSelect,
+	UserSelect,
+} from "@/lib/types";
 import { useAlert } from "@/providers/alert-provider";
 import { useAuth } from "@/providers/auth-provider";
 import { StatCard } from "@/components/statistics/page";
@@ -16,9 +21,9 @@ import { UsersTab } from "@/components/tables/users";
 
 type SuperadminContentProps = {
 	initialStats: StatsticsSelect;
-	initialTodayLogs: UserDataSelect[];
-	initialRegisteredGoals: UserDataSelect[];
-	initialUsers: UserDataSelect[];
+	initialTodayLogs: TodayLogSelect[];
+	initialRegisteredGoals: RegisteredGoalSelect[];
+	initialUsers: UserSelect[];
 	initialSections: string[];
 };
 

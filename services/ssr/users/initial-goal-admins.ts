@@ -1,9 +1,10 @@
 import { SupabaseClient } from "@supabase/supabase-js";
-import { UserDataSelect } from "@/lib/types";
+import { GoalAdminSelect, UserRole, Status } from "@/lib/types";
 import { format } from "date-fns";
+import { GoalAdminRow } from "@/lib/types-row";
 
 type GoalAdminResponse = {
-	data: UserDataSelect[] | null;
+	data: GoalAdminSelect[] | null;
 	totalPages: number;
 	error: string | null;
 };
@@ -41,22 +42,25 @@ export const getGoalAdmin = async (
 			query = query.ilike("full_name", `%${searchQuery}%`);
 		}
 
-		const { data, error, count } = await query;
+		const { data, error, count } = await query.overrideTypes<
+			GoalAdminRow[],
+			{ merge: false }
+		>();
 
 		if (error) {
 			console.error("getGoalAdmin query error:", error.message);
 			return { data: null, totalPages: 0, error: error.message };
 		}
 
-		const mappedData: UserDataSelect[] =
-			(data || []).map((item: any) => ({
+		const mappedData: GoalAdminSelect[] =
+			(data || []).map((item) => ({
 				user_id: item.user_id,
 				goalId: item.goal_id,
-				fullname: item.full_name,
+				fullname: item.full_name ?? "",
 				email: item.email,
-				picture: item.avatar_url,
-				role: item.role,
-				status: item.status,
+				avatar_url: item.avatar_url ?? "",
+				role: item.role as UserRole,
+				status: item.status as Status,
 				createdAt: format(new Date(item.created_at), "MMM d, yyyy h:mm a"),
 			})) || [];
 

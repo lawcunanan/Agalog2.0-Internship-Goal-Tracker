@@ -1,10 +1,11 @@
 import { SupabaseClient } from "@supabase/supabase-js";
 import { format, differenceInMinutes } from "date-fns";
 import { formatDuration } from "@/lib/utils/dateTimeUtils";
-import { UserDataSelect } from "@/lib/types";
+import { TodayLogSelect } from "@/lib/types";
+import { TodayLogsViewRow } from "@/lib/types-row";
 
 type TodayLogsResponse = {
-	data: UserDataSelect[] | null;
+	data: TodayLogSelect[] | null;
 	totalPages: number;
 	error: string | null;
 };
@@ -23,7 +24,22 @@ export const getTodayLogs = async (
 
 		let query = supabase
 			.from("today_logs_view")
-			.select("*", { count: "exact" })
+			.select(
+				`
+				user_id,
+				avatar_url,
+				full_name,
+				section,
+				log_date,
+				time_in,
+				time_out,
+				break_out,
+				break_back,
+				description,
+				created_at
+				`,
+				{ count: "exact" },
+			)
 			.order("created_at", { ascending: false })
 			.range(from, to);
 
@@ -47,14 +63,17 @@ export const getTodayLogs = async (
 			query = query.ilike("full_name", `%${searchQuery}%`);
 		}
 
-		const { data, error, count } = await query;
+		const { data, error, count } = await query.overrideTypes<
+			TodayLogsViewRow[],
+			{ merge: false }
+		>();
 		if (error) {
 			console.error("getTodayLogs query error:", error.message);
 			return { data: null, totalPages: 0, error: error.message };
 		}
 
-		const mapped: UserDataSelect[] =
-			(data || []).map((l: any) => {
+		const mapped: TodayLogSelect[] =
+			data.map((l) => {
 				const timeIn = l.time_in ? new Date(l.time_in) : null;
 				const timeOut = l.time_out ? new Date(l.time_out) : null;
 				const breakOut = l.break_out ? new Date(l.break_out) : null;
@@ -73,7 +92,7 @@ export const getTodayLogs = async (
 
 				return {
 					user_id: l.user_id || "",
-					picture: l.avatar_url || "",
+					avatar_url: l.avatar_url || "",
 					fullname: l.full_name || "",
 					section: l.section || "",
 					date: format(new Date(l.log_date), "MMM d, yyyy"),

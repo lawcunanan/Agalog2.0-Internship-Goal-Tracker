@@ -2,7 +2,12 @@ import { getUser } from "@/services/ssr/auth/get-user";
 import { supabaseServer } from "@/lib/supabase/server";
 import { SuperadminContent } from "@/components/pages/superadmin/page";
 
-import { StatsticsSelect, UserDataSelect } from "@/lib/types";
+import {
+	StatsticsSelect,
+	TodayLogSelect,
+	RegisteredGoalSelect,
+	UserSelect,
+} from "@/lib/types";
 import { getCountUsers } from "@/services/ssr/statistics/count-users";
 import { getCountTodayLogs } from "@/services/ssr/statistics/count-today-logs";
 import { getTodayLogs } from "@/services/ssr/logs/initial-today-logs";
@@ -22,9 +27,9 @@ export default async function AdminPage() {
 		totalAdmins: 0,
 		todayLogs: 0,
 	};
-	let initialTodayLogs: UserDataSelect[] = [];
-	let initialRegisteredGoals: UserDataSelect[] = [];
-	let initialUsers: UserDataSelect[] = [];
+	let initialTodayLogs: TodayLogSelect[] = [];
+	let initialRegisteredGoals: RegisteredGoalSelect[] = [];
+	let initialUsers: UserSelect[] = [];
 	let initialSections: string[] = [];
 
 	//  Fetch all SSR data in parallel

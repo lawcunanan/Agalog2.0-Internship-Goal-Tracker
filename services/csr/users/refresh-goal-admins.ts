@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction } from "react";
-import { UserDataSelect } from "@/lib/types";
+import { GoalAdminSelect } from "@/lib/types";
 import { getGoalAdmin } from "@/services/ssr/users/initial-goal-admins";
 import { supabaseBrowser } from "@/lib/supabase/client";
 
@@ -10,7 +10,7 @@ type RefreshGoalAdminsParams = {
 	itemsPerPage: number;
 	currentPage: number;
 	showAlert: (status: number, message: string) => void;
-	setAdminsData: Dispatch<SetStateAction<UserDataSelect[]>>;
+	setAdminsData: Dispatch<SetStateAction<GoalAdminSelect[]>>;
 	setTotalPages: Dispatch<SetStateAction<number>>;
 };
 
