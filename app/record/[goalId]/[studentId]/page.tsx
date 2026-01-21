@@ -33,10 +33,12 @@ export default async function RecordPage({ params }: RecordPageProps) {
 	let logsData: WeeklyLogState = { logs: [], currentHours: 0 };
 	let targetGoalId: string | null = goalId;
 
+	const isNullGoalId = targetGoalId === "null" || !targetGoalId;
+
 	//  Fetch student info and filtered goals in parallel
 	const results = await Promise.allSettled([
 		getStudent(supabase, studentId),
-		getFilterGoals(supabase, user.id, studentId),
+		getFilterGoals(supabase, isNullGoalId ? studentId : user.id, studentId),
 	]);
 
 	// Helper to safely extract data
@@ -51,7 +53,7 @@ export default async function RecordPage({ params }: RecordPageProps) {
 	initialGoals = goalsResult.data ?? [];
 
 	//  Determine which goalId to use if none or "null"
-	if (!targetGoalId || targetGoalId === "null") {
+	if (isNullGoalId) {
 		targetGoalId = initialGoals?.[0]?.goal_id ?? null;
 	}
 

@@ -110,17 +110,15 @@ export function RecordContent({
 				<div className="space-y-12 md:space-y-16">
 					<StudentProfileHeader student={student!} />
 
-					{logState.logs.length > 0 && (
-						<LogProgress
-							completed={logState.currentHours}
-							required={goalState?.goalHours || 0}
-							filterGoals={initialGoals}
-							goalState={goalState || undefined}
-							setGoalState={setGoalState}
-							onExport={onExportClick}
-							exporting={isLoading}
-						/>
-					)}
+					<LogProgress
+						completed={logState.currentHours}
+						required={goalState?.goalHours || 0}
+						filterGoals={initialGoals}
+						goalState={goalState || undefined}
+						setGoalState={setGoalState}
+						onExport={onExportClick}
+						exporting={isLoading}
+					/>
 
 					<WeeklyLogTable data={logState.logs} />
 					<Footer />
