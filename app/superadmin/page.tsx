@@ -19,7 +19,8 @@ export default async function SuperAdminPage() {
 	//  Get logged-in user
 	const user = await getUser();
 	const supabase = await supabaseServer();
-	if (!user) return <div>Please login to view this page</div>;
+	if (!user)
+		return <div className="text-center">Please login to view this page</div>;
 
 	//  Default values
 	let initialStats: StatsticsSelect = {

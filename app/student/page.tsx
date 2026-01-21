@@ -9,31 +9,33 @@ export default async function StudentPage() {
 	const user = await getUser();
 	const supabase = await supabaseServer();
 
-	if (!user) return;
+	if (!user)
+		return <div className="text-center">Please login to view this page</div>;
 
 	const initialGoal = await getInitialGoal(user.id);
-	if (!initialGoal) return;
 
 	let logsData: WeeklyLogState = {
 		logs: [],
 		currentHours: 0,
 	};
 
-	const results = await Promise.allSettled([
-		getLogs(user.id, initialGoal.goal_id, supabase),
-	]);
+	if (initialGoal) {
+		const results = await Promise.allSettled([
+			getLogs(user.id, initialGoal.goal_id, supabase),
+		]);
 
-	//  Helper to safely extract data
-	const safeData = (result: PromiseSettledResult<any>) =>
-		result.status === "fulfilled" ? result.value : { data: null };
+		//  Helper to safely extract data
+		const safeData = (result: PromiseSettledResult<any>) =>
+			result.status === "fulfilled" ? result.value : { data: null };
 
-	const logsResult = safeData(results[0]);
+		const logsResult = safeData(results[0]);
 
-	if (logsResult?.data) {
-		logsData = {
-			logs: logsResult.data.logs ?? [],
-			currentHours: logsResult.data.currentHours ?? 0,
-		};
+		if (logsResult?.data) {
+			logsData = {
+				logs: logsResult.data.logs ?? [],
+				currentHours: logsResult.data.currentHours ?? 0,
+			};
+		}
 	}
 
 	return <StudentContent initialGoal={initialGoal} logsData={logsData} />;
