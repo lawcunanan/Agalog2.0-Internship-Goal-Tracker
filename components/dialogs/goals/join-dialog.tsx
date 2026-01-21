@@ -80,7 +80,7 @@ export function JoinGoalDialog({
 
 		await upsertContributor(
 			user.user_id,
-			goalValues!.goal_id,
+			goalValues.goal_id,
 			user.role || "Student",
 			{ ...goalValues },
 			showAlert,
@@ -88,11 +88,11 @@ export function JoinGoalDialog({
 		);
 
 		setGoalState({
-			goal_id: goalValues!.goal_id,
-			goalHours: goalValues!.goal,
+			goal_id: goalValues.goal_id,
+			goalHours: goalValues.goal,
 		});
 
-		refreshLogs(goalValues!.goal_id);
+		refreshLogs(goalValues.goal_id);
 
 		setGoalValues({
 			goal_id: "",

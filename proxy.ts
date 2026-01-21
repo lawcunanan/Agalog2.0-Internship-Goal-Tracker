@@ -23,7 +23,7 @@ export async function proxy(request: NextRequest) {
 		{ path: "/student", roles: ["Student"] },
 		{ path: "/logs", roles: ["Student"] },
 		{ path: "/admin", roles: ["Admin"] },
-		{ path: "/superadmin", roles: ["Super Admin", "Admin"] },
+		{ path: "/superadmin", roles: ["Super Admin"] },
 		{ path: "/record/", roles: ["Super Admin", "Admin"] },
 	];
 

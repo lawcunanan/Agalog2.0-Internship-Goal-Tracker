@@ -34,7 +34,7 @@ export function GoalAdminTab({
 	//Pagination states
 	const itemsPerPage = 10;
 	const [currentPage, setCurrentPage] = useState<number>(1);
-	const [totalPages, setTotalPages] = useState<number>(5);
+	const [totalPages, setTotalPages] = useState<number>(1);
 
 	const isFirstLoadRef = useRef(true);
 

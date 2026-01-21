@@ -386,7 +386,7 @@ export function ManageGoalsDialog({
 							</p>
 						) : (
 							<RadioGroup
-								value={goalState.goal_id}
+								value={String(goalState.goal_id)}
 								onValueChange={(val) => handleSetGoalState(val)}
 							>
 								{goals.map((goal) => {
