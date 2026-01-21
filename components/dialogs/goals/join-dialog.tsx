@@ -22,17 +22,24 @@ import {
 } from "@/components/ui/select";
 import { X, Target, Key } from "lucide-react";
 import { LoadingButtonText } from "@/components/ui/loading-button-text";
-import { UserSelect, GoalsState } from "@/lib/types";
+import { UserSelect, GoalsState, GoalActiveState } from "@/lib/types";
 import { handleFormChange } from "@/lib/utils";
 import { checkToken } from "@/services/csr/contributors/check-token";
 import { upsertContributor } from "@/services/csr/contributors/upsert-contributor";
 
 type JoinGoalDialogProps = {
 	user: UserSelect;
+	setGoalState: (goalState: GoalActiveState) => void;
+	refreshLogs: (goalId?: string) => void;
 	showAlert: (status: number, message: string) => void;
 };
 
-export function JoinGoalDialog({ user, showAlert }: JoinGoalDialogProps) {
+export function JoinGoalDialog({
+	user,
+	setGoalState,
+	refreshLogs,
+	showAlert,
+}: JoinGoalDialogProps) {
 	const [open, setOpen] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
 	const [token, setToken] = useState("");
@@ -79,6 +86,13 @@ export function JoinGoalDialog({ user, showAlert }: JoinGoalDialogProps) {
 			showAlert,
 			setIsLoading,
 		);
+
+		setGoalState({
+			goal_id: goalValues!.goal_id,
+			goalHours: goalValues!.goal,
+		});
+
+		refreshLogs(goalValues!.goal_id);
 
 		setGoalValues({
 			goal_id: "",

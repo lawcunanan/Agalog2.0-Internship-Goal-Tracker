@@ -122,7 +122,12 @@ export function Header({
 									<DropdownMenuSeparator />
 									{(isStudent || isAdmin) && (
 										<>
-											<JoinGoalDialog user={user} showAlert={showAlert} />
+											<JoinGoalDialog
+												user={user}
+												setGoalState={setGoalState || (() => {})}
+												refreshLogs={refreshLogs || (() => {})}
+												showAlert={showAlert}
+											/>
 											<ManageGoalsDialog
 												user={user}
 												goalState={goalState || ({} as any)}
