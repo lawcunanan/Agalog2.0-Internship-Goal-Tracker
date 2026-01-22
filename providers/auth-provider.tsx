@@ -39,7 +39,7 @@ export function AuthProvider({
 		const {
 			data: { subscription },
 		} = supabaseBrowser.auth.onAuthStateChange(async (event, session) => {
-			if (event === "TOKEN_REFRESHED") {
+			if (!user?.role || event === "TOKEN_REFRESHED") {
 				if (session?.user) {
 					if (!user || user.user_id !== session.user.id) {
 						const { data, error } = await getAuthValues(supabaseBrowser);

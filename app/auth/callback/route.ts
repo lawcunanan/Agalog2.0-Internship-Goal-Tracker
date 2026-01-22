@@ -2,6 +2,7 @@ import { type NextRequest, NextResponse } from "next/server";
 import { supabaseServer } from "@/lib/supabase/server";
 import { UserRole } from "@/lib/types";
 import { getUserRole } from "@/services/ssr/auth/get-role";
+import { updateUserRoleMetadata } from "@/services/ssr/auth/update-role-metadata";
 
 export async function GET(request: NextRequest) {
 	const { searchParams, origin } = new URL(request.url);
@@ -47,18 +48,13 @@ export async function GET(request: NextRequest) {
 	}
 
 	if (user.user_metadata.role !== finalRole) {
-		const { error: updateError } = await supabase.auth.updateUser({
-			data: { role: finalRole },
-		});
+		const { success, error: updateError } = await updateUserRoleMetadata(
+			supabase,
+			finalRole,
+		);
 
-		if (updateError) {
+		if (!success) {
 			console.error("Error updating user role:", updateError);
-		}
-
-		const { error: refreshError } = await supabase.auth.refreshSession();
-
-		if (refreshError) {
-			console.error("Error refreshing session:", refreshError);
 		}
 	}
 
