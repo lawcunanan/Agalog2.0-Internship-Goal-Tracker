@@ -1,6 +1,8 @@
 import { createMiddlewareClient } from "@/lib/supabase/middleware";
 import { getUser } from "@/services/ssr/auth/get-user";
 import { NextResponse, type NextRequest } from "next/server";
+import { UserRole } from "./lib/types";
+import { getUserRole } from "./services/ssr/auth/get-role";
 
 export async function proxy(request: NextRequest) {
 	const { supabase, response } = createMiddlewareClient(request);
@@ -42,7 +44,20 @@ export async function proxy(request: NextRequest) {
 
 	// If user is logged in
 	if (user) {
-		const userRole = user.user_metadata.role;
+		let userRole: UserRole | null =
+			(user.user_metadata.role as UserRole) ?? null;
+
+		if (!userRole) {
+			const { role } = await getUserRole(supabase, user.id);
+
+			userRole = role ?? null;
+
+			if (userRole) {
+				await supabase.auth.updateUser({
+					data: { role: userRole },
+				});
+			}
+		}
 
 		// Redirect logged-in users from landing page based on role
 		if (path === "/") {

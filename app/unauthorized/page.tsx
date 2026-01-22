@@ -1,11 +1,21 @@
 "use client";
 
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ShieldAlert } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { signOutUser } from "@/services/csr/auth/logout";
+import { useAlert } from "@/providers/alert-provider";
+import { LoadingButtonText } from "@/components/ui/loading-button-text";
 
 export default function UnauthorizedPage() {
-	const router = useRouter();
+	const { showAlert } = useAlert();
+	const [isLoading, setIsLoading] = useState(false);
+
+	const handleLogout = async (e: React.MouseEvent) => {
+		e.preventDefault();
+		await signOutUser(showAlert, setIsLoading);
+	};
 
 	return (
 		<div className="flex h-screen w-full flex-col items-center justify-center gap-4 text-center p-4">
@@ -22,8 +32,12 @@ export default function UnauthorizedPage() {
 				</p>
 			</div>
 			<div className="flex gap-2">
-				<Button variant="default" onClick={() => router.push("/")}>
-					Go Home
+				<Button variant="default" onClick={handleLogout} disabled={isLoading}>
+					<LoadingButtonText
+						isLoading={isLoading}
+						loadingTitle="Logging out..."
+						title="Go Home"
+					/>
 				</Button>
 			</div>
 		</div>

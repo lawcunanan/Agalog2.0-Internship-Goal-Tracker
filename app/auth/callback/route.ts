@@ -1,6 +1,7 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { supabaseServer } from "@/lib/supabase/server";
 import { UserRole } from "@/lib/types";
+import { getUserRole } from "@/services/ssr/auth/get-role";
 
 export async function GET(request: NextRequest) {
 	const { searchParams, origin } = new URL(request.url);
@@ -23,16 +24,12 @@ export async function GET(request: NextRequest) {
 
 	const user = sessionData.session.user;
 
-	const { data: existingUser } = await supabase
-		.from("users")
-		.select("role")
-		.eq("user_id", user.id)
-		.single();
+	const { role: existingRole } = await getUserRole(supabase, user.id);
 
 	let finalRole: UserRole = role;
 
-	if (existingUser) {
-		finalRole = existingUser.role as UserRole;
+	if (existingRole) {
+		finalRole = existingRole as UserRole;
 	} else {
 		const { error: insertError } = await supabase.from("users").insert({
 			user_id: user.id,

@@ -54,7 +54,7 @@ export function AuthProvider({
 				}
 			} else if (event === "SIGNED_OUT") {
 				setUser(null);
-				router.refresh();
+				router.push("/");
 			}
 
 			isLoading && setIsLoading(false);
