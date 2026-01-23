@@ -59,6 +59,14 @@ export function UsersTab({
 		fetchUsers();
 	}, [searchQuery, statusFilter, roleFilter, currentPage]);
 
+	useEffect(() => {
+		usersData
+			.filter((user) => user.role === "Student")
+			.forEach((user) => {
+				router.prefetch(`/record/null/${user.user_id}`);
+			});
+	}, [usersData, router]);
+
 	return (
 		<FadeIn className="space-y-6 mt-4">
 			<div className="flex flex-row gap-3 mb-4">

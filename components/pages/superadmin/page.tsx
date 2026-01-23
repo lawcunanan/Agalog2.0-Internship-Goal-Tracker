@@ -80,7 +80,7 @@ export function SuperadminContent({
 						</TabsTrigger>
 					</TabsList>
 
-					<TabsContent value="today-logs">
+					<TabsContent value="today-logs" forceMount={true}>
 						<TodayLogsTab
 							role="Super Admin"
 							goal_id={null}
@@ -90,11 +90,11 @@ export function SuperadminContent({
 						/>
 					</TabsContent>
 
-					<TabsContent value="users">
+					<TabsContent value="users" forceMount={true}>
 						<UsersTab showAlert={showAlert} initialData={initialUsers} />
 					</TabsContent>
 
-					<TabsContent value="goals">
+					<TabsContent value="goals" forceMount={true}>
 						<GoalsTab
 							showAlert={showAlert}
 							initialData={initialRegisteredGoals}

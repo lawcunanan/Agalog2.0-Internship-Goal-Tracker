@@ -70,6 +70,12 @@ export function UserSummaryTab({
 		fetchSummary();
 	}, [goal_id, searchQuery, sectionFilter, companyFilter, currentPage]);
 
+	useEffect(() => {
+		userSummaryData.forEach((user) => {
+			router.prefetch(`/record/${goal_id ?? "null"}/${user.user_id}`);
+		});
+	}, [userSummaryData, goal_id]);
+
 	return (
 		<FadeIn className="space-y-6 mt-4">
 			<div className="flex flex-row gap-3 mb-4">
@@ -148,9 +154,6 @@ export function UserSummaryTab({
 									<tr
 										key={idx}
 										className="border-b border-border hover:bg-muted/50 transition-colors cursor-pointer"
-										onMouseEnter={() => {
-											router.prefetch(recordUrl);
-										}}
 										onClick={() => {
 											router.push(recordUrl);
 										}}

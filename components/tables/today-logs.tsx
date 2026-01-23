@@ -68,6 +68,12 @@ export function TodayLogsTab({
 		fetchLogs();
 	}, [goal_id, role, searchQuery, sectionFilter, currentPage]);
 
+	useEffect(() => {
+		todayLogs.forEach((log) => {
+			router.prefetch(`/record/${goal_id ?? "null"}/${log.user_id}`);
+		});
+	}, [todayLogs, goal_id]);
+
 	return (
 		<FadeIn className="space-y-6 mt-4">
 			<div className="flex flex-row gap-3 mb-4">
@@ -130,9 +136,6 @@ export function TodayLogsTab({
 									<tr
 										key={idx}
 										className="border-b border-border hover:bg-muted/50 transition-colors cursor-pointer"
-										onMouseEnter={() => {
-											router.prefetch(recordUrl);
-										}}
 										onClick={() => {
 											router.push(recordUrl);
 										}}
