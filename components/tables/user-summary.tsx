@@ -13,14 +13,14 @@ import {
 } from "@/components/ui/select";
 import { Search } from "lucide-react";
 import { PaginationControls } from "@/components/pagination";
-import { UserSummarySelect } from "@/lib/types";
+import { UserSummarySelect, Paginated } from "@/lib/types";
 import { EmptyAdminTable } from "@/components/empty-state/empty-admin-table";
 import { refreshUserSummary } from "@/services/csr/users/refresh-user-summary";
 
 type UserSummaryTabProps = {
 	goal_id: string | null;
 	showAlert: (status: number, message: string) => void;
-	initialData: UserSummarySelect[];
+	initialData: Paginated<UserSummarySelect>;
 	initialCompanies: string[];
 	initialSections: string[];
 };
@@ -35,14 +35,15 @@ export function UserSummaryTab({
 	const [sectionFilter, setSectionFilter] = useState<string>("All Sections");
 	const [companyFilter, setCompanyFilter] = useState<string>("All Companies");
 	const [searchQuery, setSearchQuery] = useState<string>("");
-	const [userSummaryData, setUserSummaryData] =
-		useState<UserSummarySelect[]>(initialData);
+	const [userSummaryData, setUserSummaryData] = useState<UserSummarySelect[]>(
+		initialData.data,
+	);
 	const router = useRouter();
 
 	//Pagination states
 	const itemsPerPage = 10;
 	const [currentPage, setCurrentPage] = useState<number>(1);
-	const [totalPages, setTotalPages] = useState<number>(5);
+	const [totalPages, setTotalPages] = useState<number>(initialData.totalPages);
 
 	const isFirstLoadRef = useRef(true);
 
@@ -71,8 +72,8 @@ export function UserSummaryTab({
 
 	return (
 		<FadeIn className="space-y-6 mt-4">
-			<div className="flex flex-col md:flex-row md:items-center gap-3 mb-4">
-				<div className="relative w-full md:w-64">
+			<div className="flex flex-row gap-3 mb-4">
+				<div className="relative w-full md:w-80">
 					<Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
 					<Input
 						placeholder="Search by name..."
@@ -81,41 +82,40 @@ export function UserSummaryTab({
 						onChange={(e) => setSearchQuery(e.target.value)}
 					/>
 				</div>
-				<div className="flex gap-3">
-					{initialSections.length > 0 && (
-						<div className="w-full md:w-48">
-							<Select value={sectionFilter} onValueChange={setSectionFilter}>
-								<SelectTrigger className="w-full">
-									<SelectValue placeholder="Filter by section" />
-								</SelectTrigger>
-								<SelectContent>
-									{initialSections.map((section) => (
-										<SelectItem key={section} value={section}>
-											{section}
-										</SelectItem>
-									))}
-								</SelectContent>
-							</Select>
-						</div>
-					)}
 
-					{initialCompanies.length > 0 && (
-						<div className="w-full md:w-48">
-							<Select value={companyFilter} onValueChange={setCompanyFilter}>
-								<SelectTrigger className="w-full">
-									<SelectValue placeholder="Filter by company" />
-								</SelectTrigger>
-								<SelectContent>
-									{initialCompanies.map((company) => (
-										<SelectItem key={company} value={company}>
-											{company}
-										</SelectItem>
-									))}
-								</SelectContent>
-							</Select>
-						</div>
-					)}
-				</div>
+				{initialSections.length > 0 && (
+					<Select value={sectionFilter} onValueChange={setSectionFilter}>
+						<SelectTrigger className="md:w-42">
+							<span className="hidden md:inline">
+								<SelectValue placeholder="Filter by section" />
+							</span>
+						</SelectTrigger>
+						<SelectContent>
+							{initialSections.map((section) => (
+								<SelectItem key={section} value={section}>
+									{section}
+								</SelectItem>
+							))}
+						</SelectContent>
+					</Select>
+				)}
+
+				{initialCompanies.length > 0 && (
+					<Select value={companyFilter} onValueChange={setCompanyFilter}>
+						<SelectTrigger className="md:w-42">
+							<span className="hidden md:inline">
+								<SelectValue placeholder="Filter by company" />
+							</span>
+						</SelectTrigger>
+						<SelectContent>
+							{initialCompanies.map((company) => (
+								<SelectItem key={company} value={company}>
+									{company}
+								</SelectItem>
+							))}
+						</SelectContent>
+					</Select>
+				)}
 			</div>
 			<div className="overflow-x-auto border border-border rounded-lg">
 				<table className="w-full border-collapse">

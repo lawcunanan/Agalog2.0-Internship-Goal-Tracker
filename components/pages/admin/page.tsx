@@ -9,6 +9,7 @@ import {
 	TodayLogSelect,
 	UserSummarySelect,
 	GoalAdminSelect,
+	Paginated,
 } from "@/lib/types";
 import { useAlert } from "@/providers/alert-provider";
 import { StatCard } from "../../statistics/page";
@@ -24,9 +25,9 @@ import { refreshFilters } from "@/services/csr/filters/refresh-filter";
 type AdminContentProps = {
 	initialGoal: GoalActiveState | null;
 	initialStats: StatsticsSelect;
-	initialTodayLogs: TodayLogSelect[];
-	initialUserSummary: UserSummarySelect[];
-	initialAdminGoals: GoalAdminSelect[];
+	initialTodayLogs: Paginated<TodayLogSelect>;
+	initialUserSummary: Paginated<UserSummarySelect>;
+	initialAdminGoals: Paginated<GoalAdminSelect>;
 	initialCompanies: string[];
 	initialSections: string[];
 };

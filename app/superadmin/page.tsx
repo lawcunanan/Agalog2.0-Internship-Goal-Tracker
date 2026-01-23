@@ -7,7 +7,9 @@ import {
 	TodayLogSelect,
 	RegisteredGoalSelect,
 	UserSelect,
+	Paginated,
 } from "@/lib/types";
+
 import { getCountUsers } from "@/services/ssr/statistics/count-users";
 import { getCountTodayLogs } from "@/services/ssr/statistics/count-today-logs";
 import { getTodayLogs } from "@/services/ssr/logs/initial-today-logs";
@@ -16,56 +18,78 @@ import { getUsers } from "@/services/ssr/users/initial-users";
 import { getFilterOptions } from "@/services/ssr/filters/filter-options";
 
 export default async function SuperAdminPage() {
-	//  Get logged-in user
+	// Get logged-in user
 	const user = await getUser();
 	const supabase = await supabaseServer();
+
 	if (!user)
 		return <div className="text-center">Please login to view this page</div>;
 
-	//  Default values
+	// Default values
 	let initialStats: StatsticsSelect = {
 		totalUsers: 0,
 		totalAdmins: 0,
 		todayLogs: 0,
 	};
-	let initialTodayLogs: TodayLogSelect[] = [];
-	let initialRegisteredGoals: RegisteredGoalSelect[] = [];
-	let initialUsers: UserSelect[] = [];
+
+	// ✅ unified pagination structure
+	let initialTodayLogs: Paginated<TodayLogSelect> = {
+		data: [],
+		totalPages: 0,
+	};
+
+	let initialRegisteredGoals: Paginated<RegisteredGoalSelect> = {
+		data: [],
+		totalPages: 0,
+	};
+
+	let initialUsers: Paginated<UserSelect> = {
+		data: [],
+		totalPages: 0,
+	};
+
 	let initialSections: string[] = [];
 
-	//  Fetch all SSR data in parallel
+	// Fetch all SSR data in parallel
 	const results = await Promise.allSettled([
 		getCountUsers(supabase, null, "Student", "users"),
 		getCountUsers(supabase, null, "Admin", "users"),
 		getCountTodayLogs(supabase, null),
 
+		// paginated
 		getTodayLogs(supabase, null, "", "All Sections", 10, 1),
 		getRegisteredGoals(supabase, "", "All Status", 10, 1),
 		getUsers(supabase, "", "All Status", "All Roles", 10, 1),
+
 		getFilterOptions(supabase, null),
 	]);
 
-	//  Helper to safely extract data
-	const safeData = (result: PromiseSettledResult<any>) =>
-		result.status === "fulfilled"
-			? result.value
-			: { data: null, companies: null, sections: null };
+	// safer typed helper
+	const safeData = <T,>(result: PromiseSettledResult<T>): T | null =>
+		result.status === "fulfilled" ? result.value : null;
 
-	//  Assign results
+	// Stats
 	initialStats = {
-		totalUsers: safeData(results[0]).data ?? 0,
-		totalAdmins: safeData(results[1]).data ?? 0,
-		todayLogs: safeData(results[2]).data ?? 0,
+		totalUsers: safeData(results[0])?.data ?? 0,
+		totalAdmins: safeData(results[1])?.data ?? 0,
+		todayLogs: safeData(results[2])?.data ?? 0,
 	};
-	initialTodayLogs = safeData(results[3]).data || [];
-	initialRegisteredGoals = safeData(results[4]).data || [];
-	initialUsers = safeData(results[5]).data || [];
 
-	//  Assign filter options
+	// ✅ paginated assignments
+	initialTodayLogs =
+		safeData<Paginated<TodayLogSelect>>(results[3]) ?? initialTodayLogs;
+
+	initialRegisteredGoals =
+		safeData<Paginated<RegisteredGoalSelect>>(results[4]) ??
+		initialRegisteredGoals;
+
+	initialUsers = safeData<Paginated<UserSelect>>(results[5]) ?? initialUsers;
+
+	// Filters
 	const filterOptions = safeData(results[6]);
-	initialSections = filterOptions.sections || [];
+	initialSections = filterOptions?.sections || [];
 
-	//  Render page with filters
+	// Render page
 	return (
 		<SuperadminContent
 			initialStats={initialStats}

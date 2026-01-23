@@ -1,13 +1,7 @@
 import { SupabaseClient } from "@supabase/supabase-js";
-import { UserRole, UserSelect, Status } from "@/lib/types";
+import { UserRole, UserSelect, Status, Paginated } from "@/lib/types";
 import { format } from "date-fns";
 import { UserRow } from "@/lib/types-row";
-
-type UserResponse = {
-	data: UserSelect[] | null;
-	totalPages: number;
-	error: string | null;
-};
 
 export const getUsers = async (
 	supabase: SupabaseClient,
@@ -16,7 +10,7 @@ export const getUsers = async (
 	roleFilter: string,
 	itemsPerPage: number,
 	currentPage: number,
-): Promise<UserResponse> => {
+): Promise<Paginated<UserSelect>> => {
 	try {
 		const from = (currentPage - 1) * itemsPerPage;
 		const to = from + itemsPerPage - 1;
@@ -27,7 +21,7 @@ export const getUsers = async (
 			.range(from, to)
 			.order("full_name", { ascending: true });
 
-		// Search by name or email
+		// Search by full_name or email
 		if (searchQuery) {
 			query = query.or(
 				`full_name.ilike.%${searchQuery}%,email.ilike.%${searchQuery}%`,
@@ -51,34 +45,34 @@ export const getUsers = async (
 
 		if (error) {
 			console.error("getUsers query error:", error.message);
-			return { data: null, totalPages: 0, error: error.message };
+			return { data: [], totalPages: 0, error: error.message };
 		}
 
-		const mappedData: UserSelect[] =
-			(data || []).map((item) => ({
-				user_id: item.user_id,
-				avatar_url: item.avatar_url ?? "",
-				fullname: item.full_name ?? "",
-				email: item.email,
-				status: item.status as Status,
-				role: item.role as UserRole,
-				createdAt: item.created_at
-					? format(new Date(item.created_at), "MMM d, yyyy h:mm a")
-					: "--:--",
-			})) || [];
+		const mappedData: UserSelect[] = (data || []).map((item) => ({
+			user_id: item.user_id,
+			avatar_url: item.avatar_url ?? "",
+			fullname: item.full_name ?? "",
+			email: item.email,
+			status: item.status as Status,
+			role: item.role as UserRole,
+			createdAt: item.created_at
+				? format(new Date(item.created_at), "MMM d, yyyy h:mm a")
+				: "--:--",
+		}));
 
 		const totalPages = Math.ceil((count || 0) / itemsPerPage);
 
-		return { data: mappedData, totalPages, error: null };
-	} catch (error: any) {
-		console.error(
-			"getUsers unexpected error:",
-			error.message || "Unexpected error",
-		);
 		return {
-			data: null,
+			data: mappedData,
+			totalPages,
+			error: null,
+		};
+	} catch (err: any) {
+		console.error("getUsers unexpected error:", err);
+		return {
+			data: [],
 			totalPages: 0,
-			error: error.message || "Unexpected error",
+			error: err?.message || "Unexpected error",
 		};
 	}
 };

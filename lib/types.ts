@@ -133,3 +133,11 @@ export interface StatsticsSelect {
 	totalUsers: number;
 	totalAdmins: number;
 }
+
+//
+
+export type Paginated<T> = {
+	data: T[];
+	totalPages: number;
+	error?: string | null;
+};

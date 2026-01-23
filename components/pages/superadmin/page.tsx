@@ -8,6 +8,7 @@ import {
 	TodayLogSelect,
 	RegisteredGoalSelect,
 	UserSelect,
+	Paginated,
 } from "@/lib/types";
 import { useAlert } from "@/providers/alert-provider";
 import { useAuth } from "@/providers/auth-provider";
@@ -21,9 +22,9 @@ import { UsersTab } from "@/components/tables/users";
 
 type SuperadminContentProps = {
 	initialStats: StatsticsSelect;
-	initialTodayLogs: TodayLogSelect[];
-	initialRegisteredGoals: RegisteredGoalSelect[];
-	initialUsers: UserSelect[];
+	initialTodayLogs: Paginated<TodayLogSelect>;
+	initialRegisteredGoals: Paginated<RegisteredGoalSelect>;
+	initialUsers: Paginated<UserSelect>;
 	initialSections: string[];
 };
 

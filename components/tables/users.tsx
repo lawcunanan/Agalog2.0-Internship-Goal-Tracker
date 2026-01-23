@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/select";
 import { Search } from "lucide-react";
 import { PaginationControls } from "@/components/pagination";
-import { UserSelect } from "@/lib/types";
+import { UserSelect, Paginated } from "@/lib/types";
 import { EmptyAdminTable } from "@/components/empty-state/empty-admin-table";
 import { refreshUsers } from "@/services/csr/users/refresh-users";
 
@@ -22,18 +22,18 @@ export function UsersTab({
 	initialData,
 }: {
 	showAlert: (status: number, message: string) => void;
-	initialData: UserSelect[];
+	initialData: Paginated<UserSelect>;
 }) {
 	const [statusFilter, setStatusFilter] = useState<string>("All Status");
 	const [roleFilter, setRoleFilter] = useState<string>("All Roles");
 	const [searchQuery, setSearchQuery] = useState<string>("");
-	const [usersData, setUsersData] = useState<UserSelect[]>(initialData);
+	const [usersData, setUsersData] = useState<UserSelect[]>(initialData.data);
 	const router = useRouter();
 
 	//Pagination states
 	const itemsPerPage = 10;
 	const [currentPage, setCurrentPage] = useState<number>(1);
-	const [totalPages, setTotalPages] = useState<number>(5);
+	const [totalPages, setTotalPages] = useState<number>(initialData.totalPages);
 
 	const isFirstLoadRef = useRef(true);
 
@@ -61,8 +61,8 @@ export function UsersTab({
 
 	return (
 		<FadeIn className="space-y-6 mt-4">
-			<div className="flex flex-col md:flex-row md:items-center gap-3 mb-4">
-				<div className="relative w-full md:w-64">
+			<div className="flex flex-row gap-3 mb-4">
+				<div className="relative w-full md:w-80">
 					<Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
 					<Input
 						placeholder="Search by name or email..."
@@ -71,36 +71,36 @@ export function UsersTab({
 						onChange={(e) => setSearchQuery(e.target.value)}
 					/>
 				</div>
-				<div className="flex gap-3">
-					<div className="w-full md:w-48">
-						<Select value={statusFilter} onValueChange={setStatusFilter}>
-							<SelectTrigger className="w-full">
-								<SelectValue placeholder="Filter by status" />
-							</SelectTrigger>
-							<SelectContent>
-								{["All Status", "Active", "Inactive"].map((status) => (
-									<SelectItem key={status} value={status}>
-										{status}
-									</SelectItem>
-								))}
-							</SelectContent>
-						</Select>
-					</div>
-					<div className="w-full md:w-48">
-						<Select value={roleFilter} onValueChange={setRoleFilter}>
-							<SelectTrigger className="w-full">
-								<SelectValue placeholder="Filter by role" />
-							</SelectTrigger>
-							<SelectContent>
-								{["All Roles", "Student", "Admin"].map((role) => (
-									<SelectItem key={role} value={role}>
-										{role}
-									</SelectItem>
-								))}
-							</SelectContent>
-						</Select>
-					</div>
-				</div>
+
+				<Select value={statusFilter} onValueChange={setStatusFilter}>
+					<SelectTrigger className="md:w-42">
+						<span className="hidden md:inline">
+							<SelectValue placeholder="Filter by status" />
+						</span>
+					</SelectTrigger>
+					<SelectContent>
+						{["All Status", "Active", "Inactive"].map((status) => (
+							<SelectItem key={status} value={status}>
+								{status}
+							</SelectItem>
+						))}
+					</SelectContent>
+				</Select>
+
+				<Select value={roleFilter} onValueChange={setRoleFilter}>
+					<SelectTrigger className="md:w-42">
+						<span className="hidden md:inline">
+							<SelectValue placeholder="Filter by role" />
+						</span>
+					</SelectTrigger>
+					<SelectContent>
+						{["All Roles", "Student", "Admin"].map((role) => (
+							<SelectItem key={role} value={role}>
+								{role}
+							</SelectItem>
+						))}
+					</SelectContent>
+				</Select>
 			</div>
 			<div className="overflow-x-auto border border-border rounded-lg">
 				<table className="w-full border-collapse">

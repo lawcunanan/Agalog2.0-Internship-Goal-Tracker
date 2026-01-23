@@ -1,13 +1,7 @@
 import { SupabaseClient } from "@supabase/supabase-js";
-import { UserSummarySelect } from "@/lib/types";
+import { UserSummarySelect, Paginated } from "@/lib/types";
 import { formatDuration } from "@/lib/utils/dateTimeUtils";
 import { UserSummaryRow } from "@/lib/types-row";
-
-type UserSummaryResponse = {
-	data: UserSummarySelect[] | null;
-	totalPages: number;
-	error: string | null;
-};
 
 export const getUserSummary = async (
 	supabase: SupabaseClient,
@@ -17,7 +11,7 @@ export const getUserSummary = async (
 	companyFilter: string,
 	itemsPerPage: number,
 	currentPage: number,
-): Promise<UserSummaryResponse> => {
+): Promise<Paginated<UserSummarySelect>> => {
 	try {
 		const from = (currentPage - 1) * itemsPerPage;
 		const to = from + itemsPerPage - 1;
@@ -28,12 +22,11 @@ export const getUserSummary = async (
 			.order("full_name", { ascending: false })
 			.range(from, to);
 
-		// Filter by goalId
+		// Filters
 		if (goalId) {
 			query = query.eq("goal_id", goalId);
 		}
 
-		// Section filter
 		if (sectionFilter && sectionFilter !== "All Sections") {
 			query = query.or(
 				`section.ilike.%${sectionFilter}%,section.ilike.%${sectionFilter.replace(
@@ -43,7 +36,6 @@ export const getUserSummary = async (
 			);
 		}
 
-		// Company filter
 		if (companyFilter && companyFilter !== "All Companies") {
 			query = query.or(
 				`company.ilike.%${companyFilter}%,company.ilike.%${companyFilter.replace(
@@ -53,7 +45,6 @@ export const getUserSummary = async (
 			);
 		}
 
-		// Search by full_name
 		if (searchQuery) {
 			query = query.ilike("full_name", `%${searchQuery}%`);
 		}
@@ -65,34 +56,35 @@ export const getUserSummary = async (
 
 		if (error) {
 			console.error("getUserSummary query error:", error.message);
-			return { data: null, totalPages: 0, error: error.message };
+			return { data: [], totalPages: 0, error: error.message };
 		}
 
-		const mappedData: UserSummarySelect[] =
-			(data || []).map((item) => ({
-				user_id: item.user_id,
-				avatar_url: item.avatar_url ?? "",
-				fullname: item.full_name ?? "",
-				section: item.section || "N/A",
-				company: item.company || "N/A",
-				goalTitle: item.title || "N/A",
-				goalHours: item.goal || 0,
-				totalHours: formatDuration(Number(item.total_hours) || 0),
-				hoursLeft: formatDuration(Number(item.hours_left) || 0),
-			})) || [];
+		const mappedData: UserSummarySelect[] = (data || []).map((item) => ({
+			user_id: item.user_id,
+			avatar_url: item.avatar_url ?? "",
+			fullname: item.full_name ?? "",
+			section: item.section || "N/A",
+			company: item.company || "N/A",
+			goalTitle: item.title || "N/A",
+			goalHours: item.goal || 0,
+			totalHours: formatDuration(Number(item.total_hours) || 0),
+			hoursLeft: formatDuration(Number(item.hours_left) || 0),
+		}));
 
 		const totalPages = Math.ceil((count || 0) / itemsPerPage);
 
-		return { data: mappedData, totalPages, error: null };
-	} catch (error: any) {
-		console.error(
-			"getUserSummary unexpected error:",
-			error.message || "Unexpected error",
-		);
 		return {
-			data: null,
+			data: mappedData,
+			totalPages,
+			error: null,
+		};
+	} catch (err: any) {
+		console.error("getUserSummary unexpected error:", err);
+
+		return {
+			data: [],
 			totalPages: 0,
-			error: error.message || "Unexpected error",
+			error: err?.message || "Unexpected error",
 		};
 	}
 };

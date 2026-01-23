@@ -11,24 +11,25 @@ import {
 } from "@/components/ui/select";
 import { Search } from "lucide-react";
 import { PaginationControls } from "@/components/pagination";
-import { RegisteredGoalSelect } from "@/lib/types";
+import { RegisteredGoalSelect, Paginated } from "@/lib/types";
 import { EmptyAdminTable } from "@/components/empty-state/empty-admin-table";
 import { refreshRegisteredGoals } from "@/services/csr/goals/refresh-registered-goals";
 
 type GoalsTabProps = {
 	showAlert: (status: number, message: string) => void;
-	initialData: RegisteredGoalSelect[];
+	initialData: Paginated<RegisteredGoalSelect>;
 };
 export function GoalsTab({ showAlert, initialData }: GoalsTabProps) {
 	const [statusFilter, setStatusFilter] = useState<string>("All Status");
 	const [searchQuery, setSearchQuery] = useState<string>("");
-	const [goalsData, setGoalsData] =
-		useState<RegisteredGoalSelect[]>(initialData);
+	const [goalsData, setGoalsData] = useState<RegisteredGoalSelect[]>(
+		initialData.data,
+	);
 
 	//Pagination states\
 	const itemsPerPage = 10;
 	const [currentPage, setCurrentPage] = useState<number>(1);
-	const [totalPages, setTotalPages] = useState<number>(1);
+	const [totalPages, setTotalPages] = useState<number>(initialData.totalPages);
 
 	const isFirstLoadRef = useRef(true);
 
@@ -53,8 +54,8 @@ export function GoalsTab({ showAlert, initialData }: GoalsTabProps) {
 
 	return (
 		<FadeIn className="space-y-6 mt-4">
-			<div className="flex flex-row md:items-center gap-3 mb-4">
-				<div className="relative w-full md:w-64">
+			<div className="flex flex-row gap-3 mb-4">
+				<div className="relative w-full md:w-80">
 					<Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
 					<Input
 						placeholder="Search by title..."
@@ -63,21 +64,23 @@ export function GoalsTab({ showAlert, initialData }: GoalsTabProps) {
 						onChange={(e) => setSearchQuery(e.target.value)}
 					/>
 				</div>
-				<div className="md:w-48">
-					<Select value={statusFilter} onValueChange={setStatusFilter}>
-						<SelectTrigger className="w-full">
+
+				<Select value={statusFilter} onValueChange={setStatusFilter}>
+					<SelectTrigger className="md:w-42">
+						<span className="hidden md:inline">
 							<SelectValue placeholder="Filter by status" />
-						</SelectTrigger>
-						<SelectContent>
-							{["All Status", "Active", "Inactive"].map((status) => (
-								<SelectItem key={status} value={status}>
-									{status}
-								</SelectItem>
-							))}
-						</SelectContent>
-					</Select>
-				</div>
+						</span>
+					</SelectTrigger>
+					<SelectContent>
+						{["All Status", "Active", "Inactive"].map((status) => (
+							<SelectItem key={status} value={status}>
+								{status}
+							</SelectItem>
+						))}
+					</SelectContent>
+				</Select>
 			</div>
+
 			<div className="overflow-x-auto border border-border rounded-lg">
 				<table className="w-full border-collapse">
 					<thead>
