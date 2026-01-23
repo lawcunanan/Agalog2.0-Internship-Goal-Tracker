@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { LogValues } from "@/lib/types";
-import { toISODate, convert12To24 } from "@/lib/utils/dateTimeUtils";
+import { getPHDate, toISODate, convert12To24 } from "@/lib/utils/dateTimeUtils";
 import { upsertLog } from "@/services/csr/logs/upsert-log";
 
 type LogFormProps = {
@@ -29,7 +29,7 @@ export function LogForm({
 }: LogFormProps) {
 	const defaults = (): LogValues => ({
 		log_id: "",
-		date: toISODate(new Date()),
+		date: getPHDate(),
 		timeIn: "",
 		timeOut: "",
 		breakOut: "",
@@ -142,7 +142,7 @@ export function LogForm({
 						className="shadow-none "
 						value={logData.date}
 						onChange={handleChange}
-						max={new Date().toISOString().split("T")[0]}
+						max={getPHDate()}
 						disabled={!goal_id}
 						required
 					/>

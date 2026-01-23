@@ -34,3 +34,9 @@ export const formatDuration = (hours: number) => {
 	if (m === 0) return `${h}hr`;
 	return `${h}hr ${m}min`;
 };
+
+export const getPHDate = () => {
+	return new Date().toLocaleDateString("en-CA", {
+		timeZone: "Asia/Manila",
+	});
+};
