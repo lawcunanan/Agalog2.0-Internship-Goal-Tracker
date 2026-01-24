@@ -69,6 +69,7 @@ export function ManageGoalsDialog({
 		title: "",
 		goal: 0,
 		sections: [],
+		section: "",
 	});
 	const [goals, setGoals] = useState<GoalsState[]>([]);
 	const [searchQuery, setSearchQuery] = useState("");
@@ -102,6 +103,7 @@ export function ManageGoalsDialog({
 	}, [user, searchQuery, filterStatus, goalState.goal_id, showAlert]);
 
 	const handleCreateGoal = async () => {
+		if (isLoading) return;
 		if (!user) return showAlert(500, "User not found.");
 		if (requiredValues)
 			return showAlert(300, "Please fill in all required fields.");
@@ -154,13 +156,17 @@ export function ManageGoalsDialog({
 	};
 
 	const handleEditGoal = (goal: GoalsState) => {
-		setGoalValues(goal);
+		setGoalValues({ ...goal });
 		setTab("create");
 	};
 
 	const handleCopy = async (text: string) => {
-		navigator.clipboard.writeText(text);
-		showAlert(200, "Token copied to clipboard.");
+		try {
+			await navigator.clipboard.writeText(text);
+			showAlert(200, "Token copied to your clipboard.");
+		} catch {
+			showAlert(500, "Failed to copy token.");
+		}
 	};
 
 	const handleResetForm = () => {
@@ -169,21 +175,27 @@ export function ManageGoalsDialog({
 			title: "",
 			goal: 0,
 			sections: [],
+			section: "",
 		});
 
 		setTab("manage");
 	};
 
-	const handleSetGoalState = (goalId: string, goalHours?: number) => {
-		refreshLogs(goalId);
+	const handleSetGoalState = useCallback(
+		(goalId: string, goalHours?: number) => {
+			refreshLogs(goalId);
 
-		setGoalState({
-			...goalState,
-			goal_id: goalId,
-			goalHours:
-				goalHours || goals.find((g) => String(g.goal_id) === goalId)?.goal || 0,
-		});
-	};
+			setGoalState({
+				...goalState,
+				goal_id: goalId,
+				goalHours:
+					goalHours ??
+					goals.find((g) => String(g.goal_id) === goalId)?.goal ??
+					0,
+			});
+		},
+		[goalState, goals, refreshLogs, setGoalState],
+	);
 
 	useEffect(() => {
 		if (isOpen) fetchGoals();
@@ -198,7 +210,7 @@ export function ManageGoalsDialog({
 					className="w-full justify-start cursor-pointer gap-2"
 				>
 					<Settings className="h-4 w-4" />
-					Manage Goal
+					Manage Goals
 				</Button>
 			</AlertDialogTrigger>
 			<AlertDialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto">
@@ -211,7 +223,7 @@ export function ManageGoalsDialog({
 					</div>
 
 					<AlertDialogDescription>
-						Create and manage your internship goals with sections.
+						Create and manage your internship goals and sections.
 					</AlertDialogDescription>
 				</AlertDialogHeader>
 				<Tabs
@@ -248,6 +260,7 @@ export function ManageGoalsDialog({
 									id="create-goal"
 									type="number"
 									placeholder="Enter hours"
+									min="50"
 									max="1000"
 									value={goalValues?.goal || ""}
 									onChange={(e) =>
@@ -329,7 +342,7 @@ export function ManageGoalsDialog({
 								onClick={handleCreateGoal}
 								size="sm"
 								className="w-fit h-9"
-								disabled={requiredValues}
+								disabled={requiredValues || isLoading}
 							>
 								<LoadingButtonText
 									isLoading={isLoading}
@@ -363,7 +376,13 @@ export function ManageGoalsDialog({
 										variant="outline"
 										className="h-9 w-9 bg-transparent shrink-0"
 									>
-										<Filter className="h-4 w-6 text-red-500" />
+										<Filter
+											className={`h-4 w-6 ${
+												filterStatus == "Active"
+													? "text-green-600"
+													: "text-red-600"
+											}`}
+										/>
 									</Button>
 								</DropdownMenuTrigger>
 								<DropdownMenuContent align="end">
@@ -442,7 +461,7 @@ export function ManageGoalsDialog({
 
 													{isOwner ? (
 														<>
-															{!isStudent && (
+															{!isStudent && isActive && (
 																<>
 																	{["Private Token", "Public Token"].map(
 																		(type) => (
@@ -467,12 +486,14 @@ export function ManageGoalsDialog({
 																</>
 															)}
 
-															<DropdownMenuItem
-																onClick={() => handleEditGoal(goal)}
-															>
-																<Edit2 className="h-4 w-4 mr-2" />
-																Edit
-															</DropdownMenuItem>
+															{isActive && (
+																<DropdownMenuItem
+																	onClick={() => handleEditGoal(goal)}
+																>
+																	<Edit2 className="h-4 w-4 mr-2" />
+																	Edit
+																</DropdownMenuItem>
+															)}
 
 															<StatusDialog
 																user_id={user.user_id}
