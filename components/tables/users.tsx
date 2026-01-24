@@ -68,7 +68,7 @@ export function UsersTab({
 	}, [usersData, router]);
 
 	return (
-		<FadeIn className="space-y-6 mt-4">
+		<FadeIn className="space-y-6 mt-2">
 			<div className="flex flex-row gap-3 mb-4">
 				<div className="relative w-full md:w-80">
 					<Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />

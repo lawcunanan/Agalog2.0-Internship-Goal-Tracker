@@ -58,6 +58,7 @@ export function JoinGoalDialog({
 		!goalValues?.goal_id;
 
 	const handleCheckToken = async () => {
+		if (isLoading) return;
 		if (!user) return showAlert(500, "User not found.");
 		if (!token.trim()) return showAlert(300, "Please enter a valid token.");
 
@@ -74,6 +75,7 @@ export function JoinGoalDialog({
 	};
 
 	const handleJoinGoal = async () => {
+		if (isLoading) return;
 		if (!user) return showAlert(500, "User not found.");
 		if (requiredValues)
 			return showAlert(300, "Please fill in all required fields.");
@@ -94,15 +96,21 @@ export function JoinGoalDialog({
 
 		refreshLogs(goalValues.goal_id);
 
+		handleReset();
+		setOpen(false);
+	};
+
+	const handleReset = () => {
+		setToken("");
 		setGoalValues({
 			goal_id: "",
 			title: "",
 			goal: 0,
+			company: "",
+			section: "",
 			sections: [],
 		});
-		setOpen(false);
 	};
-
 	return (
 		<AlertDialog open={open} onOpenChange={setOpen}>
 			<AlertDialogTrigger asChild>
@@ -112,7 +120,7 @@ export function JoinGoalDialog({
 					className="w-full justify-start cursor-pointer gap-2"
 				>
 					<Target className="h-4 w-4" />
-					Join Goal
+					Join a Goal
 				</Button>
 			</AlertDialogTrigger>
 			<AlertDialogContent className="sm:max-w-sm">
@@ -138,7 +146,7 @@ export function JoinGoalDialog({
 							Join a Goal
 						</AlertDialogTitle>
 						<AlertDialogDescription className="text-center">
-							Let's get you connected to a goal!
+							Enter your goal token to join!
 						</AlertDialogDescription>
 					</AlertDialogHeader>
 
@@ -152,10 +160,8 @@ export function JoinGoalDialog({
 									placeholder="Enter goal token"
 									value={token}
 									onChange={(e) => setToken(e.target.value)}
-									onKeyPress={(e) => {
-										if (e.key === "Enter") {
-											handleCheckToken();
-										}
+									onKeyDown={(e) => {
+										if (e.key === "Enter") handleCheckToken();
 									}}
 									className="flex-1"
 									disabled={isLoading}
@@ -221,19 +227,24 @@ export function JoinGoalDialog({
 							)}
 
 							<div className="flex gap-2 pt-4 justify-end">
-								<Button variant="outline" className="w-fit h-9" size="sm">
+								<Button
+									variant="outline"
+									className="w-fit h-9"
+									size="sm"
+									onClick={handleReset}
+								>
 									Back
 								</Button>
 								<Button
-									onClick={handleJoinGoal}
 									className="w-fit h-9"
 									size="sm"
-									disabled={requiredValues}
+									disabled={requiredValues || isLoading}
+									onClick={handleJoinGoal}
 								>
 									<LoadingButtonText
 										isLoading={isLoading}
 										loadingTitle="Joining..."
-										title="Join Goal"
+										title="Join a Goal"
 									/>
 								</Button>
 							</div>
