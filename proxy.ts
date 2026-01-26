@@ -19,13 +19,15 @@ export async function proxy(request: NextRequest) {
 	const user = await getUser();
 	const path = request.nextUrl.pathname;
 
-	// Define protected routes and allowed roles
-	const routePermissions = [
-		{ path: "/student", roles: ["Student"] },
-		{ path: "/logs", roles: ["Student"] },
-		{ path: "/admin", roles: ["Admin"] },
-		{ path: "/superadmin", roles: ["Super Admin"] },
-		{ path: "/record/", roles: ["Super Admin", "Admin"] },
+	// Validate requested path against known routes
+	const validPaths = [
+		"/",
+		"/student",
+		"/admin",
+		"/superadmin",
+		"/record",
+		"/auth/callback",
+		"/unauthorized",
 	];
 
 	// Public routes that don't require authentication
@@ -36,8 +38,16 @@ export async function proxy(request: NextRequest) {
 		path.startsWith("/images") ||
 		path.startsWith("/lottie");
 
-	// If user is not logged in and tries to access a protected route
-	if (!user && !isPublicRoute) {
+	// Define protected routes and allowed roles
+	const routePermissions = [
+		{ path: "/student", roles: ["Student"] },
+		{ path: "/admin", roles: ["Admin"] },
+		{ path: "/superadmin", roles: ["Super Admin"] },
+		{ path: "/record/", roles: ["Super Admin", "Admin"] },
+	];
+
+	// If user is not logged in and trying to access a protected route
+	if ((!user && !isPublicRoute) || !validPaths.includes(path)) {
 		return NextResponse.redirect(new URL("/", request.url));
 	}
 

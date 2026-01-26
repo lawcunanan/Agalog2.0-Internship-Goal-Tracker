@@ -6,15 +6,22 @@ import { ShieldAlert } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { signOutUser } from "@/services/csr/auth/logout";
 import { useAlert } from "@/providers/alert-provider";
+import { useAuth } from "@/providers/auth-provider";
 import { LoadingButtonText } from "@/components/ui/loading-button-text";
 
 export default function UnauthorizedPage() {
+	const { user } = useAuth();
 	const { showAlert } = useAlert();
+	const router = useRouter();
 	const [isLoading, setIsLoading] = useState(false);
 
 	const handleLogout = async (e: React.MouseEvent) => {
 		e.preventDefault();
-		await signOutUser(showAlert, setIsLoading);
+		if (user && user?.role) {
+			router.push(`/`);
+		} else {
+			await signOutUser(showAlert, setIsLoading);
+		}
 	};
 
 	return (
