@@ -218,7 +218,7 @@ export function ManageGoalsDialog({
 					<div className="flex items-center justify-between">
 						<AlertDialogTitle>Manage Internship Goals</AlertDialogTitle>
 						<AlertDialogCancel className="bg-transparent! !hover:bg-transparent p-0! h-auto! w-auto! border-0! shadow-none! ring-0! outline-none!">
-							<X className="h-4 w-4" />
+							<X className="h-5 w-5" />
 						</AlertDialogCancel>
 					</div>
 

@@ -125,7 +125,7 @@ export function JoinGoalDialog({
 			</AlertDialogTrigger>
 			<AlertDialogContent className="sm:max-w-sm">
 				<AlertDialogCancel className="absolute right-5 top-5 bg-transparent! !hover:bg-transparent p-0! h-auto! w-auto! border-0! shadow-none! ring-0! outline-none!">
-					<X className="h-4 w-4" />
+					<X className="h-5 w-5" />
 				</AlertDialogCancel>
 
 				<div className="text-center space-y-5 py-4 pb-0">

@@ -47,7 +47,10 @@ export async function proxy(request: NextRequest) {
 	];
 
 	// If user is not logged in and trying to access a protected route
-	if ((!user && !isPublicRoute) || !validPaths.includes(path)) {
+	if (
+		(!user && !isPublicRoute) ||
+		(!validPaths.includes(path) && !path.startsWith("/record/"))
+	) {
 		return NextResponse.redirect(new URL("/", request.url));
 	}
 
