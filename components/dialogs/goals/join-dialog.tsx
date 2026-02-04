@@ -42,7 +42,7 @@ export function JoinGoalDialog({
 }: JoinGoalDialogProps) {
 	const [open, setOpen] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
-	const [token, setToken] = useState("");
+	const [token, setToken] = useState("3zSLnyNdGpPzN2WIZLw9RdtS");
 	const [goalValues, setGoalValues] = useState<GoalsState>({
 		goal_id: "",
 		title: "",
