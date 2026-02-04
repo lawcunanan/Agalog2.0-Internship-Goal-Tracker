@@ -11,7 +11,7 @@ export function Footer() {
 		<footer className="w-full py-8  mt-8">
 			<div className={isAttendance ? "text-left" : "text-center"}>
 				<p className="text-sm text-muted-foreground ">
-					© 2025 Agalog: Internship Goal Tracker
+					© 2026 Agalog: Internship Goal Tracker
 				</p>
 				<p className="text-xs text-muted-foreground/60">
 					Developer:{" "}
@@ -21,7 +21,7 @@ export function Footer() {
 						rel="noopener noreferrer"
 						className="hover:text-primary transition-colors"
 					>
-						Lawrence S. Cunanan
+						Lawrence Cunanan
 					</Link>
 				</p>
 			</div>
