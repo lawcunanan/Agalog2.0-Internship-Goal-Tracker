@@ -209,3 +209,24 @@ body {
 .animate-santa-walk {
 	animation: santa-walk 20s linear infinite;
 }
+
+@media print {
+	@page {
+		size: A4;
+	}
+	body {
+		margin: 0 !important;
+		padding: 0 !important;
+	}
+	.no-print {
+		display: none !important;
+	}
+
+	.no-padding {
+		padding: 0 !important;
+		width: 100% !important;
+		height: auto !important;
+		overflow: visible !important;
+		border-color: transparent !important;
+	}
+}

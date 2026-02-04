@@ -3,7 +3,13 @@ import { useState } from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
-import { Menu, Download, ArrowLeftRight } from "lucide-react";
+import {
+	Menu,
+	Download,
+	ArrowLeftRight,
+	CalendarDays,
+	FileText,
+} from "lucide-react";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -21,6 +27,8 @@ import { ManageGoalsDialog } from "./dialogs/goals/manage-dialog";
 import { getInitials } from "@/lib/utils";
 import { exportLog } from "@/lib/utils/export-log";
 import { TempInsertDialog } from "@/components/dialogs/goals/temp-insert-dialog";
+import { WeeklyReportDialog } from "@/components/dialogs/reports/weekly-dialog";
+import { DailyReportDialog } from "@/components/dialogs/reports/daily-report-dialog";
 
 interface HeaderProps {
 	goalState?: GoalActiveState;
@@ -135,21 +143,49 @@ export function Header({
 												showAlert={showAlert}
 												refreshLogs={refreshLogs || (() => {})}
 											/>
-											{logState?.logs.length! > 0 && (
-												<Button
-													variant="ghost"
-													size={buttonSize}
-													className={buttonClass}
-													onClick={handleExport}
-												>
-													<Download className="h-4 w-4" />
-													<LoadingButtonText
-														isLoading={isExporting}
-														loadingTitle="Exporting..."
-														title="Export Logs"
-													/>
-												</Button>
+											{isStudent && (
+												<>
+													<p className="text-xs text-muted-foreground uppercase mx-2 mt-2">
+														Reports
+													</p>
+													{logState?.logs.length! > 0 && (
+														<Button
+															variant="ghost"
+															size={buttonSize}
+															className={buttonClass}
+															onClick={handleExport}
+														>
+															<Download className="h-4 w-4" />
+															<LoadingButtonText
+																isLoading={isExporting}
+																loadingTitle="Exporting..."
+																title="Export Logs"
+															/>
+														</Button>
+													)}
+													<WeeklyReportDialog>
+														<Button
+															variant="ghost"
+															size={buttonSize}
+															className={buttonClass}
+														>
+															<CalendarDays className="h-4 w-4" />
+															Weekly Report
+														</Button>
+													</WeeklyReportDialog>
+													<DailyReportDialog>
+														<Button
+															variant="ghost"
+															size={buttonSize}
+															className={buttonClass}
+														>
+															<FileText className="h-4 w-4" />
+															Daily Report
+														</Button>
+													</DailyReportDialog>
+												</>
 											)}
+
 											{isAdmin && (
 												<TempInsertDialog>
 													<Button

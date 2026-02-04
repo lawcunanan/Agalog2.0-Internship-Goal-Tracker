@@ -53,7 +53,7 @@ export function StudentContent({ initialGoal, logsData }: StudentContentProps) {
 	);
 
 	return (
-		<div className="min-h-screen flex flex-col relative md:overflow-hidden">
+		<div className="no-print min-h-screen flex flex-col relative md:overflow-hidden">
 			<Header
 				goalState={goalState}
 				setGoalState={setGoalState}
