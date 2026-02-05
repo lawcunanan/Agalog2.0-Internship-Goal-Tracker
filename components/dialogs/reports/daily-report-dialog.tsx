@@ -10,7 +10,7 @@ import {
 	AlertDialogTitle,
 	AlertDialogDescription,
 } from "@/components/ui/alert-dialog";
-import { X, Download, FileText } from "lucide-react";
+import { X, Printer, FileText } from "lucide-react";
 import Image from "next/image";
 import {
 	Select,
@@ -43,7 +43,7 @@ export function DailyReportDialog({
 
 	const selectedWeekData = data.find((w) => w.weekLabel === selectedWeek);
 
-	const handleDownloadPDF = () => {
+	const handlePrint = () => {
 		window.print();
 	};
 
@@ -74,9 +74,9 @@ export function DailyReportDialog({
 				</AlertDialogHeader>
 
 				{/* Controls Section - Dropdown and Buttons */}
-				<div className="no-print mb-2 flex items-center justify-between gap-4">
+				<div className="no-print mb-1 flex items-center justify-between gap-2">
 					<Select value={selectedWeek} onValueChange={setSelectedWeek}>
-						<SelectTrigger className="w-48">
+						<SelectTrigger className="w-full sm:w-48">
 							<SelectValue placeholder="Select Week" />
 						</SelectTrigger>
 						<SelectContent>
@@ -91,11 +91,11 @@ export function DailyReportDialog({
 					<Button
 						variant="default"
 						size="sm"
-						onClick={handleDownloadPDF}
+						onClick={handlePrint}
 						className="flex items-center gap-2 w-24 h-9"
 					>
-						<Download className="h-4 w-4" />
-						PDF
+						<Printer className="h-4 w-4" />
+						Print
 					</Button>
 				</div>
 
