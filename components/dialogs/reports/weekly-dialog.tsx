@@ -259,12 +259,14 @@ export function WeeklyReportDialog({
 										Intern Signature
 									</p>
 									<div className="mb-1 relative h-16 w-full overflow-hidden">
-										<Image
-											src={signatureUrl || "/images/signature.png"}
-											alt="Intern Signature"
-											fill
-											className="object-contain"
-										/>
+										{signatureUrl && (
+											<Image
+												src={signatureUrl || "/images/signature.png"}
+												alt="Intern Signature"
+												fill
+												className="object-contain"
+											/>
+										)}
 									</div>
 									<div className="border-t border-gray-400 pt-3">
 										<p className="text-xs text-slate-900 font-semibold">
