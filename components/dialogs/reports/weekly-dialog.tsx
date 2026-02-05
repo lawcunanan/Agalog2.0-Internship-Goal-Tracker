@@ -29,12 +29,14 @@ interface WeeklyReportDialogProps {
 	name: string;
 	company: string;
 	data: WeeklyLogSelect[];
+	signatureUrl?: string;
 }
 
 export function WeeklyReportDialog({
 	name,
 	company,
 	data,
+	signatureUrl,
 }: WeeklyReportDialogProps) {
 	const [selectedWeek, setSelectedWeek] = useState<string>(
 		data.length > 0 ? data[0].weekLabel : "1",
@@ -64,7 +66,7 @@ export function WeeklyReportDialog({
 					size="sm"
 					className="w-full justify-start cursor-pointer gap-2"
 				>
-					<CalendarDays className="h-4 w-4" />
+					<CalendarDays className="h-4 w-4 " />
 					Weekly Report
 				</Button>
 			</AlertDialogTrigger>
@@ -110,7 +112,7 @@ export function WeeklyReportDialog({
 
 				{/* Report Container - A4 Size */}
 				<div className="overflow-x-auto bg-white">
-					<div className="border border-border p-8 print:w-[210mm] mx-auto no-padding">
+					<div className="border border-border p-8  w-[222mm] print:w-[210mm] mx-auto no-padding">
 						{/* Header Section */}
 						<div className="space-y-4 pb-0">
 							{/* Logo and Title */}
@@ -253,15 +255,14 @@ export function WeeklyReportDialog({
 							<div className="grid grid-cols-2">
 								{/* Intern Section */}
 								<div className="border-r border-gray-400 p-4">
-									<p className="text-base font-bold text-slate-900 mb-6">
+									<p className="text-base font-bold text-slate-900 mb-2">
 										Intern Signature
 									</p>
-									<div className="mb-4 h-9 flex items-center">
+									<div className="mb-1 relative h-16 w-full overflow-hidden">
 										<Image
-											src="/images/signature.png"
+											src={signatureUrl || "/images/signature.png"}
 											alt="Intern Signature"
-											width={120}
-											height={40}
+											fill
 											className="object-contain"
 										/>
 									</div>
@@ -276,10 +277,10 @@ export function WeeklyReportDialog({
 								</div>
 								{/* Supervisor Section */}
 								<div className="p-4">
-									<p className="text-base font-bold text-slate-900 mb-6">
+									<p className="text-base font-bold text-slate-900 mb-2">
 										Supervisor Signature
 									</p>
-									<div className="mb-4 h-9 flex items-center"></div>
+									<div className="mb-1 relative h-16 w-full overflow-hidden"></div>
 									<div className="border-t border-gray-400 pt-3">
 										<p className="text-xs text-slate-900 font-semibold">
 											Date:

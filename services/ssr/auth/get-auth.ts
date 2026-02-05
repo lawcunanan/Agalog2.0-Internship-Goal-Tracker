@@ -7,6 +7,7 @@ export const getAuthValues = async (
 	supabase: SupabaseClient,
 ): Promise<{ data: UserSelect | null; error: string | null }> => {
 	try {
+		// Get the authenticated user
 		const {
 			data: { user },
 			error,
@@ -17,6 +18,21 @@ export const getAuthValues = async (
 			return { data: null, error: "User not found" };
 		}
 
+		// Fetch user record from 'users' table
+		const { data: userRecord, error: userError } = await supabase
+			.from("users")
+			.select("*")
+			.eq("user_id", user.id)
+			.single();
+
+		if (userError || !userRecord) {
+			console.log(
+				"getAuthValues userError:",
+				userError?.message || "User record not found",
+			);
+			return { data: null, error: "User record not found" };
+		}
+
 		let role = user.user_metadata?.role as UserRole | undefined;
 
 		if (!role) {
@@ -24,6 +40,7 @@ export const getAuthValues = async (
 				supabase,
 				user.id,
 			);
+
 			if (roleError || !dbUserRole) {
 				console.log("getAuthValues roleError:", roleError || "Role not found");
 				return { data: null, error: "Role not found" };
@@ -45,12 +62,13 @@ export const getAuthValues = async (
 
 		const userDetails: UserSelect = {
 			user_id: user.id,
-			fullname: user.user_metadata?.full_name,
-			status: user.user_metadata?.status as Status,
-			email: user.email || "",
+			fullname: userRecord.full_name,
+			status: userRecord.status as Status,
+			email: userRecord.email,
 			role: role as UserRole,
-			avatar_url: user.user_metadata?.avatar_url,
-			createdAt: user.created_at,
+			avatar_url: userRecord.avatar_url,
+			signature_url: userRecord.signature_url,
+			createdAt: userRecord.created_at,
 		};
 
 		return { data: userDetails, error: null };

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { GoalActiveState, WeeklyLogState } from "@/lib/types";
@@ -38,6 +38,18 @@ export function StudentContent({ initialGoal, logsData }: StudentContentProps) {
 		currentHours: logsData?.currentHours ?? 0,
 		editLog: null,
 	});
+
+	const isCompleted =
+		logState.currentHours >= goalState.goalHours && goalState.goalHours > 0;
+
+	useEffect(() => {
+		if (isCompleted) {
+			showAlert(
+				200,
+				"Congratulations! You have completed your internship goal!",
+			);
+		}
+	}, [isCompleted, showAlert]);
 
 	const refreshLogs = useCallback(
 		async (goal_id?: string) => {

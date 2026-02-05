@@ -38,7 +38,7 @@ export function AlertProvider({ children }: { children: React.ReactNode }) {
 
 		setTimeout(() => {
 			setAlerts((prev) => prev.filter((alert) => alert.id !== id));
-		}, 3000);
+		}, 5000);
 	}, []);
 
 	const removeAlert = (id: string) => {

@@ -18,6 +18,7 @@ import { useAuth } from "@/providers/auth-provider";
 import { LogoutDialog } from "@/components/dialogs/auth/logout-dialog";
 import { JoinGoalDialog } from "./dialogs/goals/join-dialog";
 import { ManageGoalsDialog } from "./dialogs/goals/manage-dialog";
+import { ProfileDialog } from "./dialogs/users/profile-dialog";
 import { getInitials } from "@/lib/utils";
 import { exportLog } from "@/lib/utils/export-log";
 import { TempInsertDialog } from "@/components/dialogs/goals/temp-insert-dialog";
@@ -37,7 +38,7 @@ export function Header({
 	refreshLogs,
 }: HeaderProps) {
 	const { showAlert } = useAlert();
-	const { user } = useAuth();
+	const { user, refreshUser } = useAuth();
 
 	const [isExporting, setIsExporting] = useState(false);
 	const buttonClass = "w-full justify-start cursor-pointer gap-2";
@@ -119,7 +120,14 @@ export function Header({
 											</p>
 										</div>
 									</div>
+
 									<DropdownMenuSeparator />
+
+									<ProfileDialog
+										user={user}
+										refreshUser={refreshUser}
+										showAlert={showAlert}
+									/>
 									{(isStudent || isAdmin) && (
 										<>
 											<JoinGoalDialog
@@ -137,9 +145,6 @@ export function Header({
 											/>
 											{isStudent && (
 												<>
-													<p className="text-xs text-muted-foreground uppercase mx-2 mt-2">
-														Reports
-													</p>
 													{logState?.logs.length! > 0 && (
 														<Button
 															variant="ghost"
@@ -159,11 +164,13 @@ export function Header({
 														name={user.fullname || "Student"}
 														company={goalState?.company || "N/A"}
 														data={logState?.logs || []}
+														signatureUrl={user.signature_url}
 													/>
 													<DailyReportDialog
 														name={user.fullname || "Student"}
 														company={goalState?.company || "N/A"}
 														data={logState?.logs || []}
+														signatureUrl={user.signature_url}
 													/>
 												</>
 											)}
@@ -171,7 +178,7 @@ export function Header({
 											{isAdmin && <TempInsertDialog />}
 										</>
 									)}
-
+									<DropdownMenuSeparator />
 									<LogoutDialog showAlert={showAlert} />
 								</div>
 							</DropdownMenuContent>

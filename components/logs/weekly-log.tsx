@@ -80,7 +80,9 @@ export function WeeklyLog({
 									<div className="grid grid-cols-5 gap-4 w-full text-left text-sm">
 										<Tooltip>
 											<TooltipTrigger asChild>
-												<span className="font-medium">{log.date}</span>
+												<span className="font-medium">
+													{log.date.split(",")[0]}
+												</span>
 											</TooltipTrigger>
 											<TooltipContent>Date</TooltipContent>
 										</Tooltip>

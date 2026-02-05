@@ -10,6 +10,7 @@ export interface UserSelect {
 	fullname: string;
 	status: Status;
 	email: string;
+	signature_url: string;
 	createdAt: string;
 
 	section?: string;
