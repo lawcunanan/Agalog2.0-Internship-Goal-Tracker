@@ -16,13 +16,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { tempInsertLog } from "@/services/csr/goals/temp-insert-log";
 import { useAlert } from "@/providers/alert-provider";
-import { User, Hash, FileJson, Upload, Loader2 } from "lucide-react";
+import { FileJson, Loader2, ArrowLeftRight } from "lucide-react";
 
-interface TempInsertDialogProps {
-	children: React.ReactNode;
-}
-
-export function TempInsertDialog({ children }: TempInsertDialogProps) {
+export function TempInsertDialog() {
 	const { showAlert } = useAlert();
 	const [open, setOpen] = useState(false);
 
@@ -61,7 +57,16 @@ export function TempInsertDialog({ children }: TempInsertDialogProps) {
 
 	return (
 		<Dialog open={open} onOpenChange={setOpen}>
-			<DialogTrigger asChild>{children}</DialogTrigger>
+			<DialogTrigger asChild>
+				<Button
+					variant="ghost"
+					size="sm"
+					className="w-full justify-start cursor-pointer gap-2"
+				>
+					<ArrowLeftRight className="h-4 w-4" />
+					Data Transfer
+				</Button>
+			</DialogTrigger>
 			<DialogContent className="sm:max-w-[600px]">
 				<DialogHeader>
 					<DialogTitle className="flex items-center gap-2">

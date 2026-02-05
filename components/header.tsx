@@ -3,13 +3,7 @@ import { useState } from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
-import {
-	Menu,
-	Download,
-	ArrowLeftRight,
-	CalendarDays,
-	FileText,
-} from "lucide-react";
+import { Menu, Download } from "lucide-react";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -34,14 +28,12 @@ interface HeaderProps {
 	goalState?: GoalActiveState;
 	setGoalState?: (goalState: GoalActiveState) => void;
 	logState?: WeeklyLogState;
-	goalHours?: number;
 	refreshLogs?: (goalId?: string) => void;
 }
 export function Header({
 	goalState,
 	setGoalState,
 	logState,
-	goalHours,
 	refreshLogs,
 }: HeaderProps) {
 	const { showAlert } = useAlert();
@@ -58,7 +50,7 @@ export function Header({
 		exportLog(
 			user.fullname || user.email || "Student",
 			logState || { logs: [], currentHours: 0 },
-			goalHours || 0,
+			goalState?.goalHours || 0,
 			showAlert,
 			setIsExporting,
 		);
@@ -163,41 +155,20 @@ export function Header({
 															/>
 														</Button>
 													)}
-													<WeeklyReportDialog>
-														<Button
-															variant="ghost"
-															size={buttonSize}
-															className={buttonClass}
-														>
-															<CalendarDays className="h-4 w-4" />
-															Weekly Report
-														</Button>
-													</WeeklyReportDialog>
-													<DailyReportDialog>
-														<Button
-															variant="ghost"
-															size={buttonSize}
-															className={buttonClass}
-														>
-															<FileText className="h-4 w-4" />
-															Daily Report
-														</Button>
-													</DailyReportDialog>
+													<WeeklyReportDialog
+														name={user.fullname || "Student"}
+														company={goalState?.company || "N/A"}
+														data={logState?.logs || []}
+													/>
+													<DailyReportDialog
+														name={user.fullname || "Student"}
+														company={goalState?.company || "N/A"}
+														data={logState?.logs || []}
+													/>
 												</>
 											)}
 
-											{isAdmin && (
-												<TempInsertDialog>
-													<Button
-														variant="ghost"
-														size={buttonSize}
-														className={buttonClass}
-													>
-														<ArrowLeftRight className="h-4 w-4" />
-														Data Transfer
-													</Button>
-												</TempInsertDialog>
-											)}
+											{isAdmin && <TempInsertDialog />}
 										</>
 									)}
 

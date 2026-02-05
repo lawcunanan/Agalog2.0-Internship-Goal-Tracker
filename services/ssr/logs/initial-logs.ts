@@ -66,8 +66,9 @@ export async function getLogs(
 
 			return {
 				log_id: l.log_id,
-				date: l.log_date ? format(new Date(l.log_date), "MMM d") : "",
+				date: l.log_date ? format(new Date(l.log_date), "MMM d, yyyy") : "",
 				fullDate: l.log_date,
+				day: l.log_date ? format(new Date(l.log_date), "EEEE") : "",
 				timeIn: timeIn ? format(timeIn, "hh:mm a") : "--:--",
 				timeOut: timeOut ? format(timeOut, "hh:mm a") : "--:--",
 				breakOut: breakOut ? format(breakOut, "hh:mm a") : undefined,
@@ -110,9 +111,9 @@ export async function getLogs(
 			runningTotal += thisPeriodRaw;
 
 			return {
-				weekLabel: `Week ${index + 1}`,
-				startDate: format(weekStart, "MMM d"),
-				endDate: format(weekEnd, "MMM d"),
+				weekLabel: `${index + 1}`,
+				startDate: format(weekStart, "MMM d, yyyy"),
+				endDate: format(weekEnd, "MMM d, yyyy"),
 				previousHours: formatDuration(previousRaw),
 				thisPeriodHours: formatDuration(thisPeriodRaw),
 				totalHours: formatDuration(runningTotal),

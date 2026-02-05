@@ -12,7 +12,7 @@ import {
 	AlertDialogTitle,
 	AlertDialogDescription,
 } from "@/components/ui/alert-dialog";
-import { X, Download } from "lucide-react";
+import { X, Download, CalendarDays } from "lucide-react";
 import Image from "next/image";
 import { Textarea } from "@/components/ui/textarea";
 import {
@@ -22,79 +22,34 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
+import { WeeklyLogSelect } from "@/lib/types";
+import { getCurrentDateLong } from "@/lib/utils/dateTimeUtils";
 
-interface ActivityEntry {
-	date: string;
-	day: string;
-	activity: string;
-}
-
-interface WeeklyActivityReportData {
-	weekNumber: number;
+interface WeeklyReportDialogProps {
 	name: string;
 	company: string;
-	datesCovered: string;
-	overallDescription: string;
-	activities: ActivityEntry[];
+	data: WeeklyLogSelect[];
 }
 
-const MOCK_ACTIVITY_REPORT_DATA: WeeklyActivityReportData = {
-	weekNumber: 8,
-	name: "Lawrence S. Cunanan",
-	company: "Argon Software Development Services",
-	datesCovered: "Jan 12, 2026 - Jan 16, 2026",
-	overallDescription:
-		"During Week 8 at Argon Software Development Services, I reviewed and analyzed UI/UX page, collaborated on creating UI/UX layouts and Figma designs for multiple modules, and worked on the Admin Dashboard. I also implemented and tested the Chat Sign-in feature and finished several additional layouts, contributing to both system improvements and overall user experience enhancements.",
-	activities: [
-		{
-			date: "Date: Jan 12, 2026",
-			day: "Day: Monday",
-			activity:
-				"Reviewed and did initial check of the Chat with Mayor project and upskilled by learning more about Next.js framework.",
-		},
-		{
-			date: "Date: Jan 13, 2026",
-			day: "Day: Tuesday",
-			activity:
-				"Attended the demo of the 'Chat with Mayor' project and finished the landing page for the HEXP project.",
-		},
-		{
-			date: "Date: Jan 14, 2026",
-			day: "Day: Wednesday",
-			activity:
-				"Today, I worked with Pierre to create layouts for our co-interns to use as UI/UX guides for the HEXP Landing Page, the Registration Module, and the System Admin Dashboard Tello tickets. I also prepared the Figma layouts and planned the implementation of the Guest Account feature for the Chat with Mayor project.",
-		},
-		{
-			date: "Date: Jan 15, 2026",
-			day: "Day: Thursday",
-			activity:
-				"Started creating layouts for the Admin Dashboard UI, worked on the Admin Partner Laboratory, Patient, and User page layouts, and implemented Ticket 39 (Guest Sign-in) for the Chat with Mayor project, including testing and updating database policies to allow guest sign-ins.",
-		},
-		{
-			date: "Date: Jan 16, 2026",
-			day: "Day: Friday",
-			activity:
-				"Completed the UI/UX layouts for HEXP 3 to HEXP 9 and created a new design for the root page of the Chat with Mayor project.",
-		},
-	],
-};
-
 export function WeeklyReportDialog({
-	children,
-}: {
-	children: React.ReactNode;
-}) {
-	const [reportData, setReportData] = useState<WeeklyActivityReportData>(
-		MOCK_ACTIVITY_REPORT_DATA,
+	name,
+	company,
+	data,
+}: WeeklyReportDialogProps) {
+	const [selectedWeek, setSelectedWeek] = useState<string>(
+		data.length > 0 ? data[0].weekLabel : "1",
 	);
-	const [selectedWeek, setSelectedWeek] = useState<string>("8");
 
-	const weeks = Array.from({ length: 16 }, (_, i) => i + 1);
+	const weeks = data.map((w) => w.weekLabel);
+
+	const selectedWeekData = data.find((w) => w.weekLabel === selectedWeek);
+
+	const [overallDescription, setOverallDescription] = useState<string>("");
 
 	const handleDescriptionChange = (
 		e: React.ChangeEvent<HTMLTextAreaElement>,
 	) => {
-		setReportData({ ...reportData, overallDescription: e.target.value });
+		setOverallDescription(e.target.value);
 	};
 
 	const handleDownloadPDF = () => {
@@ -103,7 +58,16 @@ export function WeeklyReportDialog({
 
 	return (
 		<AlertDialog>
-			<AlertDialogTrigger asChild>{children}</AlertDialogTrigger>
+			<AlertDialogTrigger asChild>
+				<Button
+					variant="ghost"
+					size="sm"
+					className="w-full justify-start cursor-pointer gap-2"
+				>
+					<CalendarDays className="h-4 w-4" />
+					Weekly Report
+				</Button>
+			</AlertDialogTrigger>
 			<AlertDialogContent className="sm:max-w-4xl max-h-[95vh] overflow-y-auto no-padding">
 				<AlertDialogHeader className="no-print">
 					<div className="flex items-center justify-between">
@@ -137,7 +101,7 @@ export function WeeklyReportDialog({
 						variant="default"
 						size="sm"
 						onClick={handleDownloadPDF}
-						className="flex items-center gap-2 text-white w-24 h-9"
+						className="flex items-center gap-2 w-24 h-9"
 					>
 						<Download className="h-4 w-4" />
 						PDF
@@ -145,7 +109,7 @@ export function WeeklyReportDialog({
 				</div>
 
 				{/* Report Container - A4 Size */}
-				<div className="overflow-x-auto">
+				<div className="overflow-x-auto bg-white">
 					<div className="border border-border p-8 print:w-[210mm] mx-auto no-padding">
 						{/* Header Section */}
 						<div className="space-y-4 pb-0">
@@ -182,7 +146,7 @@ export function WeeklyReportDialog({
 							{/* Name Row */}
 							<div
 								className="grid gap-0 border-b border-gray-400"
-								style={{ gridTemplateColumns: "110px 1fr" }}
+								style={{ gridTemplateColumns: "130px 1fr" }}
 							>
 								<div className="border-r border-gray-400 p-3">
 									<p className="text-sm italic font-semibold text-slate-900">
@@ -190,13 +154,13 @@ export function WeeklyReportDialog({
 									</p>
 								</div>
 								<div className="p-3">
-									<p className="text-sm text-slate-900">{reportData.name}</p>
+									<p className="text-sm text-slate-900">{name}</p>
 								</div>
 							</div>
 							{/* Company Row */}
 							<div
 								className="grid gap-0 border-b border-gray-400"
-								style={{ gridTemplateColumns: "110px 1fr" }}
+								style={{ gridTemplateColumns: "130px 1fr" }}
 							>
 								<div className="border-r border-gray-400 p-3">
 									<p className="text-sm italic font-semibold text-slate-900">
@@ -204,13 +168,13 @@ export function WeeklyReportDialog({
 									</p>
 								</div>
 								<div className="p-3">
-									<p className="text-sm text-slate-900">{reportData.company}</p>
+									<p className="text-sm text-slate-900">{company}</p>
 								</div>
 							</div>
 							{/* Week No. Row */}
 							<div
 								className="grid gap-0 border-b border-gray-400"
-								style={{ gridTemplateColumns: "110px 1fr" }}
+								style={{ gridTemplateColumns: "130px 1fr" }}
 							>
 								<div className="border-r border-gray-400 p-3">
 									<p className="text-sm italic font-semibold text-slate-900">
@@ -219,14 +183,14 @@ export function WeeklyReportDialog({
 								</div>
 								<div className="p-3">
 									<p className="text-sm text-slate-900">
-										{reportData.weekNumber}
+										{parseInt(selectedWeek)}
 									</p>
 								</div>
 							</div>
 							{/* Dates Covered Row */}
 							<div
 								className="grid gap-0 border-b border-gray-400"
-								style={{ gridTemplateColumns: "110px 1fr" }}
+								style={{ gridTemplateColumns: "130px 1fr" }}
 							>
 								<div className="border-r border-gray-400 p-3">
 									<p className="text-sm italic font-semibold text-slate-900">
@@ -235,7 +199,7 @@ export function WeeklyReportDialog({
 								</div>
 								<div className="p-3">
 									<p className="text-sm text-slate-900">
-										{reportData.datesCovered}
+										{selectedWeekData?.startDate} - {selectedWeekData?.endDate}
 									</p>
 								</div>
 							</div>
@@ -245,12 +209,12 @@ export function WeeklyReportDialog({
 									Describe your internship experience this week:
 								</p>
 								<p className="text-sm text-slate-900 leading-relaxed hidden print:block">
-									{reportData.overallDescription}
+									{overallDescription}
 								</p>
 								<Textarea
-									value={reportData.overallDescription}
+									value={overallDescription}
 									onChange={handleDescriptionChange}
-									className="text-sm text-slate-900 leading-relaxed no-print"
+									className="text-sm text-slate-900 leading-relaxed no-print bg-white! border-gray-400"
 									rows={5}
 								/>
 							</div>
@@ -258,25 +222,27 @@ export function WeeklyReportDialog({
 
 						{/* Daily Activity Entries */}
 						<div className="border border-t-0 border-gray-400 mt-0">
-							{reportData.activities.map((activity, index) => (
+							{(selectedWeekData?.logs || []).map((log, index) => (
 								<div
 									key={index}
 									className={`p-4 ${
-										index !== reportData.activities.length - 1
+										index !== (selectedWeekData?.logs || []).length - 1
 											? "border-b border-gray-400"
 											: ""
 									}`}
 								>
 									<div className="space-y-2">
 										<p className="text-xs font-bold text-slate-900">
-											{activity.date}
+											Date: {log.date}
 										</p>
 										<p className="text-xs font-bold text-slate-900">
-											{activity.day}
+											Day: {log.day}
 										</p>
-										<p className="text-xs text-slate-900 leading-relaxed">
-											{activity.activity}
-										</p>
+										{log.description && (
+											<p className="text-xs text-slate-900 leading-relaxed">
+												{log.description}
+											</p>
+										)}
 									</div>
 								</div>
 							))}
@@ -292,7 +258,7 @@ export function WeeklyReportDialog({
 									</p>
 									<div className="mb-4 h-9 flex items-center">
 										<Image
-											src="/images/sample-signature.png"
+											src="/images/signature.png"
 											alt="Intern Signature"
 											width={120}
 											height={40}
@@ -302,7 +268,9 @@ export function WeeklyReportDialog({
 									<div className="border-t border-gray-400 pt-3">
 										<p className="text-xs text-slate-900 font-semibold">
 											Date:{" "}
-											<span className="text-slate-600">January 16, 2026</span>
+											<span className="text-slate-600">
+												{getCurrentDateLong()}
+											</span>
 										</p>
 									</div>
 								</div>
@@ -311,19 +279,10 @@ export function WeeklyReportDialog({
 									<p className="text-base font-bold text-slate-900 mb-6">
 										Supervisor Signature
 									</p>
-									<div className="mb-4 h-9 flex items-center">
-										<Image
-											src="/images/sample-signature.png"
-											alt="Supervisor Signature"
-											width={120}
-											height={40}
-											className="object-contain"
-										/>
-									</div>
+									<div className="mb-4 h-9 flex items-center"></div>
 									<div className="border-t border-gray-400 pt-3">
 										<p className="text-xs text-slate-900 font-semibold">
-											Date:{" "}
-											<span className="text-slate-600">January 16, 2026</span>
+											Date:
 										</p>
 									</div>
 								</div>

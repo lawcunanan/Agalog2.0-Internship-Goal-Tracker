@@ -61,6 +61,7 @@ export interface GoalsState {
 export interface GoalActiveState {
 	goal_id: string;
 	goalHours: number;
+	company?: string;
 }
 
 export interface RegisteredGoalSelect {
@@ -85,6 +86,7 @@ export interface LogValues {
 	log_id: string;
 	date: string;
 	fullDate?: string | Date;
+	day?: string;
 	timeIn: string;
 	timeOut: string;
 	breakOut?: string;
@@ -135,7 +137,6 @@ export interface StatsticsSelect {
 }
 
 //
-
 export type Paginated<T> = {
 	data: T[];
 	totalPages: number;

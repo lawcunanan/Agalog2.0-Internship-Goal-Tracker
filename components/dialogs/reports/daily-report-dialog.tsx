@@ -1,5 +1,5 @@
 import type React from "react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
 	AlertDialog,
@@ -10,7 +10,7 @@ import {
 	AlertDialogTitle,
 	AlertDialogDescription,
 } from "@/components/ui/alert-dialog";
-import { X, Download } from "lucide-react";
+import { X, Download, FileText } from "lucide-react";
 import Image from "next/image";
 import {
 	Select,
@@ -19,92 +19,44 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
+import { WeeklyLogSelect } from "@/lib/types";
+import { getCurrentDateLong } from "@/lib/utils/dateTimeUtils";
 
-interface DayLog {
-	date: string;
-	timeIn: string;
-	timeOut: string;
-	workHours: string;
-	breakTime: string;
-}
-
-interface WeeklyReportData {
-	weekNumber: number;
+interface DailyReportDialogProps {
 	name: string;
 	company: string;
-	previousTotal: string;
-	totalThisPeriod: string;
-	totalServed: string;
-	days: DayLog[];
+	data: WeeklyLogSelect[];
 }
 
-const MOCK_REPORT_DATA: WeeklyReportData = {
-	weekNumber: 8,
-	name: "Lawrence S. Cunanan",
-	company: "Argon Software Development Services",
-	previousTotal: "230hr 7min",
-	totalThisPeriod: "41hr 38min",
-	totalServed: "277hr 45min",
-	days: [
-		{
-			date: "Jan 12, 2026",
-			timeIn: "08:24 am",
-			timeOut: "05:29 pm",
-			workHours: "8 hours 7m",
-			breakTime: "58 minutes",
-		},
-		{
-			date: "Jan 12, 2026",
-			timeIn: "08:24 am",
-			timeOut: "05:29 pm",
-			workHours: "8 hours 7m",
-			breakTime: "58 minutes",
-		},
-		{
-			date: "Jan 12, 2026",
-			timeIn: "08:24 am",
-			timeOut: "05:29 pm",
-			workHours: "8 hours 7m",
-			breakTime: "58 minutes",
-		},
-		{
-			date: "Jan 12, 2026",
-			timeIn: "08:24 am",
-			timeOut: "05:29 pm",
-			workHours: "8 hours 7m",
-			breakTime: "58 minutes",
-		},
-	],
-};
+export function DailyReportDialog({
+	name,
+	company,
+	data,
+}: DailyReportDialogProps) {
+	const [selectedWeek, setSelectedWeek] = useState<string>(
+		data.length > 0 ? data[0].weekLabel : "1",
+	);
 
-export function DailyReportDialog({ children }: { children: React.ReactNode }) {
-	const [reportData] = useState<WeeklyReportData>(MOCK_REPORT_DATA);
-	const [selectedWeek, setSelectedWeek] = useState<string>("8");
+	const weeks = data.map((w) => w.weekLabel);
 
-	const weeks = Array.from({ length: 16 }, (_, i) => i + 1);
+	const selectedWeekData = data.find((w) => w.weekLabel === selectedWeek);
 
 	const handleDownloadPDF = () => {
 		window.print();
 	};
 
-	useEffect(() => {
-		const handleKeyDown = (event: KeyboardEvent) => {
-			if (event.ctrlKey && event.key === "p") {
-				event.preventDefault();
-				window.print();
-			}
-		};
-
-		document.addEventListener("keydown", handleKeyDown);
-
-		return () => {
-			document.removeEventListener("keydown", handleKeyDown);
-		};
-	}, []);
-
 	return (
 		<AlertDialog>
-			<AlertDialogTrigger asChild>{children}</AlertDialogTrigger>
+			<AlertDialogTrigger asChild>
+				<Button
+					variant="ghost"
+					size="sm"
+					className="w-full justify-start cursor-pointer gap-2"
+				>
+					<FileText className="h-4 w-4" />
+					Daily Report
+				</Button>
+			</AlertDialogTrigger>
 			<AlertDialogContent className="sm:max-w-4xl max-h-[95vh] overflow-y-auto no-padding">
 				<AlertDialogHeader className="no-print">
 					<div className="flex items-center justify-between">
@@ -138,7 +90,7 @@ export function DailyReportDialog({ children }: { children: React.ReactNode }) {
 						variant="default"
 						size="sm"
 						onClick={handleDownloadPDF}
-						className="flex items-center gap-2 text-white w-24 h-9"
+						className="flex items-center gap-2 w-24 h-9"
 					>
 						<Download className="h-4 w-4" />
 						PDF
@@ -146,7 +98,7 @@ export function DailyReportDialog({ children }: { children: React.ReactNode }) {
 				</div>
 
 				{/* Report Container - A4 Size */}
-				<div className="overflow-x-auto">
+				<div className="overflow-x-auto bg-white">
 					<div className="border border-border p-8 print:w-[210mm] mx-auto no-padding">
 						<div className="space-y-4 pb-0">
 							{/* Logo and Title */}
@@ -189,7 +141,7 @@ export function DailyReportDialog({ children }: { children: React.ReactNode }) {
 									</p>
 								</div>
 								<div className="p-3">
-									<p className="text-sm text-slate-900">{reportData.name}</p>
+									<p className="text-sm text-slate-900">{name}</p>
 								</div>
 							</div>
 							{/* Company Row */}
@@ -203,7 +155,7 @@ export function DailyReportDialog({ children }: { children: React.ReactNode }) {
 									</p>
 								</div>
 								<div className="p-3 b">
-									<p className="text-sm text-slate-900">{reportData.company}</p>
+									<p className="text-sm text-slate-900">{company}</p>
 								</div>
 							</div>
 							{/* Week No. Row */}
@@ -218,7 +170,7 @@ export function DailyReportDialog({ children }: { children: React.ReactNode }) {
 								</div>
 								<div className="p-3">
 									<p className="text-sm text-slate-900">
-										{reportData.weekNumber}
+										{parseInt(selectedWeek)}
 									</p>
 								</div>
 							</div>
@@ -257,19 +209,19 @@ export function DailyReportDialog({ children }: { children: React.ReactNode }) {
 									</tr>
 								</thead>
 								<tbody>
-									{reportData.days.map((day, index) => (
+									{(selectedWeekData?.logs || []).map((log, index) => (
 										<tr key={index} className="border-b border-gray-400">
 											<td className="border-r border-gray-400 p-2 text-center text-sm text-slate-900 font-medium">
-												{day.date}
+												{log.date}
 											</td>
 											<td className="border-r border-gray-400 p-2 text-center text-sm text-slate-900">
-												{day.timeIn}
+												{log.timeIn}
 											</td>
 											<td className="border-r border-gray-400 p-2 text-center text-sm text-slate-900">
-												{day.timeOut}
+												{log.timeOut}
 											</td>
 											<td className="p-2 text-center text-sm text-slate-900">
-												{day.workHours}
+												{log.hoursWorked}
 											</td>
 										</tr>
 									))}
@@ -284,7 +236,7 @@ export function DailyReportDialog({ children }: { children: React.ReactNode }) {
 										Previous Total:
 									</p>
 									<p className="text-base font-bold text-slate-900 mt-2">
-										{reportData.previousTotal}
+										{selectedWeekData?.previousHours || "0hr 0min"}
 									</p>
 								</div>
 								<div className="border-r border-gray-400 p-4 text-center">
@@ -292,7 +244,7 @@ export function DailyReportDialog({ children }: { children: React.ReactNode }) {
 										Total this Period:
 									</p>
 									<p className="text-base font-bold text-slate-900 mt-2">
-										{reportData.totalThisPeriod}
+										{selectedWeekData?.thisPeriodHours || "0hr 0min"}
 									</p>
 								</div>
 								<div className="p-4 text-center">
@@ -303,7 +255,7 @@ export function DailyReportDialog({ children }: { children: React.ReactNode }) {
 										(Previous Total + Total this Period)
 									</p>
 									<p className="text-base font-bold text-slate-900 mt-2">
-										{reportData.totalServed}
+										{selectedWeekData?.totalHours || "0hr 0min"}
 									</p>
 								</div>
 							</div>
@@ -318,7 +270,7 @@ export function DailyReportDialog({ children }: { children: React.ReactNode }) {
 									</p>
 									<div className="mb-4 h-9 flex items-center">
 										<Image
-											src="/images/sample-signature.png"
+											src="/images/signature.png"
 											alt="Intern Signature"
 											width={120}
 											height={40}
@@ -328,7 +280,9 @@ export function DailyReportDialog({ children }: { children: React.ReactNode }) {
 									<div className="border-t border-gray-400 pt-3">
 										<p className="text-xs text-slate-900 font-semibold">
 											Date:{" "}
-											<span className="text-slate-600">January 16, 2026</span>
+											<span className="text-slate-600">
+												{getCurrentDateLong()}
+											</span>
 										</p>
 									</div>
 								</div>
@@ -337,19 +291,10 @@ export function DailyReportDialog({ children }: { children: React.ReactNode }) {
 									<p className="text-base font-bold text-slate-900 mb-6">
 										Supervisor Signature
 									</p>
-									<div className="mb-4 h-9 flex items-center">
-										<Image
-											src="/images/sample-signature.png"
-											alt="Supervisor Signature"
-											width={120}
-											height={40}
-											className="object-contain"
-										/>
-									</div>
+									<div className="mb-4 h-9 flex items-center"></div>
 									<div className="border-t border-gray-400 pt-3">
 										<p className="text-xs text-slate-900 font-semibold">
-											Date:{" "}
-											<span className="text-slate-600">January 16, 2026</span>
+											Date:
 										</p>
 									</div>
 								</div>

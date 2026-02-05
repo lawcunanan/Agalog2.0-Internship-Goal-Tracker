@@ -36,6 +36,7 @@ export type UserSummaryRow = {
 
 // [GOALS VIEW TYPE]
 export type GoalRow = {
+	company: string;
 	goals: {
 		goal_id: string;
 		goal: number;

@@ -28,6 +28,7 @@ export function StudentContent({ initialGoal, logsData }: StudentContentProps) {
 			initialGoal ?? {
 				goal_id: "",
 				goalHours: 0,
+				company: "",
 			}
 		);
 	});
@@ -58,7 +59,6 @@ export function StudentContent({ initialGoal, logsData }: StudentContentProps) {
 				goalState={goalState}
 				setGoalState={setGoalState}
 				logState={logState}
-				goalHours={goalState.goalHours}
 				refreshLogs={refreshLogs}
 			/>
 			<main className="flex-1 w-full max-w-300 mx-auto px-4 md:px-6">

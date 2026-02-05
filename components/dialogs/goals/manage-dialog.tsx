@@ -184,14 +184,12 @@ export function ManageGoalsDialog({
 	const handleSetGoalState = useCallback(
 		(goalId: string, goalHours?: number) => {
 			refreshLogs(goalId);
-
+			const goal = goals.find((g) => String(g.goal_id) === goalId);
 			setGoalState({
 				...goalState,
 				goal_id: goalId,
-				goalHours:
-					goalHours ??
-					goals.find((g) => String(g.goal_id) === goalId)?.goal ??
-					0,
+				goalHours: goalHours ?? goal?.goal ?? 0,
+				company: goal?.company || "",
 			});
 		},
 		[goalState, goals, refreshLogs, setGoalState],
