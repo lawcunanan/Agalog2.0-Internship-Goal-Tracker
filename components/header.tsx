@@ -58,7 +58,7 @@ export function Header({
 	};
 
 	return (
-		<header className="fixed top-0 left-0 right-0 w-full z-50 border-b border-border bg-background/60 backdrop-blur-sm">
+		<header className="no-print fixed top-0 left-0 right-0 w-full z-50 border-b border-border bg-background/60 backdrop-blur-sm">
 			<div className="max-w-300 mx-auto h-20 flex items-center justify-between px-4 md:px-6">
 				<div className="relative w-10 h-10">
 					<div className="absolute inset-0 dark:hidden">
@@ -82,7 +82,7 @@ export function Header({
 					</div>
 				</div>
 
-				<div className="flex items-center gap-4">
+				<div className="no-print flex items-center gap-4">
 					<ThemeToggle />
 					{user && (
 						<DropdownMenu>
@@ -95,7 +95,7 @@ export function Header({
 									<Menu className="h-6 w-6" />
 								</Button>
 							</DropdownMenuTrigger>
-							<DropdownMenuContent align="end" className="mt-3 w-56">
+							<DropdownMenuContent align="end" className="no-print mt-3 w-56">
 								<div className="flex flex-col gap-2 p-2">
 									<div className="flex flex-col items-center gap-2 mb-2">
 										<Avatar className="h-14 w-14 border-3 border-border">

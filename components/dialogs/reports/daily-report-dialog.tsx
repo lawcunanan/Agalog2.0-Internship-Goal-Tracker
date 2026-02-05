@@ -59,7 +59,7 @@ export function DailyReportDialog({
 					Daily Report
 				</Button>
 			</AlertDialogTrigger>
-			<AlertDialogContent className="sm:max-w-4xl max-h-[95vh] overflow-y-auto no-padding">
+			<AlertDialogContent className="sm:max-w-4xl max-h-[90vh] overflow-y-auto no-padding">
 				<AlertDialogHeader className="no-print">
 					<div className="flex items-center justify-between">
 						<AlertDialogTitle>Daily Attendance Report</AlertDialogTitle>
@@ -101,7 +101,7 @@ export function DailyReportDialog({
 
 				{/* Report Container - A4 Size */}
 				<div className="overflow-x-auto bg-white">
-					<div className="border border-border p-8 w-[222mm] print:w-[210mm] mx-auto no-padding">
+					<div className="border border-border p-8 w-[221mm] print:w-[210mm] mx-auto no-padding">
 						<div className="space-y-4 pb-0">
 							{/* Logo and Title */}
 							<div className="flex items-center justify-center gap-6 mb-8">

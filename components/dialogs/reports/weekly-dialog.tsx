@@ -70,7 +70,7 @@ export function WeeklyReportDialog({
 					Weekly Report
 				</Button>
 			</AlertDialogTrigger>
-			<AlertDialogContent className="sm:max-w-4xl max-h-[95vh] overflow-y-auto no-padding">
+			<AlertDialogContent className="sm:max-w-4xl max-h-[90vh] overflow-y-auto no-padding">
 				<AlertDialogHeader className="no-print">
 					<div className="flex items-center justify-between">
 						<AlertDialogTitle>Weekly Activity Report</AlertDialogTitle>
@@ -112,7 +112,7 @@ export function WeeklyReportDialog({
 
 				{/* Report Container - A4 Size */}
 				<div className="overflow-x-auto bg-white">
-					<div className="border border-border p-8  w-[222mm] print:w-[210mm] mx-auto no-padding">
+					<div className="border border-border p-8  w-[221mm] print:w-[210mm] mx-auto no-padding">
 						{/* Header Section */}
 						<div className="space-y-4 pb-0">
 							{/* Logo and Title */}
