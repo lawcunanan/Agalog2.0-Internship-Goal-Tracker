@@ -8,6 +8,7 @@ import {
 	useContext,
 	useState,
 	useEffect,
+	useCallback,
 	type ReactNode,
 } from "react";
 import { supabaseBrowser } from "@/lib/supabase/client";
@@ -19,6 +20,7 @@ interface AuthContextType {
 	user: UserSelect | null;
 	isLoading: boolean;
 	setUser: (user: UserSelect | null) => void;
+	refreshUser: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -65,6 +67,16 @@ export function AuthProvider({
 		};
 	}, [user, showAlert, router]);
 
+	const refreshUser = useCallback(async () => {
+		const { data, error } = await getAuthValues(supabaseBrowser);
+		if (error) {
+			showAlert(500, error);
+			setUser(null);
+		} else {
+			setUser(data);
+		}
+	}, [showAlert]);
+
 	if (isLoading) {
 		return (
 			<div className="flex items-center justify-center h-screen w-full bg-background">
@@ -76,7 +88,7 @@ export function AuthProvider({
 	}
 
 	return (
-		<AuthContext.Provider value={{ user, isLoading, setUser }}>
+		<AuthContext.Provider value={{ user, isLoading, setUser, refreshUser }}>
 			{children}
 		</AuthContext.Provider>
 	);

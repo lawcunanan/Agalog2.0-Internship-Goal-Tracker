@@ -15,6 +15,7 @@ export async function getInitialGoal(
 		.from("contributors")
 		.select(
 			`
+			company,
 			goals!inner (
 				goal_id,
 				goal,
@@ -34,11 +35,11 @@ export async function getInitialGoal(
 	if (error || !data?.goals) {
 		return null;
 	}
-
 	const latestGoal = Array.isArray(data.goals) ? data.goals[0] : data.goals;
 
 	return {
 		goal_id: latestGoal.goal_id?.toString() ?? "",
 		goalHours: latestGoal.goal ?? 400,
+		company: data.company ?? "Not Specified",
 	};
 }

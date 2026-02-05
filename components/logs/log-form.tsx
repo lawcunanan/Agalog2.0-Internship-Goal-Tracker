@@ -17,6 +17,7 @@ type LogFormProps = {
 	user: any;
 	showAlert: (status: number, message: string) => void;
 	refreshLogs: (goal_id: string) => void;
+	isCompleted?: boolean;
 };
 
 export function LogForm({
@@ -26,6 +27,7 @@ export function LogForm({
 	user,
 	showAlert,
 	refreshLogs,
+	isCompleted = false,
 }: LogFormProps) {
 	const defaults = (): LogValues => ({
 		log_id: "",
@@ -225,7 +227,7 @@ export function LogForm({
 					type="submit"
 					className="w-full bg-blue-700 hover:bg-blue-800 text-white shadow-none cursor-pointer"
 					size="lg"
-					disabled={loading || !goal_id}
+					disabled={loading || !goal_id || (isCompleted && !editLog)}
 				>
 					{loading
 						? editLog

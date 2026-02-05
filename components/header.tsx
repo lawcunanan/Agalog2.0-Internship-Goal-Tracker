@@ -3,7 +3,7 @@ import { useState } from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
-import { Menu, Download, ArrowLeftRight } from "lucide-react";
+import { Menu, Download } from "lucide-react";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -18,26 +18,27 @@ import { useAuth } from "@/providers/auth-provider";
 import { LogoutDialog } from "@/components/dialogs/auth/logout-dialog";
 import { JoinGoalDialog } from "./dialogs/goals/join-dialog";
 import { ManageGoalsDialog } from "./dialogs/goals/manage-dialog";
+import { ProfileDialog } from "./dialogs/users/profile-dialog";
 import { getInitials } from "@/lib/utils";
 import { exportLog } from "@/lib/utils/export-log";
 import { TempInsertDialog } from "@/components/dialogs/goals/temp-insert-dialog";
+import { WeeklyReportDialog } from "@/components/dialogs/reports/weekly-dialog";
+import { DailyReportDialog } from "@/components/dialogs/reports/daily-report-dialog";
 
 interface HeaderProps {
 	goalState?: GoalActiveState;
 	setGoalState?: (goalState: GoalActiveState) => void;
 	logState?: WeeklyLogState;
-	goalHours?: number;
 	refreshLogs?: (goalId?: string) => void;
 }
 export function Header({
 	goalState,
 	setGoalState,
 	logState,
-	goalHours,
 	refreshLogs,
 }: HeaderProps) {
 	const { showAlert } = useAlert();
-	const { user } = useAuth();
+	const { user, refreshUser } = useAuth();
 
 	const [isExporting, setIsExporting] = useState(false);
 	const buttonClass = "w-full justify-start cursor-pointer gap-2";
@@ -50,7 +51,7 @@ export function Header({
 		exportLog(
 			user.fullname || user.email || "Student",
 			logState || { logs: [], currentHours: 0 },
-			goalHours || 0,
+			goalState?.goalHours || 0,
 			showAlert,
 			setIsExporting,
 		);
@@ -119,7 +120,14 @@ export function Header({
 											</p>
 										</div>
 									</div>
+
 									<DropdownMenuSeparator />
+
+									<ProfileDialog
+										user={user}
+										refreshUser={refreshUser}
+										showAlert={showAlert}
+									/>
 									{(isStudent || isAdmin) && (
 										<>
 											<JoinGoalDialog
@@ -135,36 +143,42 @@ export function Header({
 												showAlert={showAlert}
 												refreshLogs={refreshLogs || (() => {})}
 											/>
-											{logState?.logs.length! > 0 && (
-												<Button
-													variant="ghost"
-													size={buttonSize}
-													className={buttonClass}
-													onClick={handleExport}
-												>
-													<Download className="h-4 w-4" />
-													<LoadingButtonText
-														isLoading={isExporting}
-														loadingTitle="Exporting..."
-														title="Export Logs"
+											{isStudent && (
+												<>
+													{logState?.logs.length! > 0 && (
+														<Button
+															variant="ghost"
+															size={buttonSize}
+															className={buttonClass}
+															onClick={handleExport}
+														>
+															<Download className="h-4 w-4" />
+															<LoadingButtonText
+																isLoading={isExporting}
+																loadingTitle="Exporting..."
+																title="Export Logs"
+															/>
+														</Button>
+													)}
+													<WeeklyReportDialog
+														name={user.fullname || "Student"}
+														company={goalState?.company || "N/A"}
+														data={logState?.logs || []}
+														signatureUrl={user.signature_url}
 													/>
-												</Button>
+													<DailyReportDialog
+														name={user.fullname || "Student"}
+														company={goalState?.company || "N/A"}
+														data={logState?.logs || []}
+														signatureUrl={user.signature_url}
+													/>
+												</>
 											)}
-											{isAdmin && (
-												<TempInsertDialog>
-													<Button
-														variant="ghost"
-														size={buttonSize}
-														className={buttonClass}
-													>
-														<ArrowLeftRight className="h-4 w-4" />
-														Data Transfer
-													</Button>
-												</TempInsertDialog>
-											)}
+
+											{isAdmin && <TempInsertDialog />}
 										</>
 									)}
-
+									<DropdownMenuSeparator />
 									<LogoutDialog showAlert={showAlert} />
 								</div>
 							</DropdownMenuContent>

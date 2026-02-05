@@ -21,7 +21,7 @@ export function WeeklyLogTable({ data }: WeeklyLogTableProps) {
 		<FadeIn delay={0.2} className="space-y-12 md:space-y-16 mb-8">
 			{data.map((week, weekIndex) => (
 				<div key={`${week.weekLabel}-${weekIndex}`} className="space-y-6">
-					<h3 className="text-xl font-semibold">{week.weekLabel}</h3>
+					<h3 className="text-xl font-semibold">Week {week.weekLabel}</h3>
 
 					{/* Summary Grid */}
 					<div className="grid grid-cols-3 text-sm text-muted-foreground pb-4 border-b gap-3 sm:gap-8">

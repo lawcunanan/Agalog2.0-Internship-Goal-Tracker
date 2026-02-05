@@ -92,6 +92,7 @@ export function JoinGoalDialog({
 		setGoalState({
 			goal_id: goalValues.goal_id,
 			goalHours: goalValues.goal,
+			company: goalValues.company,
 		});
 
 		refreshLogs(goalValues.goal_id);

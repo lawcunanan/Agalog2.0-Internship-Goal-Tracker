@@ -30,13 +30,22 @@ export const formatDuration = (hours: number) => {
 	const h = Math.floor(hours);
 	const m = Math.round((hours - h) * 60);
 	if (h === 0 && m === 0) return "0min";
-	if (h === 0) return `${m}min`;
-	if (m === 0) return `${h}hr`;
-	return `${h}hr ${m}min`;
+	if (h === 0) return `${m}${m === 1 ? "min" : "mins"}`;
+	if (m === 0) return `${h}${h === 1 ? "hr" : "hrs"}`;
+	return `${h}${h === 1 ? "hr" : "hrs"} ${m}${m === 1 ? "min" : "mins"}`;
 };
 
 export const getPHDate = () => {
 	return new Date().toLocaleDateString("en-CA", {
 		timeZone: "Asia/Manila",
+	});
+};
+
+export const getCurrentDateLong = () => {
+	return new Date().toLocaleDateString("en-US", {
+		timeZone: "Asia/Manila",
+		year: "numeric",
+		month: "long",
+		day: "numeric",
 	});
 };
