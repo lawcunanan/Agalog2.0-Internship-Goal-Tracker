@@ -85,6 +85,7 @@ export function StudentContent({ initialGoal, logsData }: StudentContentProps) {
 							user={user}
 							showAlert={showAlert}
 							refreshLogs={refreshLogs}
+							isCompleted={isCompleted}
 						/>
 					</div>
 					<div className="md:overflow-y-auto no-scrollbar pt-0 md:pt-42 space-y-12 md:space-y-16">
