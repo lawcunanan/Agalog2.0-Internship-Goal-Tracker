@@ -48,7 +48,7 @@ export function AlertProvider({ children }: { children: React.ReactNode }) {
 	return (
 		<AlertContext.Provider value={{ showAlert }}>
 			{children}
-			<div className="fixed top-4 right-4 z-50 flex flex-col gap-2 pointer-events-none">
+			<div className="fixed top-4 pl-4 right-4 z-50 flex flex-col gap-2 pointer-events-none">
 				{alerts.map((alert) => (
 					<div
 						key={alert.id}
