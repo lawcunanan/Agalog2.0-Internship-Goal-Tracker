@@ -16,6 +16,7 @@ import { Edit } from "lucide-react";
 import { WeeklyLogSelect, LogValues } from "@/lib/types";
 import { DeleteLogDialog } from "@/components/dialogs/logs/delete-log-dialog";
 import { EmptyLogs } from "@/components/empty-state/empty-logs";
+import { useIsMobile } from "@/components/ui/use-mobile";
 
 type WeeklyLogProps = {
 	data: WeeklyLogSelect[];
@@ -30,6 +31,8 @@ export function WeeklyLog({
 	showAlert,
 	refreshLogs,
 }: WeeklyLogProps) {
+	const isMobile = useIsMobile();
+
 	if (!data || data.length === 0) {
 		return <EmptyLogs />;
 	}
@@ -81,7 +84,7 @@ export function WeeklyLog({
 										<Tooltip>
 											<TooltipTrigger asChild>
 												<span className="font-medium">
-													{log.date.split(",")[0]}
+													{isMobile ? log.date.split(",")[0] : log.date}
 												</span>
 											</TooltipTrigger>
 											<TooltipContent>Date</TooltipContent>
