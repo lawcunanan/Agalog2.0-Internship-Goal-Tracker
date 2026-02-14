@@ -134,14 +134,14 @@ export function LogForm({
 			<h2 className="text-4xl font-bold tracking-tight">Log & Go!</h2>
 
 			<form onSubmit={handleSubmit} className="space-y-6 ">
-				<div className="space-y-2 ">
+				<div className="space-y-2">
 					<Label htmlFor="date">
 						Date <span className="text-red-500">*</span>
 					</Label>
 					<Input
 						type="date"
 						id="date"
-						className="shadow-none "
+						className="shadow-none w-full"
 						value={logData.date}
 						onChange={handleChange}
 						max={getPHDate()}
@@ -150,22 +150,22 @@ export function LogForm({
 					/>
 				</div>
 
-				<div className="grid grid-cols-2 gap-4">
-					<div className="space-y-2">
+				<div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+					<div className="space-y-2 min-w-0">
 						<Label htmlFor="timeIn">
 							Time In <span className="text-red-500">*</span>
 						</Label>
 						<Input
 							type="time"
 							id="timeIn"
-							className="shadow-none"
+							className="shadow-none w-full"
 							value={logData.timeIn}
 							onChange={handleChange}
 							disabled={!goal_id}
 							required
 						/>
 					</div>
-					<div className="space-y-2">
+					<div className="space-y-2 min-w-0">
 						<Label htmlFor="timeOut">
 							Time Out{" "}
 							{!!logData.timeIn && <span className="text-red-500">*</span>}
@@ -173,7 +173,7 @@ export function LogForm({
 						<Input
 							type="time"
 							id="timeOut"
-							className="shadow-none"
+							className="shadow-none w-full"
 							value={logData.timeOut}
 							onChange={handleChange}
 							disabled={!logData.timeIn}
@@ -182,19 +182,19 @@ export function LogForm({
 					</div>
 				</div>
 
-				<div className="grid grid-cols-2 gap-4">
+				<div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
 					<div className="space-y-2 min-w-0">
 						<Label htmlFor="breakOut">Break Out</Label>
 						<Input
 							type="time"
 							id="breakOut"
-							className="shadow-none"
+							className="shadow-none w-full"
 							value={logData.breakOut}
 							onChange={handleChange}
 							disabled={!logData.timeOut}
 						/>
 					</div>
-					<div className="space-y-2">
+					<div className="space-y-2 min-w-0">
 						<Label htmlFor="breakBack">
 							Break Back{" "}
 							{!!logData.breakOut && <span className="text-red-500">*</span>}
@@ -202,7 +202,7 @@ export function LogForm({
 						<Input
 							type="time"
 							id="breakBack"
-							className="shadow-none"
+							className="shadow-none w-full"
 							value={logData.breakBack}
 							onChange={handleChange}
 							disabled={!logData.breakOut}
@@ -216,7 +216,7 @@ export function LogForm({
 					<Textarea
 						id="description"
 						placeholder="Briefly describe your tasks for the day..."
-						className="min-h-25 resize-none shadow-none text-sm"
+						className="min-h-25 resize-none shadow-none text-sm w-full"
 						value={logData.description}
 						onChange={handleChange}
 						disabled={!goal_id}
