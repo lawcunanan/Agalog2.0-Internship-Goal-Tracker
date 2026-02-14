@@ -27,12 +27,17 @@ export const combineDateTime = (date: string, time?: string) => {
 };
 
 export const formatDuration = (hours: number) => {
-	const h = Math.floor(hours);
-	const m = Math.round((hours - h) * 60);
+	const isNegative = hours < 0;
+	const absHours = Math.abs(hours);
+	const h = Math.floor(absHours);
+	const m = Math.round((absHours - h) * 60);
+
+	const signPrefix = isNegative ? "-" : "";
+
 	if (h === 0 && m === 0) return "0min";
-	if (h === 0) return `${m}${m === 1 ? "min" : "mins"}`;
-	if (m === 0) return `${h}${h === 1 ? "hr" : "hrs"}`;
-	return `${h}${h === 1 ? "hr" : "hrs"} ${m}${m === 1 ? "min" : "mins"}`;
+	if (h === 0) return `${signPrefix}${m}${m === 1 ? "min" : "mins"}`;
+	if (m === 0) return `${signPrefix}${h}${h === 1 ? "hr" : "hrs"}`;
+	return `${signPrefix}${h}${h === 1 ? "hr" : "hrs"} ${m}${m === 1 ? "min" : "mins"}`;
 };
 
 export const getPHDate = () => {

@@ -185,10 +185,10 @@ export function UserSummaryTab({
 											{user.goalHours + "hrs"}
 										</td>
 										<td className="py-4 px-4 text-sm font-medium text-foreground min-w-30">
-											{user.totalHours || "N/A"}
+											{user.totalHours || "0min"}
 										</td>
 										<td className="py-4 px-4 text-sm font-medium text-foreground min-w-30">
-											{user.hoursLeft || "N/A"}
+											{user.hoursLeft || "0min"}
 										</td>
 									</tr>
 								);
