@@ -239,8 +239,8 @@ export function ManageGoalsDialog({
 					<TabsContent value="create" className="space-y-3">
 						{/* Student Note */}
 						{isStudent && (
-							<div className="p-3 rounded-lg bg-red-50 dark:bg-transparent border border-red-500 text-left">
-								<p className="text-sm text-red-500">
+							<div className="p-3 rounded-lg  border border-border text-left">
+								<p className="text-sm text-foreground">
 									<strong>Note:</strong> As of now, students can only join
 									existing goals. Goal creation is currently disabled for
 									students.
