@@ -108,7 +108,7 @@ export function UserSummaryTab({
 
 				{initialCompanies.length > 0 && (
 					<Select value={companyFilter} onValueChange={setCompanyFilter}>
-						<SelectTrigger className="md:w-42">
+						<SelectTrigger className="md:min-w-42">
 							<span className="hidden md:inline">
 								<SelectValue placeholder="Filter by company" />
 							</span>
