@@ -232,7 +232,7 @@ export function ManageGoalsDialog({
 				>
 					<TabsList className="grid w-full grid-cols-2 mb-2">
 						<TabsTrigger value="create">Create Goal</TabsTrigger>
-						<TabsTrigger value="manage">Your Goals</TabsTrigger>
+						<TabsTrigger value="manage">My Goals</TabsTrigger>
 					</TabsList>
 
 					{/* Create Goal Tab */}
