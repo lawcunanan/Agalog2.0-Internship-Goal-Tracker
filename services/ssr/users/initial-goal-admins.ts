@@ -1,6 +1,6 @@
 import { SupabaseClient } from "@supabase/supabase-js";
 import { GoalAdminSelect, UserRole, Status, Paginated } from "@/lib/types";
-import { format } from "date-fns";
+import { formatPHDateTime } from "@/lib/utils/dateTimeUtils";
 import { GoalAdminRow } from "@/lib/types-row";
 
 export const getGoalAdmin = async (
@@ -42,7 +42,7 @@ export const getGoalAdmin = async (
 			avatar_url: item.avatar_url ?? "",
 			role: item.role as UserRole,
 			status: item.status as Status,
-			createdAt: format(new Date(item.created_at), "MMM d, yyyy h:mm a"),
+			createdAt: formatPHDateTime(item.created_at),
 		}));
 
 		const totalPages = Math.ceil((count || 0) / itemsPerPage);

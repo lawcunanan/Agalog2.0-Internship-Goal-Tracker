@@ -1,6 +1,6 @@
 import { SupabaseClient } from "@supabase/supabase-js";
 import { format, differenceInMinutes } from "date-fns";
-import { formatDuration } from "@/lib/utils/dateTimeUtils";
+import { formatDuration, formatPHDateTime } from "@/lib/utils/dateTimeUtils";
 import { TodayLogSelect, Paginated } from "@/lib/types";
 import { TodayLogsViewRow } from "@/lib/types-row";
 
@@ -93,9 +93,7 @@ export const getTodayLogs = async (
 				breakDuration: formatDuration(breakMinutes / 60),
 				hoursWorked: formatDuration(rawHours),
 				description: l.description || "",
-				createdAt: l.created_at
-					? format(new Date(l.created_at), "MMM d, yyyy h:mm a")
-					: "--:--",
+				createdAt: formatPHDateTime(l.created_at),
 			};
 		});
 

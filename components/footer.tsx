@@ -11,10 +11,10 @@ export function Footer() {
 		<footer className="w-full py-8  mt-8">
 			<div className={isAttendance ? "text-left" : "text-center"}>
 				<p className="text-sm text-muted-foreground ">
-					© 2026 Agalog: Internship Goal Tracker
+					© 2026 Agalog | Internship Goal Tracker
 				</p>
 				<p className="text-xs text-muted-foreground/60">
-					Developer:{" "}
+					Built by{" "}
 					<Link
 						href="https://lacunanan.vercel.app/"
 						target="_blank"

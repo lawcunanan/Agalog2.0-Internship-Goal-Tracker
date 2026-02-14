@@ -1,6 +1,6 @@
 import { SupabaseClient } from "@supabase/supabase-js";
 import { RegisteredGoalSelect, Paginated } from "@/lib/types";
-import { format } from "date-fns";
+import { formatPHDateTime } from "@/lib/utils/dateTimeUtils";
 import { RegisteredGoalRow } from "@/lib/types-row";
 
 export const getRegisteredGoals = async (
@@ -56,9 +56,7 @@ export const getRegisteredGoals = async (
 			goalTitle: item.title,
 			goalHours: item.goal || 0,
 			createdBy: item.users?.full_name || "N/A",
-			createdAt: item.created_at
-				? format(new Date(item.created_at), "MMM d, yyyy h:mm a")
-				: "--:--",
+			createdAt: formatPHDateTime(item.created_at),
 			status: item.status,
 		}));
 

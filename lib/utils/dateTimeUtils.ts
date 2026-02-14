@@ -49,3 +49,22 @@ export const getCurrentDateLong = () => {
 		day: "numeric",
 	});
 };
+
+export const formatPHDateTime = (date: string | Date | null | undefined) => {
+	if (!date) return "--:--";
+
+	try {
+		const dateObj = new Date(date);
+		return dateObj.toLocaleDateString("en-US", {
+			timeZone: "Asia/Manila",
+			month: "short",
+			day: "numeric",
+			year: "numeric",
+			hour: "numeric",
+			minute: "2-digit",
+			hour12: true,
+		});
+	} catch (error) {
+		return "--:--";
+	}
+};

@@ -1,7 +1,7 @@
 import { SupabaseClient } from "@supabase/supabase-js";
 import { Status, UserRole, UserSelect } from "@/lib/types";
 import { UserRow } from "@/lib/types-row";
-import { format } from "date-fns";
+import { formatPHDateTime } from "@/lib/utils/dateTimeUtils";
 
 type UserResponse = {
 	data: UserSelect[] | null;
@@ -32,9 +32,8 @@ export const getStudent = async (
 			avatar_url: data.avatar_url ?? "",
 			role: data.role as UserRole,
 			status: data.status as Status,
-			createdAt: data.created_at
-				? format(new Date(data.created_at), "MMM d, yyyy h:mm a")
-				: "--:--",
+			signature_url: "",
+			createdAt: formatPHDateTime(data.created_at),
 		};
 
 		return { data: [mappedData], error: null };
