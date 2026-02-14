@@ -81,6 +81,7 @@ export type UserGoalViewRow = {
 	goal: number;
 	goal_status: Status;
 	contributor_status: Status;
+	company: string | null;
 	created_at: string;
 	created_by: string | null;
 	sections: string[] | null;

@@ -42,7 +42,7 @@ export function JoinGoalDialog({
 }: JoinGoalDialogProps) {
 	const [open, setOpen] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
-	const [token, setToken] = useState("3zSLnyNdGpPzN2WIZLw9RdtS");
+	const [token, setToken] = useState("");
 	const [goalValues, setGoalValues] = useState<GoalsState>({
 		goal_id: "",
 		title: "",
@@ -167,6 +167,15 @@ export function JoinGoalDialog({
 									className="flex-1"
 									disabled={isLoading}
 								/>
+								<div className="text-xs text-left mt-2 space-y-1">
+									<p className="text-foreground">Available tokens:</p>
+									<p className="text-muted-foreground">
+										Intern 1: 3zSLnyNdGpPzN2WIZLw9RdtS
+									</p>
+									<p className="text-muted-foreground">
+										Intern 2: GpMEMFxFDxfHy0DaHUsXHFRh
+									</p>
+								</div>
 							</div>
 						</div>
 					) : (

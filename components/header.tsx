@@ -146,32 +146,35 @@ export function Header({
 											{isStudent && (
 												<>
 													{logState?.logs.length! > 0 && (
-														<Button
-															variant="ghost"
-															size={buttonSize}
-															className={buttonClass}
-															onClick={handleExport}
-														>
-															<Download className="h-4 w-4" />
-															<LoadingButtonText
-																isLoading={isExporting}
-																loadingTitle="Exporting..."
-																title="Export Logs"
+														<>
+															<Button
+																variant="ghost"
+																size={buttonSize}
+																className={buttonClass}
+																onClick={handleExport}
+															>
+																<Download className="h-4 w-4" />
+																<LoadingButtonText
+																	isLoading={isExporting}
+																	loadingTitle="Exporting..."
+																	title="Export Logs"
+																/>
+															</Button>
+
+															<WeeklyReportDialog
+																name={user.fullname || "Student"}
+																company={goalState?.company || "N/A"}
+																data={logState?.logs || []}
+																signatureUrl={user.signature_url}
 															/>
-														</Button>
+															<DailyReportDialog
+																name={user.fullname || "Student"}
+																company={goalState?.company || "N/A"}
+																data={logState?.logs || []}
+																signatureUrl={user.signature_url}
+															/>
+														</>
 													)}
-													<WeeklyReportDialog
-														name={user.fullname || "Student"}
-														company={goalState?.company || "N/A"}
-														data={logState?.logs || []}
-														signatureUrl={user.signature_url}
-													/>
-													<DailyReportDialog
-														name={user.fullname || "Student"}
-														company={goalState?.company || "N/A"}
-														data={logState?.logs || []}
-														signatureUrl={user.signature_url}
-													/>
 												</>
 											)}
 

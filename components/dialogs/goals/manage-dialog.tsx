@@ -185,11 +185,12 @@ export function ManageGoalsDialog({
 		(goalId: string, goalHours?: number) => {
 			refreshLogs(goalId);
 			const goal = goals.find((g) => String(g.goal_id) === goalId);
+
 			setGoalState({
 				...goalState,
 				goal_id: goalId,
 				goalHours: goalHours ?? goal?.goal ?? 0,
-				company: goal?.company || "",
+				company: goal?.company || "k",
 			});
 		},
 		[goalState, goals, refreshLogs, setGoalState],
@@ -236,119 +237,138 @@ export function ManageGoalsDialog({
 
 					{/* Create Goal Tab */}
 					<TabsContent value="create" className="space-y-3">
-						{/* Title and Hours */}
-						<div className="grid grid-cols-2 gap-3">
-							<div className="space-y-2">
-								<Label htmlFor="create-title">Title</Label>
-								<Input
-									id="create-title"
-									type="text"
-									placeholder="Enter goal title"
-									value={goalValues?.title || ""}
-									onChange={(e) =>
-										handleFormChange(setGoalValues, "title", e.target.value)
-									}
-								/>
-							</div>
-							<div className="space-y-2">
-								<Label htmlFor="create-goal">Goal (Hours)</Label>
-								<Input
-									id="create-goal"
-									type="number"
-									placeholder="Enter hours"
-									min="50"
-									max="1000"
-									value={goalValues?.goal || ""}
-									onChange={(e) =>
-										handleFormChange(
-											setGoalValues,
-											"goal",
-											parseInt(e.target.value) || 0,
-										)
-									}
-								/>
-							</div>
-						</div>
-						{!isStudent && (
-							<div className="space-y-2">
-								<Label htmlFor="create-section">Sections</Label>
-								<div className="flex gap-2">
-									<Input
-										id="create-section"
-										type="text"
-										placeholder="Add a section (e.g., ITE 222, ITE 223)"
-										value={goalValues?.section || ""}
-										onChange={(e) =>
-											handleFormChange(setGoalValues, "section", e.target.value)
-										}
-										onKeyDown={(e) => {
-											if (e.key === "Enter") {
-												e.preventDefault();
-												handleSection("add");
-											}
-										}}
-									/>
-									<Button
-										type="button"
-										size="sm"
-										variant="outline"
-										onClick={() => handleSection("add")}
-										className="shrink-0 bg-transparent h-9"
-									>
-										<Plus className="h-4 w-4" />
-									</Button>
-								</div>
-
-								{/* Display added sections */}
-								{goalValues?.sections && goalValues.sections.length > 0 && (
-									<div className="flex flex-wrap gap-2 mt-3">
-										{goalValues?.sections.map((section) => (
-											<div
-												key={section}
-												className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-800 text-white text-sm"
-											>
-												<span>{section}</span>
-												<button
-													type="button"
-													onClick={() => handleSection("remove", section)}
-													className="hover:text-destructive transition-colors"
-												>
-													<X className="h-3 w-3" />
-												</button>
-											</div>
-										))}
-									</div>
-								)}
+						{/* Student Note */}
+						{isStudent && (
+							<div className="p-3 rounded-lg bg-red-50 border border-red-100 text-left">
+								<p className="text-sm text-red-500">
+									<strong>Note:</strong> As of now, students can only join
+									existing goals. Goal creation is currently disabled for
+									students.
+								</p>
 							</div>
 						)}
+						{!isStudent && (
+							<>
+								{/* Title and Hours */}
+								<div className="grid grid-cols-2 gap-3">
+									<div className="space-y-2">
+										<Label htmlFor="create-title">Title</Label>
+										<Input
+											id="create-title"
+											type="text"
+											placeholder="Enter goal title"
+											value={goalValues?.title || ""}
+											onChange={(e) =>
+												handleFormChange(setGoalValues, "title", e.target.value)
+											}
+										/>
+									</div>
+									<div className="space-y-2">
+										<Label htmlFor="create-goal">Goal (Hours)</Label>
+										<Input
+											id="create-goal"
+											type="number"
+											placeholder="Enter hours"
+											min="50"
+											max="1000"
+											value={goalValues?.goal || ""}
+											onChange={(e) =>
+												handleFormChange(
+													setGoalValues,
+													"goal",
+													parseInt(e.target.value) || 0,
+												)
+											}
+										/>
+									</div>
+								</div>
 
-						<div className="flex gap-2 pt-2 justify-end">
-							{goalValues?.goal_id && (
-								<Button
-									variant="outline"
-									className="w-fit h-9"
-									size="sm"
-									onClick={handleResetForm}
-								>
-									Cancel
-								</Button>
-							)}
+								<div className="space-y-2">
+									<Label htmlFor="create-section">Sections</Label>
+									<div className="flex gap-2">
+										<Input
+											id="create-section"
+											type="text"
+											placeholder="Add a section (e.g., ITE 222, ITE 223)"
+											value={goalValues?.section || ""}
+											onChange={(e) =>
+												handleFormChange(
+													setGoalValues,
+													"section",
+													e.target.value,
+												)
+											}
+											onKeyDown={(e) => {
+												if (e.key === "Enter") {
+													e.preventDefault();
+													handleSection("add");
+												}
+											}}
+										/>
+										<Button
+											type="button"
+											size="sm"
+											variant="outline"
+											onClick={() => handleSection("add")}
+											className="shrink-0 bg-transparent h-9"
+										>
+											<Plus className="h-4 w-4" />
+										</Button>
+									</div>
 
-							<Button
-								onClick={handleCreateGoal}
-								size="sm"
-								className="w-fit h-9"
-								disabled={requiredValues || isLoading}
-							>
-								<LoadingButtonText
-									isLoading={isLoading}
-									loadingTitle={
-										goalValues?.goal_id ? "Updating..." : "Creating..."
-									}
-									title={goalValues?.goal_id ? "Update Goal" : "Create Goal"}
-								/>
-							</Button>
-						</div>
+									{/* Display added sections */}
+									{goalValues?.sections && goalValues.sections.length > 0 && (
+										<div className="flex flex-wrap gap-2 mt-3">
+											{goalValues?.sections.map((section) => (
+												<div
+													key={section}
+													className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-800 text-white text-sm"
+												>
+													<span>{section}</span>
+													<button
+														type="button"
+														onClick={() => handleSection("remove", section)}
+														className="hover:text-destructive transition-colors"
+													>
+														<X className="h-3 w-3" />
+													</button>
+												</div>
+											))}
+										</div>
+									)}
+								</div>
+
+								<div className="flex gap-2 pt-2 justify-end">
+									{goalValues?.goal_id && (
+										<Button
+											variant="outline"
+											className="w-fit h-9"
+											size="sm"
+											onClick={handleResetForm}
+										>
+											Cancel
+										</Button>
+									)}
+
+									<Button
+										onClick={handleCreateGoal}
+										size="sm"
+										className="w-fit h-9"
+										disabled={requiredValues || isLoading || isStudent}
+									>
+										<LoadingButtonText
+											isLoading={isLoading}
+											loadingTitle={
+												goalValues?.goal_id ? "Updating..." : "Creating..."
+											}
+											title={
+												goalValues?.goal_id ? "Update Goal" : "Create Goal"
+											}
+										/>
+									</Button>
+								</div>
+							</>
+						)}
 					</TabsContent>
 
 					{/* All Registered Goals Tab */}
