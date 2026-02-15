@@ -8,6 +8,7 @@ export type UserRow = {
 	email: string;
 	status: string | null;
 	role: string | null;
+	signature_url: string | null;
 	created_at: string | Date | null;
 };
 

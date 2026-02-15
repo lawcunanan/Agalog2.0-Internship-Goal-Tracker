@@ -1,6 +1,5 @@
 import { SupabaseClient } from "@supabase/supabase-js";
 import { UserSelect, UserRole, Status } from "@/lib/types";
-import { getUserRole } from "@/services/ssr/auth/get-role";
 import { updateUserRoleMetadata } from "@/services/ssr/auth/update-role-metadata";
 
 export const getAuthValues = async (
@@ -26,36 +25,19 @@ export const getAuthValues = async (
 			.single();
 
 		if (userError || !userRecord) {
-			console.log(
-				"getAuthValues userError:",
-				userError?.message || "User record not found",
-			);
+			console.log(userError?.message || "User record not found");
 			return { data: null, error: "User record not found" };
 		}
 
 		let role = user.user_metadata?.role as UserRole | undefined;
 
 		if (!role) {
-			const { role: dbUserRole, error: roleError } = await getUserRole(
-				supabase,
-				user.id,
-			);
-
-			if (roleError || !dbUserRole) {
-				console.log("getAuthValues roleError:", roleError || "Role not found");
-				return { data: null, error: "Role not found" };
-			}
-
-			role = dbUserRole as UserRole;
 			const { success, error: updateError } = await updateUserRoleMetadata(
 				supabase,
-				role,
+				userRecord.role as UserRole,
 			);
 			if (!success) {
-				console.log(
-					"getAuthValues updateError:",
-					updateError || "Failed to update role metadata",
-				);
+				console.log(updateError || "Failed to update role metadata");
 				return { data: null, error: "Failed to update role metadata" };
 			}
 		}

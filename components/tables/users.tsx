@@ -114,16 +114,22 @@ export function UsersTab({
 				<table className="w-full border-collapse">
 					<thead>
 						<tr className="border-b border-border bg-muted">
-							{["Profile", "Name", "Status", "Role", "Email", "Created At"].map(
-								(header) => (
-									<th
-										key={header}
-										className="text-left py-3 px-4 font-medium text-foreground text-sm"
-									>
-										<span className="flex items-center gap-2">{header}</span>
-									</th>
-								),
-							)}
+							{[
+								"Profile",
+								"Name",
+								"Status",
+								"Role",
+								"Email",
+								"Signature",
+								"Created At",
+							].map((header) => (
+								<th
+									key={header}
+									className="text-left py-3 px-4 font-medium text-foreground text-sm"
+								>
+									<span className="flex items-center gap-2">{header}</span>
+								</th>
+							))}
 						</tr>
 					</thead>
 					<tbody>
@@ -175,6 +181,19 @@ export function UsersTab({
 											{user.email || "N/A"}
 										</td>
 										<td className="py-4 px-4 text-sm text-foreground min-w-30">
+											{user.signature_url ? (
+												<div className="bg-white p-1 rounded border radius-lg">
+													<img
+														src={user.signature_url}
+														alt="Signature"
+														className="min-w-20 h-10 object-contain"
+													/>
+												</div>
+											) : (
+												"N/A"
+											)}
+										</td>
+										<td className="py-4 px-4 text-sm text-foreground min-w-30">
 											{user.createdAt || "N/A"}
 										</td>
 									</tr>
@@ -182,7 +201,7 @@ export function UsersTab({
 							})
 						) : (
 							<tr>
-								<td colSpan={6} className="py-12">
+								<td colSpan={7} className="py-12">
 									<EmptyAdminTable />
 								</td>
 							</tr>

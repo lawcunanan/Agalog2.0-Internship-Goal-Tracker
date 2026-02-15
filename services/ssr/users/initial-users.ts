@@ -55,7 +55,7 @@ export const getUsers = async (
 			email: item.email,
 			status: item.status as Status,
 			role: item.role as UserRole,
-			signature_url: "",
+			signature_url: item.signature_url ?? "",
 			createdAt: item.created_at
 				? format(new Date(item.created_at), "MMM d, yyyy h:mm a")
 				: "--:--",

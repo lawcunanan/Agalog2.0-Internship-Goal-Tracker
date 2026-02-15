@@ -4,7 +4,7 @@ import { NextResponse, type NextRequest } from "next/server";
 import { UserRole } from "./lib/types";
 
 export async function proxy(request: NextRequest) {
-	const { supabase, response } = createMiddlewareClient(request);
+	const { response } = createMiddlewareClient(request);
 
 	// Handle OAuth redirect falling back to root
 	if (
