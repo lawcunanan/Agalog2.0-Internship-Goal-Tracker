@@ -1,6 +1,6 @@
 import { SupabaseClient } from "@supabase/supabase-js";
 import { LogValues, WeeklyLogSelect } from "@/lib/types";
-import { format, startOfWeek, endOfWeek, differenceInMinutes } from "date-fns";
+import { format, startOfWeek, addDays, differenceInMinutes } from "date-fns";
 import { formatDuration } from "@/lib/utils/dateTimeUtils";
 import { LogRow } from "@/lib/types-row";
 
@@ -87,6 +87,9 @@ export async function getLogs(
 			if (!log.fullDate) return;
 
 			const fullDate = new Date(log.fullDate);
+			const dayOfWeek = fullDate.getDay();
+			if (dayOfWeek === 0 || dayOfWeek === 6) return;
+
 			const weekStart = startOfWeek(fullDate, { weekStartsOn: 1 });
 			const weekKey = format(weekStart, "yyyy-MM-dd");
 
@@ -100,7 +103,7 @@ export async function getLogs(
 		const weeklyData: WeeklyLogSelect[] = sortedWeekKeys.map((key, index) => {
 			const weekLogs = groupedWeeks[key];
 			const weekStart = new Date(key);
-			const weekEnd = endOfWeek(weekStart, { weekStartsOn: 1 });
+			const weekEnd = addDays(weekStart, 4);
 
 			const thisPeriodRaw = weekLogs.reduce(
 				(acc, log) => acc + (log.rawHours || 0),
