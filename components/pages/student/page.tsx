@@ -55,7 +55,7 @@ export function StudentContent({ initialGoal, logsData }: StudentContentProps) {
 		async (goal_id?: string) => {
 			if (!user) return;
 			await refreshLogsHandler({
-				goal_id,
+				goal_id: goal_id ?? goalState.goal_id,
 				user_id: user.user_id,
 				goalState,
 				showAlert,
