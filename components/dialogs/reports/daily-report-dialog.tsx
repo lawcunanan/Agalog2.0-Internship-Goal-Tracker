@@ -1,5 +1,5 @@
 import type React from "react";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
 	AlertDialog,
@@ -10,7 +10,7 @@ import {
 	AlertDialogTitle,
 	AlertDialogDescription,
 } from "@/components/ui/alert-dialog";
-import { X, Printer, FileText } from "lucide-react";
+import { X, Printer, FileText, Paperclip, Trash2 } from "lucide-react";
 import Image from "next/image";
 import {
 	Select,
@@ -20,7 +20,7 @@ import {
 	SelectValue,
 } from "@/components/ui/select";
 import { WeeklyLogSelect } from "@/lib/types";
-import { getCurrentDateLong } from "@/lib/utils/dateTimeUtils";
+
 
 interface DailyReportDialogProps {
 	name: string;
@@ -42,6 +42,25 @@ export function DailyReportDialog({
 	const weeks = data.map((w) => w.weekLabel);
 
 	const selectedWeekData = data.find((w) => w.weekLabel === selectedWeek);
+
+	const [attachedImage, setAttachedImage] = useState<string | null>(null);
+	const fileInputRef = useRef<HTMLInputElement>(null);
+
+	const handleAttach = (e: React.ChangeEvent<HTMLInputElement>) => {
+		const file = e.target.files?.[0];
+		if (file) {
+			const url = URL.createObjectURL(file);
+			setAttachedImage(url);
+		}
+		e.target.value = "";
+	};
+
+	const handleRemoveAttachment = () => {
+		if (attachedImage) {
+			URL.revokeObjectURL(attachedImage);
+			setAttachedImage(null);
+		}
+	};
 
 	const handlePrint = () => {
 		window.print();
@@ -88,15 +107,33 @@ export function DailyReportDialog({
 						</SelectContent>
 					</Select>
 
-					<Button
-						variant="default"
-						size="sm"
-						onClick={handlePrint}
-						className="flex items-center gap-2 w-24 h-9"
-					>
-						<Printer className="h-4 w-4" />
-						Print
-					</Button>
+					<div className="flex items-center gap-2">
+						<input
+							ref={fileInputRef}
+							type="file"
+							accept="image/*"
+							onChange={handleAttach}
+							className="hidden"
+						/>
+						<Button
+							variant="outline"
+							size="sm"
+							onClick={() => fileInputRef.current?.click()}
+							className="flex items-center gap-2 h-9"
+						>
+							<Paperclip className="h-4 w-4" />
+							Attach
+						</Button>
+						<Button
+							variant="default"
+							size="sm"
+							onClick={handlePrint}
+							className="flex items-center gap-2 w-24 h-9"
+						>
+							<Printer className="h-4 w-4" />
+							Print
+						</Button>
+					</div>
 				</div>
 
 				{/* Report Container - A4 Size */}
@@ -284,7 +321,7 @@ export function DailyReportDialog({
 										<p className="text-xs text-slate-900 font-semibold">
 											Date:{" "}
 											<span className="text-slate-600">
-												{getCurrentDateLong()}
+												{selectedWeekData?.endDate}
 											</span>
 										</p>
 									</div>
@@ -297,7 +334,10 @@ export function DailyReportDialog({
 									<div className="mb-1 relative h-16 w-full overflow-hidden"></div>
 									<div className="border-t border-gray-400 pt-3">
 										<p className="text-xs text-slate-900 font-semibold">
-											Date:
+											Date:{" "}
+											<span className="text-slate-600">
+												{selectedWeekData?.endDate}
+											</span>
 										</p>
 									</div>
 								</div>
@@ -311,6 +351,32 @@ export function DailyReportDialog({
 								indicated.
 							</p>
 						</div>
+
+						{/* Attached Image */}
+						{attachedImage && (
+							<div className="border-x border-b border-gray-400 p-4">
+								<div className="flex items-center justify-between mb-2">
+									<p className="text-xs font-bold text-slate-900">
+										Attachment:
+									</p>
+									<button
+										type="button"
+										onClick={handleRemoveAttachment}
+										className="no-print text-slate-400 hover:text-red-500 transition-colors"
+									>
+										<Trash2 className="h-4 w-4" />
+									</button>
+								</div>
+								<div className="flex justify-center">
+									<img
+										src={attachedImage}
+										alt="Attached"
+										className="max-w-full max-h-100 object-contain rounded"
+									/>
+								</div>
+							</div>
+						)}
+
 						{/* Footer - Inside the report container */}
 						<p className="mt-4 text-xs text-slate-700 font-semibold">
 							CCIT-FO-017
