@@ -20,6 +20,7 @@ import {
 	SelectValue,
 } from "@/components/ui/select";
 import { WeeklyLogSelect } from "@/lib/types";
+import { getReportFileName } from "@/lib/utils";
 
 
 interface DailyReportDialogProps {
@@ -65,7 +66,20 @@ export function DailyReportDialog({
 	};
 
 	const handlePrint = () => {
-		window.print();
+		if (selectedWeekData) {
+			const prev = document.title;
+			document.title = getReportFileName(
+				"AR",
+				selectedWeek,
+				selectedWeekData.startDate,
+				selectedWeekData.endDate,
+				name,
+			);
+			window.print();
+			document.title = prev;
+		} else {
+			window.print();
+		}
 	};
 
 	return (

@@ -27,3 +27,37 @@ export const handleFormChange = <T extends object>(
 		[key]: value,
 	}));
 };
+
+/**
+ * Generates a report filename.
+ * e.g. "AR Week5_Dec15-19 Cunanan L" or "WAR Week5_Dec15-19 Cunanan L"
+ */
+export const getReportFileName = (
+	type: "AR" | "WAR",
+	weekLabel: string,
+	startDate: string,
+	endDate: string,
+	fullName: string,
+) => {
+	const parseShort = (dateStr: string) => {
+		const [month, dayStr] = dateStr.split(" ");
+		const day = parseInt(dayStr);
+		return { month: month.slice(0, 3), day };
+	};
+
+	const start = parseShort(startDate);
+	const end = parseShort(endDate);
+
+	const dateRange =
+		start.month === end.month
+			? `${start.month}${start.day}-${end.day}`
+			: `${start.month}${start.day}-${end.month}${end.day}`;
+
+	const parts = fullName.trim().split(" ");
+	const lastName = parts.length > 1 ? parts[parts.length - 1] : parts[0];
+	const firstInitial = parts.length > 1 ? parts[0][0].toUpperCase() : "";
+
+	const namePart = firstInitial ? `${lastName} ${firstInitial}` : lastName;
+
+	return `${type} Week${weekLabel}_${dateRange} ${namePart}`;
+};
