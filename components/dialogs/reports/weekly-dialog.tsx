@@ -30,6 +30,7 @@ interface WeeklyReportDialogProps {
 	company: string;
 	data: WeeklyLogSelect[];
 	signatureUrl?: string;
+	supSignatureUrl?: string;
 }
 
 export function WeeklyReportDialog({
@@ -37,6 +38,7 @@ export function WeeklyReportDialog({
 	company,
 	data,
 	signatureUrl,
+	supSignatureUrl,
 }: WeeklyReportDialogProps) {
 	const [selectedWeek, setSelectedWeek] = useState<string>(
 		data.length > 0 ? data[0].weekLabel : "1",
@@ -318,7 +320,16 @@ export function WeeklyReportDialog({
 									<p className="text-base font-bold text-slate-900 mb-2">
 										Supervisor Signature
 									</p>
-									<div className="mb-1 relative h-16 w-full overflow-hidden"></div>
+									<div className="mb-1 relative h-16 w-full overflow-hidden">
+										{supSignatureUrl && (
+											<Image
+												src={supSignatureUrl}
+												alt="Supervisor Signature"
+												fill
+												className="object-contain"
+											/>
+										)}
+									</div>
 									<div className="border-t border-gray-400 pt-3">
 										<p className="text-xs text-slate-900 font-semibold">
 											Date:{" "}

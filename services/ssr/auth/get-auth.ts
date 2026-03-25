@@ -50,6 +50,7 @@ export const getAuthValues = async (
 			role: role as UserRole,
 			avatar_url: userRecord.avatar_url,
 			signature_url: userRecord.signature_url,
+			sup_signature_url: userRecord.sup_signature_url,
 			createdAt: userRecord.created_at,
 		};
 

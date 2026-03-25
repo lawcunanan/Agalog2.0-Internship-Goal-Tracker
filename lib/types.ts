@@ -11,6 +11,7 @@ export interface UserSelect {
 	status: Status;
 	email: string;
 	signature_url: string;
+	sup_signature_url: string;
 	createdAt: string;
 
 	section?: string;

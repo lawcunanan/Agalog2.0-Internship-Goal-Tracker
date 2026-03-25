@@ -166,12 +166,14 @@ export function Header({
 																company={goalState?.company || "N/A"}
 																data={logState?.logs || []}
 																signatureUrl={user.signature_url}
+																supSignatureUrl={user.sup_signature_url}
 															/>
 															<DailyReportDialog
 																name={user.fullname || "Student"}
 																company={goalState?.company || "N/A"}
 																data={logState?.logs || []}
 																signatureUrl={user.signature_url}
+																supSignatureUrl={user.sup_signature_url}
 															/>
 														</>
 													)}

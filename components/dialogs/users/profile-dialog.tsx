@@ -20,11 +20,15 @@ import Image from "next/image";
 import { User } from "lucide-react";
 import { LoadingButtonText } from "@/components/ui/loading-button-text";
 import { UserSelect } from "@/lib/types";
+
 type ProfileState = {
 	name: string;
 	signatureFile: File | null;
 	signaturePreview: string | null;
 	signatureUrlDelete: string | null;
+	supSignatureFile: File | null;
+	supSignaturePreview: string | null;
+	supSignatureUrlDelete: string | null;
 };
 
 type ProfileDialogProps = {
@@ -44,9 +48,15 @@ export function ProfileDialog({
 		signatureFile: null,
 		signaturePreview: user?.signature_url || null,
 		signatureUrlDelete: null,
+		supSignatureFile: null,
+		supSignaturePreview: user?.sup_signature_url || null,
+		supSignatureUrlDelete: null,
 	});
 
-	const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+	const handleFileChange = (
+		e: React.ChangeEvent<HTMLInputElement>,
+		type: "intern" | "supervisor",
+	) => {
 		const file = e.target.files?.[0];
 		if (file) {
 			const allowedTypes = ["image/jpeg", "image/jpg", "image/png"];
@@ -61,20 +71,29 @@ export function ProfileDialog({
 				return;
 			}
 
-			setProfileState((prev) => ({
-				...prev,
-				signatureFile: file,
-				signatureUrlDelete:
-					user?.signature_url && !prev.signatureUrlDelete
-						? user.signature_url
-						: prev.signatureUrlDelete,
-			}));
 			const reader = new FileReader();
 			reader.onloadend = () => {
-				setProfileState((prev) => ({
-					...prev,
-					signaturePreview: reader.result as string,
-				}));
+				if (type === "intern") {
+					setProfileState((prev) => ({
+						...prev,
+						signatureFile: file,
+						signaturePreview: reader.result as string,
+						signatureUrlDelete:
+							user?.signature_url && !prev.signatureUrlDelete
+								? user.signature_url
+								: prev.signatureUrlDelete,
+					}));
+				} else {
+					setProfileState((prev) => ({
+						...prev,
+						supSignatureFile: file,
+						supSignaturePreview: reader.result as string,
+						supSignatureUrlDelete:
+							user?.sup_signature_url && !prev.supSignatureUrlDelete
+								? user.sup_signature_url
+								: prev.supSignatureUrlDelete,
+					}));
+				}
 			};
 			reader.readAsDataURL(file);
 		}
@@ -95,6 +114,9 @@ export function ProfileDialog({
 			user.signature_url,
 			profileState.signatureFile,
 			profileState.signatureUrlDelete,
+			user.sup_signature_url,
+			profileState.supSignatureFile,
+			profileState.supSignatureUrlDelete,
 			showAlert,
 			setIsLoading,
 		);
@@ -108,6 +130,9 @@ export function ProfileDialog({
 				signatureFile: null,
 				signaturePreview: user.signature_url || null,
 				signatureUrlDelete: null,
+				supSignatureFile: null,
+				supSignaturePreview: user.sup_signature_url || null,
+				supSignatureUrlDelete: null,
 			});
 		}
 	};
@@ -128,10 +153,11 @@ export function ProfileDialog({
 				<AlertDialogHeader>
 					<AlertDialogTitle>Edit Profile</AlertDialogTitle>
 					<AlertDialogDescription>
-						Update your name and signature.
+						Update your name and signatures.
 					</AlertDialogDescription>
 				</AlertDialogHeader>
-				<div className="grid gap-4 py-4">
+				<div className="grid gap-5 py-4">
+					{/* Full Name */}
 					<div className="grid gap-2">
 						<Label htmlFor="name">Full Name</Label>
 						<Input
@@ -142,31 +168,71 @@ export function ProfileDialog({
 							}
 						/>
 					</div>
-					<div className="grid gap-2">
-						<Label htmlFor="signature">Signature</Label>
-						<div>
-							<Input
-								id="signature"
+
+					{/* Signatures Grid */}
+					<div className="grid grid-cols-2 gap-4">
+						{/* Intern Signature */}
+						<div className="grid gap-2">
+							<Label>Your Signature</Label>
+							<input
 								type="file"
-								onChange={handleFileChange}
+								id="signature"
+								onChange={(e) => handleFileChange(e, "intern")}
 								accept=".jpg,.jpeg,.png"
-								title="Select a JPG or PNG image (max 3MB)"
+								className="hidden"
 							/>
-							<p className="text-xs text-muted-foreground mt-2">
-								Maximum file size: 3MB. Supported formats: JPG, PNG.
-							</p>
-							{profileState.signaturePreview && (
-								<div className="mt-4 relative bg-white w-fit border border-border p-1 rounded">
+							<label
+								htmlFor="signature"
+								className="relative h-24 border border-dashed border-border rounded bg-white overflow-hidden cursor-pointer hover:border-primary transition-colors block"
+							>
+								{profileState.signaturePreview ? (
 									<Image
 										src={profileState.signaturePreview}
-										alt="Signature Preview"
-										width={200}
-										height={100}
+										alt="Your Signature"
+										fill
+										className="object-contain p-2"
 									/>
-								</div>
-							)}
+								) : (
+									<span className="flex items-center justify-center h-full text-xs text-muted-foreground">
+										Click to attach
+									</span>
+								)}
+							</label>
+						</div>
+
+						{/* Supervisor Signature */}
+						<div className="grid gap-2">
+							<Label>Supervisor Signature</Label>
+							<input
+								type="file"
+								id="sup-signature"
+								onChange={(e) => handleFileChange(e, "supervisor")}
+								accept=".jpg,.jpeg,.png"
+								className="hidden"
+							/>
+							<label
+								htmlFor="sup-signature"
+								className="relative h-24 border border-dashed border-border rounded bg-white overflow-hidden cursor-pointer hover:border-primary transition-colors block"
+							>
+								{profileState.supSignaturePreview ? (
+									<Image
+										src={profileState.supSignaturePreview}
+										alt="Supervisor Signature"
+										fill
+										className="object-contain p-2"
+									/>
+								) : (
+									<span className="flex items-center justify-center h-full text-xs text-muted-foreground">
+										Click to attach
+									</span>
+								)}
+							</label>
 						</div>
 					</div>
+
+					<p className="text-xs text-muted-foreground">
+						Max 3MB per file. Supported formats: JPG, PNG.
+					</p>
 				</div>
 				<AlertDialogFooter>
 					<AlertDialogCancel disabled={isLoading}>Cancel</AlertDialogCancel>

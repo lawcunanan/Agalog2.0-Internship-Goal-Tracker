@@ -9,6 +9,7 @@ export type UserRow = {
 	status: string | null;
 	role: string | null;
 	signature_url: string | null;
+	sup_signature_url: string | null;
 	created_at: string | Date | null;
 };
 
