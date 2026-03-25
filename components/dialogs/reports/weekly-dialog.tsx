@@ -1,7 +1,7 @@
 "use client";
 
 import type React from "react";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
 	AlertDialog,
@@ -50,8 +50,21 @@ export function WeeklyReportDialog({
 	const selectedWeekData = data.find((w) => w.weekLabel === selectedWeek);
 
 	const [overallDescription, setOverallDescription] = useState<string>("");
-	const [attachedImage, setAttachedImage] = useState<string | null>(null);
 	const fileInputRef = useRef<HTMLInputElement>(null);
+
+	const storageKey = `war-attachment-week-${selectedWeek}`;
+
+	const [attachedImage, setAttachedImage] = useState<string | null>(() => {
+		if (typeof window !== "undefined") {
+			return localStorage.getItem(storageKey);
+		}
+		return null;
+	});
+
+	useEffect(() => {
+		const saved = localStorage.getItem(storageKey);
+		setAttachedImage(saved);
+	}, [storageKey]);
 
 	const handleDescriptionChange = (
 		e: React.ChangeEvent<HTMLTextAreaElement>,
@@ -62,17 +75,20 @@ export function WeeklyReportDialog({
 	const handleAttach = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const file = e.target.files?.[0];
 		if (file) {
-			const url = URL.createObjectURL(file);
-			setAttachedImage(url);
+			const reader = new FileReader();
+			reader.onloadend = () => {
+				const base64 = reader.result as string;
+				setAttachedImage(base64);
+				localStorage.setItem(storageKey, base64);
+			};
+			reader.readAsDataURL(file);
 		}
 		e.target.value = "";
 	};
 
 	const handleRemoveAttachment = () => {
-		if (attachedImage) {
-			URL.revokeObjectURL(attachedImage);
-			setAttachedImage(null);
-		}
+		setAttachedImage(null);
+		localStorage.removeItem(storageKey);
 	};
 
 	const handlePrint = () => {

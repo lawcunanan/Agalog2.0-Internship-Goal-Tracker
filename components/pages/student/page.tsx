@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect } from "react";
+import { X } from "lucide-react";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { GoalActiveState, WeeklyLogState } from "@/lib/types";
@@ -38,6 +39,18 @@ export function StudentContent({ initialGoal, logsData }: StudentContentProps) {
 		currentHours: logsData?.currentHours ?? 0,
 		editLog: null,
 	});
+
+	const [showUpdateCard, setShowUpdateCard] = useState(() => {
+		if (typeof window !== "undefined") {
+			return localStorage.getItem("dismiss-update-v1") !== "true";
+		}
+		return true;
+	});
+
+	const dismissUpdate = () => {
+		setShowUpdateCard(false);
+		localStorage.setItem("dismiss-update-v1", "true");
+	};
 
 	const isCompleted =
 		logState.currentHours >= goalState.goalHours && goalState.goalHours > 0;
@@ -105,6 +118,27 @@ export function StudentContent({ initialGoal, logsData }: StudentContentProps) {
 					</div>
 				</div>
 			</main>
+
+			{showUpdateCard && (
+				<div className="fixed bottom-4 left-4 z-50 max-w-xs bg-background border border-border rounded-lg shadow-lg p-4 animate-in slide-in-from-bottom-4">
+					<div className="flex items-start justify-between gap-2">
+						<div>
+							<p className="text-sm font-semibold">What's New</p>
+							<ul className="mt-1.5 text-xs text-muted-foreground space-y-1">
+								<li>- Attach pictures on reports</li>
+								<li>- Upload supervisor signature</li>
+								<li>- Improved report export filenames</li>
+							</ul>
+						</div>
+						<button
+							onClick={dismissUpdate}
+							className="text-muted-foreground hover:text-foreground shrink-0 mt-0.5"
+						>
+							<X className="h-4 w-4" />
+						</button>
+					</div>
+				</div>
+			)}
 		</div>
 	);
 }
