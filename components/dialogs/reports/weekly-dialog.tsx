@@ -402,7 +402,10 @@ export function WeeklyReportDialog({
 									{attachedImages.map((img, index) => (
 										<div
 											key={index}
-											className="relative group border border-gray-300 rounded p-2 bg-white"
+											className={cn(
+												"relative group rounded p-2 bg-white",
+												attachedImages.length > 1 && "border border-gray-300",
+											)}
 										>
 											<button
 												type="button"
