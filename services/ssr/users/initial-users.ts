@@ -19,7 +19,7 @@ export const getUsers = async (
 			.from("users")
 			.select("*", { count: "exact" })
 			.range(from, to)
-			.order("full_name", { ascending: true });
+			.order("created_at", { ascending: false });
 
 		// Search by full_name or email
 		if (searchQuery) {
@@ -56,6 +56,7 @@ export const getUsers = async (
 			status: item.status as Status,
 			role: item.role as UserRole,
 			signature_url: item.signature_url ?? "",
+			sup_signature_url: item.sup_signature_url ?? "",
 			createdAt: item.created_at
 				? format(new Date(item.created_at), "MMM d, yyyy h:mm a")
 				: "--:--",

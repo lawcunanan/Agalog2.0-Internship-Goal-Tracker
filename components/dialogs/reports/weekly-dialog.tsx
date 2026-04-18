@@ -1,7 +1,7 @@
 "use client";
 
 import type React from "react";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
 	AlertDialog,
@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { X, Printer, CalendarDays, Paperclip, Trash2 } from "lucide-react";
 import Image from "next/image";
-import { Textarea } from "@/components/ui/textarea";
+import { RichTextEditor } from "@/components/ui/rich-text-editor";
 import {
 	Select,
 	SelectContent,
@@ -23,8 +23,20 @@ import {
 	SelectValue,
 } from "@/components/ui/select";
 import { WeeklyLogSelect } from "@/lib/types";
-import { getReportFileName } from "@/lib/utils";
+import { cn, getReportFileName } from "@/lib/utils";
 
+
+const readAttachments = (key: string): string[] => {
+	if (typeof window === "undefined") return [];
+	const saved = localStorage.getItem(key);
+	if (!saved) return [];
+	try {
+		const parsed = JSON.parse(saved);
+		return Array.isArray(parsed) ? parsed : [];
+	} catch {
+		return [];
+	}
+};
 
 interface WeeklyReportDialogProps {
 	name: string;
@@ -52,43 +64,48 @@ export function WeeklyReportDialog({
 	const [overallDescription, setOverallDescription] = useState<string>("");
 	const fileInputRef = useRef<HTMLInputElement>(null);
 
-	const storageKey = `war-attachment-week-${selectedWeek}`;
+	const storageKey = `war-attachments-week-${selectedWeek}`;
+	const [, setAttachmentsVersion] = useState(0);
+	const attachedImages = readAttachments(storageKey);
 
-	const [attachedImage, setAttachedImage] = useState<string | null>(() => {
-		if (typeof window !== "undefined") {
-			return localStorage.getItem(storageKey);
+	const writeAttachments = (next: string[]) => {
+		try {
+			if (next.length > 0) {
+				localStorage.setItem(storageKey, JSON.stringify(next));
+			} else {
+				localStorage.removeItem(storageKey);
+			}
+			setAttachmentsVersion((v) => v + 1);
+		} catch {
+			alert(
+				"Storage limit reached. Please remove some attachments before adding more.",
+			);
 		}
-		return null;
-	});
-
-	useEffect(() => {
-		const saved = localStorage.getItem(storageKey);
-		setAttachedImage(saved);
-	}, [storageKey]);
-
-	const handleDescriptionChange = (
-		e: React.ChangeEvent<HTMLTextAreaElement>,
-	) => {
-		setOverallDescription(e.target.value);
 	};
 
 	const handleAttach = (e: React.ChangeEvent<HTMLInputElement>) => {
-		const file = e.target.files?.[0];
-		if (file) {
-			const reader = new FileReader();
-			reader.onloadend = () => {
-				const base64 = reader.result as string;
-				setAttachedImage(base64);
-				localStorage.setItem(storageKey, base64);
-			};
-			reader.readAsDataURL(file);
-		}
+		const files = Array.from(e.target.files || []);
 		e.target.value = "";
+		if (files.length === 0) return;
+
+		Promise.all(
+			files.map(
+				(file) =>
+					new Promise<string>((resolve) => {
+						const reader = new FileReader();
+						reader.onloadend = () => resolve(reader.result as string);
+						reader.readAsDataURL(file);
+					}),
+			),
+		).then((base64List) => {
+			writeAttachments([...readAttachments(storageKey), ...base64List]);
+		});
 	};
 
-	const handleRemoveAttachment = () => {
-		setAttachedImage(null);
-		localStorage.removeItem(storageKey);
+	const handleRemoveAttachment = (index: number) => {
+		writeAttachments(
+			readAttachments(storageKey).filter((_, i) => i !== index),
+		);
 	};
 
 	const handlePrint = () => {
@@ -154,6 +171,7 @@ export function WeeklyReportDialog({
 							ref={fileInputRef}
 							type="file"
 							accept="image/*"
+							multiple
 							onChange={handleAttach}
 							className="hidden"
 						/>
@@ -273,18 +291,14 @@ export function WeeklyReportDialog({
 									</p>
 								</div>
 							</div>
-							{/* Description Section */}
 							<div className="p-3">
 								<p className="text-sm font-semibold text-slate-900 mb-2">
 									Describe your internship experience this week:
 								</p>
-								<p className="text-sm text-slate-900 leading-relaxed hidden print:block">
-									{overallDescription}
-								</p>
-								<Textarea
+								<RichTextEditor
 									value={overallDescription}
-									onChange={handleDescriptionChange}
-									className="text-sm text-slate-900 leading-relaxed no-print bg-white! border-gray-400"
+									onChange={setOverallDescription}
+									placeholder="Write about your week..."
 									rows={5}
 								/>
 							</div>
@@ -372,27 +386,43 @@ export function WeeklyReportDialog({
 							</div>
 						</div>
 
-						{/* Attached Image */}
-						{attachedImage && (
+						{attachedImages.length > 0 && (
 							<div className="border-x border-b border-gray-400 p-4">
-								<div className="flex items-center justify-between mb-2">
-									<p className="text-xs font-bold text-slate-900">
-										Attachment:
-									</p>
-									<button
-										type="button"
-										onClick={handleRemoveAttachment}
-										className="no-print text-slate-400 hover:text-red-500 transition-colors"
-									>
-										<Trash2 className="h-4 w-4" />
-									</button>
-								</div>
-								<div className="flex justify-center">
-									<img
-										src={attachedImage}
-										alt="Attached"
-										className="max-w-full max-h-100 object-contain rounded"
-									/>
+								<p className="text-xs font-bold text-slate-900 mb-3">
+									Attachments:
+								</p>
+								<div
+									className={cn(
+										"grid gap-3",
+										attachedImages.length === 1
+											? "grid-cols-1"
+											: "grid-cols-2",
+									)}
+								>
+									{attachedImages.map((img, index) => (
+										<div
+											key={index}
+											className="relative group border border-gray-300 rounded p-2 bg-white"
+										>
+											<button
+												type="button"
+												onClick={() => handleRemoveAttachment(index)}
+												className="no-print absolute top-1 right-1 bg-white border border-gray-300 rounded-full p-1 text-slate-400 hover:text-red-500 hover:border-red-300 transition-colors shadow-sm opacity-0 group-hover:opacity-100"
+											>
+												<Trash2 className="h-3 w-3" />
+											</button>
+											<img
+												src={img}
+												alt={`Attachment ${index + 1}`}
+												className={cn(
+													"w-full object-contain rounded",
+													attachedImages.length === 1
+														? "max-h-150"
+														: "max-h-64",
+												)}
+											/>
+										</div>
+									))}
 								</div>
 							</div>
 						)}

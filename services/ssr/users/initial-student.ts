@@ -15,7 +15,9 @@ export const getStudent = async (
 	try {
 		const { data, error } = await supabase
 			.from("users")
-			.select("user_id, full_name, email, avatar_url, role, status, created_at")
+			.select(
+				"user_id, full_name, email, avatar_url, role, status, signature_url, sup_signature_url, created_at",
+			)
 			.eq("user_id", student_id)
 			.single()
 			.overrideTypes<UserRow, { merge: false }>();
@@ -32,7 +34,8 @@ export const getStudent = async (
 			avatar_url: data.avatar_url ?? "",
 			role: data.role as UserRole,
 			status: data.status as Status,
-			signature_url: "",
+			signature_url: data.signature_url ?? "",
+			sup_signature_url: data.sup_signature_url ?? "",
 			createdAt: formatPHDateTime(data.created_at),
 		};
 

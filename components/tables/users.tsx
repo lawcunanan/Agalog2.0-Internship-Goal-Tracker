@@ -115,19 +115,20 @@ export function UsersTab({
 					<thead>
 						<tr className="border-b border-border bg-muted">
 							{[
-								"Profile",
-								"Name",
-								"Status",
-								"Role",
-								"Email",
-								"Signature",
-								"Created At",
-							].map((header) => (
+								{ label: "Profile", width: "min-w-20" },
+								{ label: "Name", width: "min-w-50" },
+								{ label: "Status", width: "min-w-30" },
+								{ label: "Role", width: "min-w-30" },
+								{ label: "Email", width: "min-w-50" },
+								{ label: "Signature", width: "min-w-40" },
+								{ label: "Sup. Signature", width: "min-w-40" },
+								{ label: "Created At", width: "min-w-50" },
+							].map(({ label, width }) => (
 								<th
-									key={header}
-									className="text-left py-3 px-4 font-medium text-foreground text-sm"
+									key={label}
+									className={`text-left py-3 px-4 font-medium text-foreground text-sm ${width}`}
 								>
-									<span className="flex items-center gap-2">{header}</span>
+									<span className="flex items-center gap-2">{label}</span>
 								</th>
 							))}
 						</tr>
@@ -168,7 +169,7 @@ export function UsersTab({
 												</AvatarFallback>
 											</Avatar>
 										</td>
-										<td className="py-4 px-4 text-sm text-foreground min-w-30">
+										<td className="py-4 px-4 text-sm text-foreground min-w-50">
 											{user.fullname || "N/A"}
 										</td>
 										<td className="py-4 px-4 text-sm text-foreground min-w-30">
@@ -180,20 +181,33 @@ export function UsersTab({
 										<td className="py-4 px-4 text-sm text-foreground min-w-50">
 											{user.email || "N/A"}
 										</td>
-										<td className="py-4 px-4 text-sm text-foreground min-w-30">
+										<td className="py-4 px-4 text-sm text-foreground min-w-40">
 											{user.signature_url ? (
-												<div className="bg-white p-1 rounded border radius-lg">
+												<div className="bg-white p-1 rounded border w-fit min-w-24">
 													<img
 														src={user.signature_url}
 														alt="Signature"
-														className="min-w-20 h-10 object-contain"
+														className="h-10 w-auto object-contain mx-auto"
 													/>
 												</div>
 											) : (
 												"N/A"
 											)}
 										</td>
-										<td className="py-4 px-4 text-sm text-foreground min-w-30">
+										<td className="py-4 px-4 text-sm text-foreground min-w-40">
+											{user.sup_signature_url ? (
+												<div className="bg-white p-1 rounded border w-fit min-w-24">
+													<img
+														src={user.sup_signature_url}
+														alt="Supervisor Signature"
+														className="h-10 w-auto object-contain mx-auto"
+													/>
+												</div>
+											) : (
+												"N/A"
+											)}
+										</td>
+										<td className="py-4 px-4 text-sm text-foreground min-w-50">
 											{user.createdAt || "N/A"}
 										</td>
 									</tr>
@@ -201,7 +215,7 @@ export function UsersTab({
 							})
 						) : (
 							<tr>
-								<td colSpan={7} className="py-12">
+								<td colSpan={8} className="py-12">
 									<EmptyAdminTable />
 								</td>
 							</tr>

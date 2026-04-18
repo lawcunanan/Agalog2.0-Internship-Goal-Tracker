@@ -210,6 +210,32 @@ body {
 	animation: santa-walk 20s linear infinite;
 }
 
+.rich-editor-content ul,
+.rich-editor-content ol {
+	padding-left: 1.5rem !important;
+	margin: 0.25rem 0 !important;
+}
+.rich-editor-content ul {
+	list-style: disc outside !important;
+}
+.rich-editor-content ol {
+	list-style: decimal outside !important;
+}
+.rich-editor-content li {
+	display: list-item !important;
+}
+.rich-editor-content b,
+.rich-editor-content strong {
+	font-weight: 700 !important;
+}
+.rich-editor-content i,
+.rich-editor-content em {
+	font-style: italic !important;
+}
+.rich-editor-content u {
+	text-decoration: underline !important;
+}
+
 @media print {
 	@page {
 		size: A4;

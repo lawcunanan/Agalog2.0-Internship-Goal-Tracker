@@ -3,8 +3,12 @@
 export const toISODate = (d: Date | string | undefined) => {
 	try {
 		if (!d) return "";
-		return new Date(d).toISOString().split("T")[0];
-	} catch (e) {
+		const date = new Date(d);
+		const y = date.getFullYear();
+		const m = String(date.getMonth() + 1).padStart(2, "0");
+		const day = String(date.getDate()).padStart(2, "0");
+		return `${y}-${m}-${day}`;
+	} catch {
 		return "";
 	}
 };
@@ -46,6 +50,15 @@ export const getPHDate = () => {
 	});
 };
 
+export const getPHWeekday = () => {
+	const [y, m, d] = getPHDate().split("-").map(Number);
+	const date = new Date(y, m - 1, d);
+	const day = date.getDay();
+	if (day === 0) date.setDate(date.getDate() - 2);
+	else if (day === 6) date.setDate(date.getDate() - 1);
+	return toISODate(date);
+};
+
 export const getCurrentDateLong = () => {
 	return new Date().toLocaleDateString("en-US", {
 		timeZone: "Asia/Manila",
@@ -69,7 +82,7 @@ export const formatPHDateTime = (date: string | Date | null | undefined) => {
 			minute: "2-digit",
 			hour12: true,
 		});
-	} catch (error) {
+	} catch {
 		return "--:--";
 	}
 };

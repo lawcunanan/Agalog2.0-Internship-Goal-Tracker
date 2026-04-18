@@ -6,8 +6,20 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { Calendar } from "@/components/ui/calendar";
+import {
+	Popover,
+	PopoverContent,
+	PopoverTrigger,
+} from "@/components/ui/popover";
+import { CalendarIcon } from "lucide-react";
+import { cn } from "@/lib/utils";
 import { LogValues } from "@/lib/types";
-import { getPHDate, toISODate, convert12To24 } from "@/lib/utils/dateTimeUtils";
+import {
+	getPHWeekday,
+	toISODate,
+	convert12To24,
+} from "@/lib/utils/dateTimeUtils";
 import { upsertLog } from "@/services/csr/logs/upsert-log";
 
 type LogFormProps = {
@@ -31,7 +43,7 @@ export function LogForm({
 }: LogFormProps) {
 	const defaults = (): LogValues => ({
 		log_id: "",
-		date: getPHDate(),
+		date: getPHWeekday(),
 		timeIn: "",
 		timeOut: "",
 		breakOut: "",
@@ -129,6 +141,17 @@ export function LogForm({
 		onEdit(null);
 	};
 
+	const selectedDate = logData.date
+		? new Date(logData.date + "T00:00:00")
+		: undefined;
+
+	const isDateDisabled = (date: Date) => {
+		const day = date.getDay();
+		const today = new Date();
+		today.setHours(0, 0, 0, 0);
+		return day === 0 || day === 6 || date > today;
+	};
+
 	return (
 		<FadeIn className="space-y-8">
 			<h2 className="text-4xl font-bold tracking-tight">Log & Go!</h2>
@@ -138,16 +161,43 @@ export function LogForm({
 					<Label htmlFor="date">
 						Date <span className="text-red-500">*</span>
 					</Label>
-					<Input
-						type="date"
-						id="date"
-						className="shadow-none w-full"
-						value={logData.date}
-						onChange={handleChange}
-						max={getPHDate()}
-						disabled={!goal_id}
-						required
-					/>
+					<Popover>
+						<PopoverTrigger asChild>
+							<Button
+								type="button"
+								variant="outline"
+								disabled={!goal_id}
+								className={cn(
+									"shadow-none w-full justify-start text-left font-normal",
+									!selectedDate && "text-muted-foreground",
+								)}
+							>
+								<CalendarIcon className="h-4 w-4" />
+								{selectedDate
+									? selectedDate.toLocaleDateString("en-US", {
+											year: "numeric",
+											month: "long",
+											day: "numeric",
+										})
+									: "Pick a date"}
+							</Button>
+						</PopoverTrigger>
+						<PopoverContent className="w-auto p-0" align="start">
+							<Calendar
+								mode="single"
+								selected={selectedDate}
+								onSelect={(date) => {
+									if (!date) return;
+									setLogData((prev) => ({
+										...prev,
+										date: toISODate(date),
+									}));
+								}}
+								disabled={isDateDisabled}
+								autoFocus
+							/>
+						</PopoverContent>
+					</Popover>
 				</div>
 
 				<div className="grid grid-cols-2 gap-4">

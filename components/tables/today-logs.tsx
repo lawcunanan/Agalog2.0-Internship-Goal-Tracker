@@ -173,7 +173,7 @@ export function TodayLogsTab({
 											{log.breakDuration || "N/A"}
 										</td>
 
-										<td className="py-4 px-4 text-sm text-muted-foreground min-w-50">
+										<td className="py-4 px-4 text-sm text-muted-foreground min-w-80">
 											<DescriptionCell description={log.description || ""} />
 										</td>
 

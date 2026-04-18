@@ -36,6 +36,7 @@ export function LogProgress({
 }: LogProgressProps) {
 	const percentage =
 		required > 0 ? Math.min(100, (completed / required) * 100) : 0;
+	const remaining = Math.max(0, required - completed);
 
 	return (
 		<FadeIn className=" space-y-4">
@@ -92,7 +93,15 @@ export function LogProgress({
 
 			<Progress value={percentage} className="h-3" />
 
-			<p className="text-base text-muted-foreground">{description}</p>
+			<div className="flex items-start justify-between gap-4">
+				<p className="text-base text-muted-foreground">{description}</p>
+				<p className="text-sm text-muted-foreground whitespace-nowrap">
+					<span className="font-semibold text-foreground">
+						{remaining.toFixed(2)}
+					</span>{" "}
+					hrs remaining
+				</p>
+			</div>
 		</FadeIn>
 	);
 }
