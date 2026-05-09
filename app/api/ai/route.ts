@@ -20,6 +20,26 @@ type AttemptResult =
 
 const ATTEMPT_TIMEOUT_MS = 20_000;
 
+const friendlyError = (reasons: string[]): string => {
+	const joined = reasons.join(" ").toLowerCase();
+	if (joined.includes("quota") || joined.includes("rate limit") || joined.includes("resource_exhausted")) {
+		return "AI is busy right now. Please try again in a few moments.";
+	}
+	if (joined.includes("timeout")) {
+		return "AI took too long to respond. Please try again.";
+	}
+	if (joined.includes("safety") || joined.includes("blocked")) {
+		return "AI couldn't process that input. Try rephrasing.";
+	}
+	if (joined.includes("malformed") || joined.includes("empty")) {
+		return "AI returned an unexpected response. Please try again.";
+	}
+	if (joined.includes("api key") || joined.includes("unauthorized") || joined.includes("permission")) {
+		return "AI service is misconfigured. Please contact support.";
+	}
+	return "AI is unavailable right now. Please try again later.";
+};
+
 function parseEnvelope(raw: string): Envelope | null {
 	const stripped = raw
 		.replace(/^```(?:json)?\s*/i, "")
@@ -208,9 +228,9 @@ export async function POST(req: Request) {
 		}
 	}
 
-	console.error("[/api/ai] all models failed", failures);
+	console.error("[/api/ai] all models failed:", failures.join(" | "));
 	return NextResponse.json(
-		{ error: `All AI models failed. ${failures.join(" | ")}` },
+		{ error: friendlyError(failures) },
 		{ status: 502 },
 	);
 }
