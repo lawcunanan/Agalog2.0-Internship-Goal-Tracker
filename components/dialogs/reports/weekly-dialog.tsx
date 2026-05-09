@@ -47,6 +47,11 @@ const readAttachments = (key: string): string[] => {
 	}
 };
 
+const readDescription = (key: string): string => {
+	if (typeof window === "undefined") return "";
+	return localStorage.getItem(key) ?? "";
+};
+
 interface WeeklyReportDialogProps {
 	name: string;
 	company: string;
@@ -71,8 +76,30 @@ export function WeeklyReportDialog({
 
 	const selectedWeekData = data.find((w) => w.weekLabel === selectedWeek);
 
-	const [overallDescription, setOverallDescription] = useState<string>("");
 	const fileInputRef = useRef<HTMLInputElement>(null);
+
+	const descriptionKey = `war-description-week-${selectedWeek}`;
+	const [overallDescription, setOverallDescription] = useState<string>(() =>
+		readDescription(descriptionKey),
+	);
+	const [prevDescKey, setPrevDescKey] = useState(descriptionKey);
+	if (prevDescKey !== descriptionKey) {
+		setPrevDescKey(descriptionKey);
+		setOverallDescription(readDescription(descriptionKey));
+	}
+
+	const handleDescriptionChange = (value: string) => {
+		setOverallDescription(value);
+		try {
+			if (value) {
+				localStorage.setItem(descriptionKey, value);
+			} else {
+				localStorage.removeItem(descriptionKey);
+			}
+		} catch {
+			showAlert(400, "Storage limit reached. Could not save description.");
+		}
+	};
 
 	const storageKey = `war-attachments-week-${selectedWeek}`;
 	const [, setAttachmentsVersion] = useState(0);
@@ -313,7 +340,7 @@ export function WeeklyReportDialog({
 								</p>
 								<RichTextEditor
 									value={overallDescription}
-									onChange={setOverallDescription}
+									onChange={handleDescriptionChange}
 									placeholder="Write about your week..."
 									rows={5}
 									forceLight

@@ -4,20 +4,85 @@ const escape = (text: string) =>
 		.replace(/</g, "&lt;")
 		.replace(/>/g, "&gt;");
 
+const applyInlineMarkdown = (escaped: string) =>
+	escaped
+		.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
+		.replace(/__(.+?)__/g, "<strong>$1</strong>")
+		.replace(/(^|[^*])\*([^*\s][^*]*?)\*(?!\*)/g, "$1<em>$2</em>")
+		.replace(/(^|[^_])_([^_\s][^_]*?)_(?!_)/g, "$1<em>$2</em>");
+
 export const stripHTMLToText = (html: string): string => {
 	if (!html) return "";
+	const normalized = html
+		.replace(/<\s*br\s*\/?>/gi, "\n")
+		.replace(/<\/(p|div|ul|ol)>/gi, "\n")
+		.replace(/<li[^>]*>/gi, "- ")
+		.replace(/<\/li>/gi, "\n");
+
+	let text: string;
 	if (typeof document !== "undefined") {
 		const div = document.createElement("div");
-		div.innerHTML = html;
-		return (div.textContent ?? "").trim();
+		div.innerHTML = normalized;
+		text = div.textContent ?? "";
+	} else {
+		text = normalized.replace(/<[^>]*>/g, "");
 	}
-	return html.replace(/<[^>]*>/g, "").trim();
+	return text
+		.replace(/\n{3,}/g, "\n\n")
+		.split("\n")
+		.map((line) => line.trim())
+		.filter(Boolean)
+		.join("\n");
 };
 
 export const plainTextToHTML = (text: string): string => {
 	if (!text) return "";
-	const lines = text.replace(/\r\n/g, "\n").split(/\n+/);
-	return lines.map((line) => escape(line)).join("<br>");
+	const lines = text.replace(/\r\n/g, "\n").split("\n");
+	const out: string[] = [];
+	let listType: "ul" | "ol" | null = null;
+	const closeList = () => {
+		if (listType) {
+			out.push(`</${listType}>`);
+			listType = null;
+		}
+	};
+
+	const bullet = /^\s*[-*•]\s+(.*)$/;
+	const numbered = /^\s*\d+[.)]\s+(.*)$/;
+
+	for (const raw of lines) {
+		const line = raw.trim();
+		if (!line) {
+			closeList();
+			continue;
+		}
+		const bulletMatch = line.match(bullet);
+		const numberedMatch = line.match(numbered);
+
+		if (bulletMatch) {
+			if (listType !== "ul") {
+				closeList();
+				out.push("<ul>");
+				listType = "ul";
+			}
+			out.push(`<li>${applyInlineMarkdown(escape(bulletMatch[1]))}</li>`);
+		} else if (numberedMatch) {
+			if (listType !== "ol") {
+				closeList();
+				out.push("<ol>");
+				listType = "ol";
+			}
+			out.push(`<li>${applyInlineMarkdown(escape(numberedMatch[1]))}</li>`);
+		} else {
+			closeList();
+			if (out.length > 0 && !out[out.length - 1].endsWith(">")) {
+				out.push("<br>");
+			}
+			out.push(applyInlineMarkdown(escape(line)));
+		}
+	}
+	closeList();
+	return out.join("");
 };
 
 const ALLOWED_TAGS = new Set([

@@ -82,6 +82,7 @@ export function RichTextEditor({
 }: RichTextEditorProps) {
 	const styles = forceLight ? lightStyles : themeStyles;
 	const editorRef = useRef<HTMLDivElement>(null);
+	const aiCache = useRef<Map<string, string>>(new Map());
 	const [active, setActive] = useState<ActiveState>(defaultActive);
 	const [aiLoading, setAiLoading] = useState(false);
 
@@ -167,6 +168,13 @@ export function RichTextEditor({
 			return;
 		}
 
+		const cacheKey = JSON.stringify(body);
+		const cached = aiCache.current.get(cacheKey);
+		if (cached) {
+			setEditorHTML(plainTextToHTML(cached));
+			return;
+		}
+
 		setAiLoading(true);
 		try {
 			const res = await fetch("/api/ai", {
@@ -187,8 +195,10 @@ export function RichTextEditor({
 				);
 			}
 			if (!res.ok) throw new Error(data.error || "AI request failed");
-			if (typeof data.text === "string" && data.text.trim()) {
-				setEditorHTML(plainTextToHTML(data.text.trim()));
+			const aiText = typeof data.text === "string" ? data.text.trim() : "";
+			if (aiText) {
+				aiCache.current.set(cacheKey, aiText);
+				setEditorHTML(plainTextToHTML(aiText));
 			} else {
 				throw new Error("AI returned no text.");
 			}
