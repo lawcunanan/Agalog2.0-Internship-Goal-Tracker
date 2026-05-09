@@ -13,6 +13,7 @@ import {
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Edit } from "lucide-react";
+import { sanitizeHTML } from "@/lib/utils/html";
 import { WeeklyLogSelect, LogValues } from "@/lib/types";
 import { DeleteLogDialog } from "@/components/dialogs/logs/delete-log-dialog";
 import { EmptyLogs } from "@/components/empty-state/empty-logs";
@@ -128,7 +129,16 @@ export function WeeklyLog({
 								<AccordionContent className="px-3 pb-4 pt-2 text-muted-foreground text-sm pl-4">
 									<div className="flex justify-between items-start gap-3 sm:gap-6">
 										<div className="flex-1">
-											{log.description || "No description"}
+											{log.description ? (
+												<div
+													className="rich-editor-content"
+													dangerouslySetInnerHTML={{
+														__html: sanitizeHTML(log.description),
+													}}
+												/>
+											) : (
+												"No description"
+											)}
 										</div>
 
 										<div className="flex items-center gap-1">

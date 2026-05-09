@@ -210,6 +210,34 @@ body {
 	animation: santa-walk 20s linear infinite;
 }
 
+@keyframes ai-sparkle {
+	0%,
+	100% {
+		transform: scale(1) rotate(0deg);
+		filter: drop-shadow(0 0 0 rgba(139, 92, 246, 0));
+	}
+	25% {
+		transform: scale(1.12) rotate(-8deg);
+		filter: drop-shadow(0 0 4px rgba(139, 92, 246, 0.55));
+	}
+	50% {
+		transform: scale(0.95) rotate(8deg);
+		filter: drop-shadow(0 0 2px rgba(139, 92, 246, 0.35));
+	}
+	75% {
+		transform: scale(1.08) rotate(-4deg);
+		filter: drop-shadow(0 0 5px rgba(139, 92, 246, 0.6));
+	}
+}
+
+.ai-sparkle {
+	animation: ai-sparkle 2.4s ease-in-out infinite;
+	transform-origin: center;
+}
+.group:hover .ai-sparkle {
+	animation: none;
+}
+
 .rich-editor-content ul,
 .rich-editor-content ol {
 	padding-left: 1.5rem !important;

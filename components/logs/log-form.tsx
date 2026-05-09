@@ -5,7 +5,7 @@ import { FadeIn } from "@/components/ui/fade-in";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
+import { RichTextEditor } from "@/components/ui/rich-text-editor";
 import { Calendar } from "@/components/ui/calendar";
 import {
 	Popover,
@@ -263,13 +263,15 @@ export function LogForm({
 
 				<div className="space-y-2">
 					<Label htmlFor="description">Description</Label>
-					<Textarea
-						id="description"
-						placeholder="Briefly describe your tasks for the day..."
-						className="min-h-25 resize-none shadow-none text-sm w-full"
+					<RichTextEditor
 						value={logData.description}
-						onChange={handleChange}
-						disabled={!goal_id}
+						onChange={(html) =>
+							setLogData((prev) => ({ ...prev, description: html }))
+						}
+						placeholder="Briefly describe your tasks for the day..."
+						rows={4}
+						ai={{ mode: "improve" }}
+						onAIError={(message) => showAlert(400, message)}
 					/>
 				</div>
 

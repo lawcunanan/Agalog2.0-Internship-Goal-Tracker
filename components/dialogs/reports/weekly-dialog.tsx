@@ -12,7 +12,14 @@ import {
 	AlertDialogTitle,
 	AlertDialogDescription,
 } from "@/components/ui/alert-dialog";
-import { X, Printer, CalendarDays, Paperclip, Trash2 } from "lucide-react";
+import {
+	X,
+	Printer,
+	CalendarDays,
+	Paperclip,
+	Trash2,
+	Sparkles,
+} from "lucide-react";
 import Image from "next/image";
 import { RichTextEditor } from "@/components/ui/rich-text-editor";
 import {
@@ -24,6 +31,8 @@ import {
 } from "@/components/ui/select";
 import { WeeklyLogSelect } from "@/lib/types";
 import { cn, getReportFileName } from "@/lib/utils";
+import { sanitizeHTML, stripHTMLToText } from "@/lib/utils/html";
+import { useAlert } from "@/providers/alert-provider";
 
 
 const readAttachments = (key: string): string[] => {
@@ -53,6 +62,7 @@ export function WeeklyReportDialog({
 	signatureUrl,
 	supSignatureUrl,
 }: WeeklyReportDialogProps) {
+	const { showAlert } = useAlert();
 	const [selectedWeek, setSelectedWeek] = useState<string>(
 		data.length > 0 ? data[0].weekLabel : "1",
 	);
@@ -77,7 +87,8 @@ export function WeeklyReportDialog({
 			}
 			setAttachmentsVersion((v) => v + 1);
 		} catch {
-			alert(
+			showAlert(
+				400,
 				"Storage limit reached. Please remove some attachments before adding more.",
 			);
 		}
@@ -292,14 +303,28 @@ export function WeeklyReportDialog({
 								</div>
 							</div>
 							<div className="p-3">
-								<p className="text-sm font-semibold text-slate-900 mb-2">
+								<p className="text-sm font-semibold text-slate-900 mb-1">
 									Describe your internship experience this week:
+								</p>
+								<p className="no-print text-xs italic text-slate-500 mb-2">
+									Note: leave blank and tap the
+									<Sparkles className="inline h-3 w-3 mx-1 text-violet-600 align-text-bottom" />
+									icon to let AI generate a summary from your daily entries.
 								</p>
 								<RichTextEditor
 									value={overallDescription}
 									onChange={setOverallDescription}
 									placeholder="Write about your week..."
 									rows={5}
+									forceLight
+									ai={{
+										mode: "summarize",
+										getEntries: () =>
+											(selectedWeekData?.logs ?? [])
+												.map((log) => stripHTMLToText(log.description ?? ""))
+												.filter(Boolean),
+									}}
+									onAIError={(message) => showAlert(400, message)}
 								/>
 							</div>
 						</div>
@@ -323,9 +348,12 @@ export function WeeklyReportDialog({
 											Day: {log.day}
 										</p>
 										{log.description && (
-											<p className="text-xs text-slate-900 leading-relaxed">
-												{log.description}
-											</p>
+											<div
+												className="rich-editor-content text-xs text-slate-900 leading-relaxed"
+												dangerouslySetInnerHTML={{
+													__html: sanitizeHTML(log.description),
+												}}
+											/>
 										)}
 									</div>
 								</div>

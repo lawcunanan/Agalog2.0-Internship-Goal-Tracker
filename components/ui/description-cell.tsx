@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
+import { sanitizeHTML, stripHTMLToText } from "@/lib/utils/html";
 
 interface DescriptionCellProps {
 	description: string;
@@ -14,20 +15,37 @@ export function DescriptionCell({
 	const [isExpanded, setIsExpanded] = useState(false);
 	const maxLength = 50;
 
-	if (!description) return <span>{emptyText}</span>;
-	if (description.length <= maxLength) return <span>{description}</span>;
+	const plain = useMemo(() => stripHTMLToText(description), [description]);
+	const safeHTML = useMemo(() => sanitizeHTML(description), [description]);
+
+	if (!plain) return <span>{emptyText}</span>;
+	if (plain.length <= maxLength) {
+		return (
+			<span
+				className="rich-editor-content"
+				dangerouslySetInnerHTML={{ __html: safeHTML }}
+			/>
+		);
+	}
+
+	const truncatedText = `${plain.slice(0, maxLength)}...`;
 
 	return (
 		<div>
-			<span>
-				{isExpanded ? description : `${description.slice(0, maxLength)}...`}
-			</span>
+			{isExpanded ? (
+				<span
+					className="rich-editor-content"
+					dangerouslySetInnerHTML={{ __html: safeHTML }}
+				/>
+			) : (
+				<span>{truncatedText}</span>
+			)}
 			<button
 				onClick={(e) => {
 					e.stopPropagation();
 					setIsExpanded(!isExpanded);
 				}}
-				className="ml-1 text-foreground  hover:underline focus:outline-none"
+				className="ml-1 text-foreground hover:underline focus:outline-none"
 			>
 				{isExpanded ? "See Less" : "See More"}
 			</button>
