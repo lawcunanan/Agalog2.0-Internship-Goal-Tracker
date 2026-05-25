@@ -197,6 +197,7 @@ export function TempInsertDialog() {
 									contributors.map((c) => (
 										<SelectItem key={c.user_id} value={c.user_id}>
 											{c.fullname || c.email}
+											{c.role ? ` (${c.role})` : ""}
 										</SelectItem>
 									))
 								)}
