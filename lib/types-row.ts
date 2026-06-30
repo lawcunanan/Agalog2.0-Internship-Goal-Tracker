@@ -44,6 +44,7 @@ export type GoalRow = {
 		goal: number;
 		status: string;
 		sections: string[];
+		created_by: string;
 	} | null;
 };
 

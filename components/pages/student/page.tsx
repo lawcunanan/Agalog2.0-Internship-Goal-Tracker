@@ -10,6 +10,7 @@ import { useAuth } from "@/providers/auth-provider";
 import { LogProgress } from "@/components/logs/log-progress";
 import { WeeklyLog } from "@/components/logs/weekly-log";
 import { LogForm } from "@/components/logs/log-form";
+import { GridBackground } from "@/components/ui/grid-background";
 import { refreshLogsHandler } from "@/services/csr/logs/refresh-logs";
 
 type StudentContentProps = {
@@ -80,6 +81,7 @@ export function StudentContent({ initialGoal, logsData }: StudentContentProps) {
 
 	return (
 		<div className="no-print min-h-screen flex flex-col relative md:overflow-hidden">
+			<GridBackground variant="dot" className="fixed" />
 			<Header
 				goalState={goalState}
 				setGoalState={setGoalState}
@@ -123,7 +125,7 @@ export function StudentContent({ initialGoal, logsData }: StudentContentProps) {
 				<div className="fixed bottom-4 left-4 z-50 max-w-xs bg-background border border-border rounded-lg shadow-lg p-4 animate-in slide-in-from-bottom-4">
 					<div className="flex items-start justify-between gap-2">
 						<div>
-							<p className="text-sm font-semibold">What's New</p>
+							<p className="text-sm font-semibold">What&apos;s New</p>
 							<ul className="mt-1.5 text-xs text-muted-foreground space-y-1">
 								<li>- Attach pictures on reports</li>
 								<li>- Upload supervisor signature</li>

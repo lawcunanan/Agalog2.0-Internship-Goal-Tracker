@@ -64,6 +64,7 @@ export interface GoalActiveState {
 	goal_id: string;
 	goalHours: number;
 	company?: string;
+	created_by?: string;
 }
 
 export interface RegisteredGoalSelect {

@@ -93,6 +93,7 @@ export function JoinGoalDialog({
 			goal_id: goalValues.goal_id,
 			goalHours: goalValues.goal,
 			company: goalValues.company,
+			created_by: goalValues.created_by,
 		});
 
 		refreshLogs(goalValues.goal_id);
@@ -167,12 +168,6 @@ export function JoinGoalDialog({
 									className="flex-1"
 									disabled={isLoading}
 								/>
-								<div className="text-sm text-left mt-2 space-y-1">
-									<p className="text-foreground">Available tokens:</p>
-									<p className="text-muted-foreground">
-										Intern 2: GpMEMFxFDxfHy0DaHUsXHFRh
-									</p>
-								</div>
 							</div>
 						</div>
 					) : (

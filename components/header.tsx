@@ -46,6 +46,11 @@ export function Header({
 	const isStudent = user?.role === "Student";
 	const isAdmin = user?.role === "Admin";
 
+	// Reports (Weekly/Daily) are only relevant for admin-assigned goals, not
+	// goals the student created for themselves.
+	const isAdminGoal =
+		!!goalState?.created_by && goalState.created_by !== user?.user_id;
+
 	const handleExport = () => {
 		if (!user) return;
 		exportLog(
@@ -138,14 +143,14 @@ export function Header({
 											/>
 											<ManageGoalsDialog
 												user={user}
-												goalState={goalState || ({} as any)}
+												goalState={goalState || ({} as GoalActiveState)}
 												setGoalState={setGoalState || (() => {})}
 												showAlert={showAlert}
 												refreshLogs={refreshLogs || (() => {})}
 											/>
 											{isStudent && (
 												<>
-													{logState?.logs.length! > 0 && (
+													{(logState?.logs.length ?? 0) > 0 && (
 														<>
 															<Button
 																variant="ghost"
@@ -161,20 +166,24 @@ export function Header({
 																/>
 															</Button>
 
-															<WeeklyReportDialog
-																name={user.fullname || "Student"}
-																company={goalState?.company || "N/A"}
-																data={logState?.logs || []}
-																signatureUrl={user.signature_url}
-																supSignatureUrl={user.sup_signature_url}
-															/>
-															<DailyReportDialog
-																name={user.fullname || "Student"}
-																company={goalState?.company || "N/A"}
-																data={logState?.logs || []}
-																signatureUrl={user.signature_url}
-																supSignatureUrl={user.sup_signature_url}
-															/>
+															{isAdminGoal && (
+																<>
+																	<WeeklyReportDialog
+																		name={user.fullname || "Student"}
+																		company={goalState?.company || "N/A"}
+																		data={logState?.logs || []}
+																		signatureUrl={user.signature_url}
+																		supSignatureUrl={user.sup_signature_url}
+																	/>
+																	<DailyReportDialog
+																		name={user.fullname || "Student"}
+																		company={goalState?.company || "N/A"}
+																		data={logState?.logs || []}
+																		signatureUrl={user.signature_url}
+																		supSignatureUrl={user.sup_signature_url}
+																	/>
+																</>
+															)}
 														</>
 													)}
 												</>

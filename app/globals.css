@@ -197,6 +197,106 @@ body {
 	background-color: var(--muted-foreground);
 }
 
+/* ───────────────  Grid background + ambient effects  ─────────────── */
+@layer utilities {
+	/* Subtle adaptive grid that works in both light and dark themes */
+	.bg-grid-pattern {
+		background-image: linear-gradient(
+				to right,
+				color-mix(in oklab, var(--foreground) 8%, transparent) 1px,
+				transparent 1px
+			),
+			linear-gradient(
+				to bottom,
+				color-mix(in oklab, var(--foreground) 8%, transparent) 1px,
+				transparent 1px
+			);
+		background-size: 44px 44px;
+	}
+
+	.bg-dot-pattern {
+		background-image: radial-gradient(
+			color-mix(in oklab, var(--foreground) 14%, transparent) 1px,
+			transparent 1px
+		);
+		background-size: 22px 22px;
+	}
+
+	/* Radial fade so the pattern dissolves toward the edges */
+	.mask-radial-fade {
+		-webkit-mask-image: radial-gradient(
+			ellipse at center,
+			#000 30%,
+			transparent 78%
+		);
+		mask-image: radial-gradient(ellipse at center, #000 30%, transparent 78%);
+	}
+
+	.mask-radial-fade-top {
+		-webkit-mask-image: radial-gradient(
+			ellipse 80% 60% at 50% 0%,
+			#000 35%,
+			transparent 80%
+		);
+		mask-image: radial-gradient(
+			ellipse 80% 60% at 50% 0%,
+			#000 35%,
+			transparent 80%
+		);
+	}
+}
+
+@keyframes grid-pan {
+	from {
+		background-position: 0 0;
+	}
+	to {
+		background-position: 44px 44px;
+	}
+}
+.animate-grid-pan {
+	animation: grid-pan 18s linear infinite;
+}
+
+@keyframes float-slow {
+	0%,
+	100% {
+		transform: translate(0, 0);
+	}
+	50% {
+		transform: translate(0, -26px);
+	}
+}
+.animate-float-slow {
+	animation: float-slow 9s ease-in-out infinite;
+}
+
+@keyframes float-slower {
+	0%,
+	100% {
+		transform: translate(0, 0);
+	}
+	50% {
+		transform: translate(0, 22px);
+	}
+}
+.animate-float-slower {
+	animation: float-slower 13s ease-in-out infinite;
+}
+
+@keyframes shine {
+	0% {
+		transform: translateX(-120%);
+	}
+	60%,
+	100% {
+		transform: translateX(220%);
+	}
+}
+.animate-shine {
+	animation: shine 3.2s ease-in-out infinite;
+}
+
 @keyframes santa-walk {
 	0% {
 		transform: translateX(-100%);

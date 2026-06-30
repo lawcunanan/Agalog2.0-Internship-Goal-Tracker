@@ -20,7 +20,8 @@ export async function getInitialGoal(
 				goal_id,
 				goal,
 				status,
-				sections
+				sections,
+				created_by
 			)
 		`,
 		)
@@ -41,5 +42,6 @@ export async function getInitialGoal(
 		goal_id: latestGoal.goal_id?.toString() ?? "",
 		goalHours: latestGoal.goal ?? 400,
 		company: data.company ?? "Not Specified",
+		created_by: latestGoal.created_by ?? undefined,
 	};
 }

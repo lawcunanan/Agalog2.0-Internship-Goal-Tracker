@@ -81,6 +81,22 @@ export function ManageGoalsDialog({
 		!goalValues?.goal ||
 		(!isStudent && !goalValues?.sections?.length);
 
+	const handleSetGoalState = useCallback(
+		(goalId: string, goalHours?: number) => {
+			refreshLogs(goalId);
+			const goal = goals.find((g) => String(g.goal_id) === goalId);
+
+			setGoalState({
+				...goalState,
+				goal_id: goalId,
+				goalHours: goalHours ?? goal?.goal ?? 0,
+				company: goal?.company || "k",
+				created_by: goal?.created_by,
+			});
+		},
+		[goalState, goals, refreshLogs, setGoalState],
+	);
+
 	const fetchGoals = useCallback(async () => {
 		if (!user) return;
 
@@ -100,7 +116,14 @@ export function ManageGoalsDialog({
 			},
 			showAlert,
 		);
-	}, [user, searchQuery, filterStatus, goalState.goal_id, showAlert]);
+	}, [
+		user,
+		searchQuery,
+		filterStatus,
+		goalState.goal_id,
+		showAlert,
+		handleSetGoalState,
+	]);
 
 	const handleCreateGoal = async () => {
 		if (isLoading) return;
@@ -181,21 +204,6 @@ export function ManageGoalsDialog({
 		setTab("manage");
 	};
 
-	const handleSetGoalState = useCallback(
-		(goalId: string, goalHours?: number) => {
-			refreshLogs(goalId);
-			const goal = goals.find((g) => String(g.goal_id) === goalId);
-
-			setGoalState({
-				...goalState,
-				goal_id: goalId,
-				goalHours: goalHours ?? goal?.goal ?? 0,
-				company: goal?.company || "k",
-			});
-		},
-		[goalState, goals, refreshLogs, setGoalState],
-	);
-
 	useEffect(() => {
 		if (isOpen) fetchGoals();
 	}, [isOpen, fetchGoals]);
@@ -237,20 +245,9 @@ export function ManageGoalsDialog({
 
 					{/* Create Goal Tab */}
 					<TabsContent value="create" className="space-y-3">
-						{/* Student Note */}
-						{isStudent && (
-							<div className="p-3 rounded-lg  border border-border text-left">
-								<p className="text-sm text-foreground">
-									<strong>Note:</strong> As of now, students can only join
-									existing goals. Goal creation is currently disabled for
-									students.
-								</p>
-							</div>
-						)}
-						{!isStudent && (
-							<>
-								{/* Title and Hours */}
-								<div className="grid grid-cols-2 gap-3">
+						<>
+							{/* Title and Hours */}
+							<div className="grid grid-cols-2 gap-3">
 									<div className="space-y-2">
 										<Label htmlFor="create-title">Title</Label>
 										<Input
@@ -283,7 +280,8 @@ export function ManageGoalsDialog({
 									</div>
 								</div>
 
-								<div className="space-y-2">
+								{!isStudent && (
+									<div className="space-y-2">
 									<Label htmlFor="create-section">Sections</Label>
 									<div className="flex gap-2">
 										<Input
@@ -336,7 +334,8 @@ export function ManageGoalsDialog({
 											))}
 										</div>
 									)}
-								</div>
+									</div>
+								)}
 
 								<div className="flex gap-2 pt-2 justify-end">
 									{goalValues?.goal_id && (
@@ -354,7 +353,7 @@ export function ManageGoalsDialog({
 										onClick={handleCreateGoal}
 										size="sm"
 										className="w-fit h-9"
-										disabled={requiredValues || isLoading || isStudent}
+										disabled={requiredValues || isLoading}
 									>
 										<LoadingButtonText
 											isLoading={isLoading}
@@ -367,8 +366,7 @@ export function ManageGoalsDialog({
 										/>
 									</Button>
 								</div>
-							</>
-						)}
+						</>
 					</TabsContent>
 
 					{/* All Registered Goals Tab */}
