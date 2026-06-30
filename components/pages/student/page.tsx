@@ -81,7 +81,7 @@ export function StudentContent({ initialGoal, logsData }: StudentContentProps) {
 
 	return (
 		<div className="no-print min-h-screen flex flex-col relative md:overflow-hidden">
-			<GridBackground variant="dot" orbs={false} className="fixed" />
+			<GridBackground className="fixed" />
 			<Header
 				goalState={goalState}
 				setGoalState={setGoalState}

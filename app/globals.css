@@ -244,6 +244,29 @@ body {
 			transparent 80%
 		);
 	}
+
+	/* Corner fades — dots densest in the corner, dissolving inward */
+	.mask-corner-tr {
+		-webkit-mask-image: radial-gradient(
+			circle at top right,
+			#000 0%,
+			transparent 68%
+		);
+		mask-image: radial-gradient(circle at top right, #000 0%, transparent 68%);
+	}
+
+	.mask-corner-bl {
+		-webkit-mask-image: radial-gradient(
+			circle at bottom left,
+			#000 0%,
+			transparent 68%
+		);
+		mask-image: radial-gradient(
+			circle at bottom left,
+			#000 0%,
+			transparent 68%
+		);
+	}
 }
 
 @keyframes grid-pan {

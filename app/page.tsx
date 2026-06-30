@@ -5,6 +5,7 @@ import { useSearchParams } from "next/navigation";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { TypewriterText } from "@/components/ui/typewriter-text";
+import { GridBackground } from "@/components/ui/grid-background";
 import { signInWithGoogle } from "@/services/csr/auth/login";
 import { useAlert } from "@/providers/alert-provider";
 import { cn } from "@/lib/utils";
@@ -15,7 +16,8 @@ function HomeContent() {
 	const { showAlert } = useAlert();
 
 	return (
-		<main className="min-h-screen flex flex-col">
+		<main className="relative min-h-screen flex flex-col overflow-hidden">
+			<GridBackground orbs className="fixed" />
 			<Header />
 
 			<div className="flex-1 flex items-center justify-center p-6">
